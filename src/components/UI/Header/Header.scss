@@ -1,0 +1,21 @@
+.back__ui {
+  width: 100%;
+  position: fixed;
+  height: 40px;
+  padding: 15px 20px 15px 20px;
+  margin-bottom: 10px;
+  text-align: start;
+  background-color: white;
+  z-index: 12;
+
+  .title__ui {
+    display: inline-block;
+    font-size: 19px;
+  }
+  img {
+    display: inline-block;
+
+    padding: 10px 0px;
+    padding-right: 15px;
+  }
+}

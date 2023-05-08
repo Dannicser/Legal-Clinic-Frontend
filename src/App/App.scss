@@ -1,0 +1,37 @@
+@import url("../style/index.scss");
+@import url("../style/animations.scss");
+
+.App {
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  height: 100%;
+}
+
+//
+.auth__input {
+  height: 55px;
+  border-radius: 10px;
+
+  input:-webkit-autofill {
+    transition: all 5000s ease-in-out 0s;
+  }
+  input {
+    font-family: "Montserrat", serif;
+    font-weight: 200;
+  }
+
+  img {
+    padding-right: 10px;
+  }
+}
+
+.error__message {
+  margin-top: 15px;
+  color: red; //
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: "Montserrat", serif;
+  animation-name: appearAnimation;
+  animation-duration: 1.5s;
+  //
+}

@@ -1,0 +1,57 @@
+@import url("../../style//animations.scss");
+
+.intro__wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .intro__container {
+    margin-top: auto;
+
+    .aunt__intro {
+      font-size: 15px;
+      font-family: "Montserrat", sans-serif;
+    }
+
+    .aunt__intro {
+      margin: 0px 5px 0px 5px;
+      margin-top: auto;
+      height: 160px;
+      color: #fff;
+      line-height: 160px;
+      text-align: center;
+      background: #5669ff;
+      border-radius: 48px 48px 0px 0px;
+    }
+
+    img {
+      width: 60%;
+      animation-name: appearAnimation;
+      animation-duration: 5s;
+    }
+  }
+
+  .background__intro {
+    background: conic-gradient(from 180deg at 50% 50%, #b9dafb 0deg, #ecacad 95.99deg, #9895ee 206.25deg, #90a2f8 292.5deg, #c55492 360deg);
+    z-index: -12;
+    opacity: 2;
+    filter: blur(90px);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media (min-width: 500px) {
+  .intro__wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .intro__container {
+      img {
+        width: 40%;
+      }
+    }
+  }
+}

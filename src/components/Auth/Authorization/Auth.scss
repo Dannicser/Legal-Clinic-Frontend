@@ -1,0 +1,84 @@
+@import url("../../../style/animations.scss");
+
+.auth__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  height: 100%;
+  padding: 0px 30px 10px 30px;
+  font-family: inherit;
+  overflow-x: hidden;
+  //
+  animation-name: appearAnimation;
+  animation-duration: 1.5s;
+  //
+
+  .auth__logo {
+    width: 60px;
+    height: 60px;
+  }
+  .auth__title {
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+  }
+  .auth__sing_in {
+    margin-top: 10px;
+    text-align: start;
+  }
+
+  .auth__or {
+    color: #9d9898;
+    font-weight: 500;
+  }
+  .auth__google {
+    margin: 15px 0px;
+    line-height: 25px;
+    box-shadow: 15px 0px 30px 0px rgba(211, 212, 226, 0.55);
+    padding: 15px 35px 10px 35px;
+    border-radius: 10px;
+    span {
+      font-size: 16px;
+      font-weight: 300;
+    }
+  }
+
+  .auth__sign_up__container {
+    .auth__sign_up {
+      margin-right: 5px;
+    }
+  }
+  .auth__forgot {
+    font-family: "Montserrat", serif;
+    padding: 8px 0px;
+    display: block;
+  }
+  .auth__background {
+    position: absolute;
+    bottom: 0;
+    left: 200px;
+    height: 10%;
+    width: 100%;
+    z-index: -12;
+    opacity: 1.2;
+    filter: blur(90px);
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+    background: conic-gradient(from 180deg at 50% 50%, #b9dafb 0deg, #ecacad 95.99deg, #9895ee 206.25deg, #90a2f8 292.5deg, #c55492 360deg);
+  }
+}
+
+@media (max-height: 750px) {
+  .auth__wrapper {
+    justify-content: space-between;
+    padding-top: 50px;
+  }
+}
+
+@media (max-width: 650px) {
+  .auth__wrapper {
+    .auth__forgot {
+      font-size: 13px;
+    }
+  }
+}
