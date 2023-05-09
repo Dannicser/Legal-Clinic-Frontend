@@ -1,6 +1,6 @@
 import "./Auth.scss";
 import { NavLink, Navigate } from "react-router-dom";
-import { RoutesNames } from "../../../routers";
+import { PublicRoutesNames } from "../../../routers";
 import { Col, Row, Typography, Form, Input, Space, Switch, Button, Alert } from "antd";
 import logo from "../assets/img/logo.png";
 import login from "../assets/icons/login.svg";
@@ -9,12 +9,17 @@ import google from "../assets/icons/google.svg";
 import { IAuth } from "../../../types/auth";
 import { onValidateEmail } from "../../../utils/validators/auth";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-import { onGetAuth } from "../../../slices/authSlice";
+import { onGetAuth, onResetErrors } from "../../../slices/authSlice";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useEffect } from "react";
 
 export const Auth = () => {
   const state = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(onResetErrors());
+  }, []);
 
   const onFinish = (values: IAuth) => {
     dispatch(onGetAuth(values));
@@ -85,7 +90,7 @@ export const Auth = () => {
               <Button loading={state.status === "loading"} htmlType="submit" size="large" type="primary" block>
                 SIGN IN
               </Button>
-              {state.message && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />}
+              {state.status === "error" && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -101,7 +106,7 @@ export const Auth = () => {
             <div className="auth__sign_up__container">
               <Typography.Text className="auth__sign_up">Don’t have an account?</Typography.Text>
               <Typography.Text strong>
-                <NavLink to={RoutesNames.REGISTRATION}>Sign Up</NavLink>
+                <NavLink to={PublicRoutesNames.REGISTRATION}>Sign Up</NavLink>
               </Typography.Text>
             </div>
           </Col>

@@ -1,21 +1,33 @@
 import "../Authorization/Auth.scss";
-import { Col, Row, Typography, Form, Input, Space, Button } from "antd";
+import { Col, Row, Typography, Form, Input, Space, Button, Alert } from "antd";
 import { NavLink } from "react-router-dom";
 import login from "../assets/icons/login.svg";
 import password from "../assets/icons/password.svg";
 import google from "../assets/icons/google.svg";
 import name from "../assets/icons/name.svg";
 import { Header } from "../../UI/Header/Header";
-import { RoutesNames } from "../../../routers";
+import { PublicRoutesNames } from "../../../routers";
 import { FormUI } from "../../UI/FormUI/FormUI";
-import { onValidatePassword } from "../../../utils/validators/auth";
-import { onValidateEmail } from "../../../utils/validators/auth";
-import { onValidateName } from "../../../utils/validators/auth";
+import { onValidatePassword, onValidateName, onValidateEmail } from "../../../utils/validators/auth";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { onGetRegister, onResetErrors } from "../../../slices/authSlice";
+import { IRegister } from "../../../types/auth";
+import { useAppSelector } from "../../../hooks/useAppSelector";
+import { useEffect } from "react";
 
 export const Register = () => {
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
+  const dispatch = useAppDispatch();
+  const state = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(onResetErrors());
+  }, []);
+
+  const onFinish = (values: IRegister) => {
+    dispatch(onGetRegister(values));
   };
+
+  console.log(state);
 
   return (
     <>
@@ -33,7 +45,7 @@ export const Register = () => {
                 <Input autoComplete="off" placeholder={"Full name"} className="auth__input" prefix={<img src={name} />} size="large" />
               </Form.Item>
               <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name={"email"}>
-                <Input autoComplete="off" placeholder={"abc@email.com"} className="auth__input" prefix={<img src={login} />} size="large" />
+                <Input autoComplete="on" placeholder={"abc@email.com"} className="auth__input" prefix={<img src={login} />} size="large" />
               </Form.Item>
               <Form.Item hasFeedback rules={[{ validator: onValidatePassword }]} name={"password"}>
                 <Input.Password
@@ -72,9 +84,10 @@ export const Register = () => {
               </Form.Item>
               <Col span={24}>
                 <Form.Item>
-                  <Button htmlType="submit" size="large" type="primary" block>
+                  <Button loading={state.status === "loading"} htmlType="submit" size="large" type="primary" block>
                     SIGN UP
                   </Button>
+                  {state.message && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />}
                 </Form.Item>
               </Col>
             </FormUI>
@@ -92,7 +105,7 @@ export const Register = () => {
             <div className="auth__sign_up__container">
               <Typography.Text className="auth__sign_up">Already have an account?</Typography.Text>
               <Typography.Text strong>
-                <NavLink to={RoutesNames.AUTH}>Sign in</NavLink>
+                <NavLink to={PublicRoutesNames.AUTH}>Sign in</NavLink>
               </Typography.Text>
             </div>
           </Col>
