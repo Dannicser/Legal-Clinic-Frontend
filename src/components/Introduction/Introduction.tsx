@@ -16,7 +16,7 @@ export const Introduction: React.FC = () => {
 
   useEffect(() => localStorage.setItem("intro", "true"), []);
 
-  const images = [calendar, map, phone];
+  const images = [phone, calendar, map];
 
   if (position > 2) {
     return <Navigate to={"/"} />;
@@ -29,14 +29,14 @@ export const Introduction: React.FC = () => {
         <Carousel afterChange={onChange}>
           <div>
             <h2 className="aunt__intro">
-              <div>Explore Upcoming and Nearby Events In publishing</div>
+              <div>Бесплатная юридическая консультация</div>
             </h2>
           </div>
           <div>
-            <div className="aunt__intro"> Web Have Modern Events Calendar Feature</div>
+            <div className="aunt__intro">Запишишь на очный прием</div>
           </div>
           <div>
-            <div className="aunt__intro"> To Look Up More Events or Activities Nearby By Map</div>
+            <div className="aunt__intro">Мы ждем тебя, приезжай в ЕГУ им.Бунина</div>
           </div>
           <div>
             <Spin style={{ marginTop: "40px" }} size="large" />

@@ -41,9 +41,16 @@ export const authSlice = createSlice({
       state.status = "pending";
       state.message = "";
     },
+    onLogout: (state) => {
+      state.isAuth = false;
+    },
+    onConfirmAuth: (state) => {
+      state.isAuth = true;
+    },
   },
   extraReducers: (builder) => {
     builder
+      //AUTH
       .addCase(onGetAuth.pending, (state) => {
         state.status = "loading";
         state.message = "";
@@ -59,7 +66,7 @@ export const authSlice = createSlice({
         state.status = "error";
         state.message = onGetErrorMessage(info.message);
       })
-      //
+      //REGISTER
       .addCase(onGetRegister.pending, (state) => {
         state.status = "loading";
         state.message = "";
@@ -75,7 +82,7 @@ export const authSlice = createSlice({
         state.status = "error";
         state.message = onGetErrorMessage(info.message);
       })
-      //
+      //RECOVERY
       .addCase(onGetRecover.pending, (state) => {
         state.status = "loading";
         state.message = "";
@@ -95,5 +102,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { onResetErrors } = authSlice.actions;
+export const { onResetErrors, onLogout, onConfirmAuth } = authSlice.actions;
 export default authSlice.reducer;

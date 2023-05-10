@@ -1,0 +1,26 @@
+@import "../../../style//vars.scss";
+
+.header__menu__wrapper {
+  //
+  padding: 10px 20px 20px 20px;
+  margin-bottom: 15px;
+  //
+
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  background-color: $main_color;
+  border-radius: 0px 0px 30px 30px;
+  .header__menu__burger {
+    display: block;
+    padding-top: 5px;
+  }
+
+  .header__menu__notification {
+    .bg_notification {
+      background-color: #4a65ec;
+      padding: 7px 10px;
+      border-radius: 60px;
+    }
+  }
+}

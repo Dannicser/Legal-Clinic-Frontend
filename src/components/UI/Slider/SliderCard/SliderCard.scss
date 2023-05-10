@@ -1,0 +1,61 @@
+.wrapper__slider__card {
+  min-width: 240px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(255, 249, 249);
+  border-radius: 20px;
+  position: relative;
+  margin-right: 20px;
+
+  .slider__img {
+    img {
+      display: block;
+      width: 210px;
+      height: 130px;
+    }
+  }
+  .slider__title {
+    margin: 10px 10px;
+    font-size: 12px;
+  }
+
+  .slider__date {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 5px;
+    position: absolute;
+    color: #f0635a;
+    border-radius: 10px;
+    top: 20px;
+    left: 20px;
+
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 0px;
+  }
+
+  .slider__favorite {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 5px 5px 0px 5px;
+    border-radius: 20px;
+    top: 20px;
+    right: 20px;
+    position: absolute;
+  }
+  .slider_geo {
+    img {
+      margin-right: 5px;
+    }
+    .geo__place {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 17px;
+      letter-spacing: 0px;
+      color: #716e90;
+    }
+  }
+}

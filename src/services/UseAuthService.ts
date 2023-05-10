@@ -10,7 +10,7 @@ export const UseAuthService = () => {
     const response = await axios
       .post(`${BASE}signInWithPassword?key=${API_KEY}`, { ...user, returnSecureToken: true })
       .then((data) => data.data)
-      .then(({ idToken }) => UseLocalStorage({ key: "userId", data: idToken, action: "set" }))
+      .then(({ idToken }) => user.remember && UseLocalStorage({ key: "userId", data: idToken, action: "set" }))
       .catch((error) => {
         if (error.response) throw new Error(JSON.stringify(error.response.data.error));
         throw new Error(JSON.stringify({ message: "TRY_LATER" }));

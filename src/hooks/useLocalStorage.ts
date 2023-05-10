@@ -11,5 +11,8 @@ export const UseLocalStorage = ({ key, data, action }: IProps): any => {
 
     case "get":
       return localStorage.getItem(key);
+
+    case "remove":
+      return localStorage.removeItem(key);
   }
 };

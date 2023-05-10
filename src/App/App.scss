@@ -3,7 +3,7 @@
 
 .App {
   text-align: center;
-  font-family: "Montserrat", sans-serif;
+  font-family: Montserrat, sans-serif;
   height: 100%;
 }
 
@@ -16,7 +16,7 @@
     transition: all 5000s ease-in-out 0s;
   }
   input {
-    font-family: "Montserrat", serif;
+    font-family: Montserrat, serif;
     font-weight: 200;
   }
 
@@ -30,7 +30,7 @@
   color: red; //
   border-radius: 7px;
   font-size: 12px;
-  font-family: "Montserrat", serif;
+  font-family: Montserrat, serif;
   animation-name: appearAnimation;
   animation-duration: 1.5s;
   //
