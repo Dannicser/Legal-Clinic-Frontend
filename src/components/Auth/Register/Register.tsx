@@ -1,6 +1,6 @@
 import "../Authorization/Auth.scss";
 import { Col, Row, Typography, Form, Input, Space, Button, Alert } from "antd";
-import { NavLink } from "react-router-dom";
+import { NavLink, Navigate } from "react-router-dom";
 import login from "../assets/icons/login.svg";
 import password from "../assets/icons/password.svg";
 import google from "../assets/icons/google.svg";
@@ -14,6 +14,7 @@ import { onGetRegister, onResetErrors } from "../../../slices/authSlice";
 import { IRegister } from "../../../types/auth";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { useEffect } from "react";
+import { UseLocalStorage } from "../../../hooks/useLocalStorage";
 
 export const Register = () => {
   const dispatch = useAppDispatch();
@@ -25,9 +26,12 @@ export const Register = () => {
 
   const onFinish = (values: IRegister) => {
     dispatch(onGetRegister(values));
+    UseLocalStorage({ key: "user", data: values.name, action: "get" });
   };
 
-  console.log(state);
+  if (state.isAuth) {
+    return <Navigate to={"/"} />;
+  }
 
   return (
     <>

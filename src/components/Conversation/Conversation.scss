@@ -1,0 +1,47 @@
+@import "../../style/animations.scss";
+
+.conversation__wrapper {
+  padding: 60px 20px 20px 20px;
+  position: relative;
+  height: 100%;
+
+  animation-name: appearAnimation;
+  animation-duration: 1.5s;
+
+  .specialist__converstaion {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    img {
+      width: 25px;
+    }
+    .specialist__ava {
+      display: inline-block;
+      width: 45px;
+      height: 45px;
+      border-radius: 60%;
+      margin-right: 15px;
+    }
+    .specialist__name {
+      display: inline-block;
+      margin-top: 10px;
+    }
+  }
+
+  .input__conversation {
+    position: fixed;
+    display: flex;
+    width: 100%;
+    bottom: 80px;
+    right: 1px;
+    padding: 0px 20px;
+    height: 40px;
+  }
+}
+
+.hr__conversation {
+  height: 1px;
+  background-color: #e2e8f0;
+}

@@ -1,3 +1,6 @@
+@import url("../../style/animations.scss");
+
 .container__home {
-  padding: 0px 20px;
+  animation-name: appearAnimation;
+  animation-duration: 1.5s;
 }

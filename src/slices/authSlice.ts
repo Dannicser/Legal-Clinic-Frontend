@@ -88,7 +88,6 @@ export const authSlice = createSlice({
         state.message = "";
       })
       .addCase(onGetRecover.fulfilled, (state) => {
-        state.isAuth = true;
         state.status = "successful";
         state.message = "";
       })

@@ -6,6 +6,9 @@ import { Badge } from "antd";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { onLogout } from "../../slices/authSlice";
 import { UseLocalStorage } from "../../hooks/useLocalStorage";
+import { NavLink } from "react-router-dom";
+import { PrivetRoutesNames } from "../../routers";
+import { useAppSelector } from "../../hooks/useAppSelector";
 
 export const Menu = () => {
   const dispatch = useAppDispatch();
@@ -25,12 +28,14 @@ export const Menu = () => {
           <div className="name">Даниил Дмитриев</div>
         </div>
         <ul className="menu__list">
-          <li className="menu__item">
-            <Badge size="small" count={1}>
-              <img src={message} alt="" />{" "}
-            </Badge>
-            <div className="title">Сообщения</div>
-          </li>
+          <NavLink to={PrivetRoutesNames.CONVERSATION}>
+            <li className="menu__item">
+              <Badge size="small" count={1}>
+                <img src={message} alt="" />{" "}
+              </Badge>
+              <div className="title">Сообщения</div>
+            </li>
+          </NavLink>
           <li className="menu__item">
             <img src={calendar} alt="" />
             <div className="title">Календарь</div>
@@ -47,10 +52,12 @@ export const Menu = () => {
             <img src={settings} alt="" />
             <div className="title">Настройки</div>
           </li>
-          <li onClick={signOut} className="menu__item">
-            <img src={leave} alt="" />
-            <div className="title">Выход</div>
-          </li>
+          <NavLink to={"/"}>
+            <li onClick={signOut} className="menu__item">
+              <img src={leave} alt="" />
+              <div className="title">Выход</div>
+            </li>
+          </NavLink>
         </ul>
       </div>
     </>

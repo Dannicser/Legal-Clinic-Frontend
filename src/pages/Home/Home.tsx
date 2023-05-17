@@ -5,10 +5,10 @@ import { Banner } from "../../components/UI/Banner/Banner";
 
 export const Home: React.FC = () => {
   return (
-    <>
+    <div className="container__home">
       <HeaderMenu />
       <Banner />
       <SliderList />
-    </>
+    </div>
   );
 };

@@ -28,11 +28,12 @@ export const Auth = () => {
   if (!localStorage.getItem("intro")) {
     return <Navigate to={"/intro"} />;
   }
+
   console.log(state);
 
   return (
     <div className="auth__wrapper">
-      <Form initialValues={{ remember: false }} name="basic" onFinish={onFinish}>
+      <Form initialValues={{ remember: true }} name="basic" onFinish={onFinish}>
         <Row justify={"space-between"}>
           <Col span={24}>
             <img className="auth__logo" src={logo} alt="" />
@@ -71,7 +72,7 @@ export const Auth = () => {
               <Row align={"bottom"} justify={"start"}>
                 <Space size={"small"}>
                   <Form.Item valuePropName="checked" name={"remember"}>
-                    <Switch checked={false} />
+                    <Switch />
                   </Form.Item>
                   <Form.Item name={"remember"}>
                     <Typography.Text strong>Remember me</Typography.Text>

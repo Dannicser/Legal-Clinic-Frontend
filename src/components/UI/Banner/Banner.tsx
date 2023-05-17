@@ -1,6 +1,8 @@
-import banner from "./imgs/banner.png";
 import "./Banner.scss";
+import banner from "./imgs/banner.png";
 import { Button } from "antd";
+import { PrivetRoutesNames } from "../../../routers";
+import { NavLink } from "react-router-dom";
 
 export const Banner = () => {
   return (
@@ -12,9 +14,11 @@ export const Banner = () => {
             Юридическая консультация <br /> от специалистов
           </div>
           <div className="btn">
-            <Button size="small" type="primary" block>
-              ПОЛУЧИТЬ
-            </Button>
+            <NavLink to={PrivetRoutesNames.CONVERSATION}>
+              <Button size="small" type="primary" block>
+                ПОЛУЧИТЬ
+              </Button>
+            </NavLink>
           </div>
         </div>
         <img src={banner} alt="" />

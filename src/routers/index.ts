@@ -4,6 +4,7 @@ import { PasswordRecovery } from "../components/Auth/PasswordRecovery/PasswordRe
 import { Register } from "../components/Auth/Register/Register";
 import { Introduction } from "../components/Introduction/Introduction";
 import { Home } from "../pages/Home/Home";
+import { Conversation } from "../components/Conversation/Conversation";
 
 export interface iRouter {
   path: string;
@@ -20,6 +21,7 @@ export enum PublicRoutesNames {
 export enum PrivetRoutesNames {
   HOME = "/",
   MENU = "/menu",
+  CONVERSATION = "/conversation",
 }
 
 export const publicRoutes: iRouter[] = [
@@ -32,4 +34,5 @@ export const publicRoutes: iRouter[] = [
 export const privetRoutes: iRouter[] = [
   { path: PrivetRoutesNames.HOME, component: Home },
   { path: PrivetRoutesNames.MENU, component: Menu },
+  { path: PrivetRoutesNames.CONVERSATION, component: Conversation },
 ];

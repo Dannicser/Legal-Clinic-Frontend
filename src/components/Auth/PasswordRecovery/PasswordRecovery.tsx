@@ -21,8 +21,6 @@ export const PasswordRecovery = () => {
     dispatch(onGetRecover(values));
   };
 
-  console.log(state);
-
   return (
     <>
       <Header />
