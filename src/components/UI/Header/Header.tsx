@@ -1,4 +1,4 @@
-import back from "./img/back.svg";
+import back from "./img/back.png";
 import "./Header.scss";
 import { useLocation, useNavigate } from "react-router-dom";
 

@@ -1,0 +1,17 @@
+.not__found_container {
+  height: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .not__found_title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .not__found_descr {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(116, 118, 136, 1);
+  }
+}

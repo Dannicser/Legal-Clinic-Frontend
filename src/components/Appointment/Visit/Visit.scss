@@ -1,0 +1,21 @@
+.visit__wrapper {
+  margin-top: 25px;
+  padding-bottom: 80px;
+  text-align: right;
+  height: 100%;
+
+  .time,
+  .category,
+  .problem {
+    text-align: start;
+    margin: 20px 0px 10px 0px;
+  }
+
+  .button__visit {
+    margin-top: 30px;
+    text-align: center;
+    button {
+      width: 250px;
+    }
+  }
+}

@@ -14,6 +14,10 @@
   .header__menu__burger {
     display: block;
     padding-top: 5px;
+
+    img {
+      width: 25px;
+    }
   }
 
   .header__menu__notification {

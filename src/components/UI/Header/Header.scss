@@ -1,3 +1,5 @@
+@import url("../../../style/animations.scss");
+
 .back__ui {
   width: 100%;
   position: fixed;
@@ -8,6 +10,9 @@
   background-color: white;
   z-index: 12;
 
+  animation-name: appearAnimation;
+  animation-duration: 1.9s;
+
   .title__ui {
     display: inline-block;
     font-size: 19px;
@@ -16,7 +21,8 @@
   img {
     display: inline-block;
 
-    padding: 10px 0px;
+    padding: 8px 0px;
     padding-right: 15px;
+    width: 40px;
   }
 }

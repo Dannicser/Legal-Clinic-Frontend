@@ -1,6 +1,6 @@
 import { Badge } from "antd";
 import "./HeaderMenu.scss";
-import burger from "./icons/burger.svg";
+import burger from "./icons/burger.png";
 import ring from "./icons/notification.svg";
 import { NavLink } from "react-router-dom";
 

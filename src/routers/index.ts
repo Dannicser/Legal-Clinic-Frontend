@@ -3,8 +3,11 @@ import { Auth } from "../components/Auth/Authorization/Auth";
 import { PasswordRecovery } from "../components/Auth/PasswordRecovery/PasswordRecovery";
 import { Register } from "../components/Auth/Register/Register";
 import { Introduction } from "../components/Introduction/Introduction";
-import { Home } from "../pages/Home/Home";
+import { Home } from "../pages/Home";
 import { Conversation } from "../components/Conversation/Conversation";
+import { Map } from "../components/Map/Map";
+import { Profile } from "../components/Profile/Profile";
+import { Appointment } from "../components/Appointment/Appointment";
 
 export interface iRouter {
   path: string;
@@ -22,6 +25,9 @@ export enum PrivetRoutesNames {
   HOME = "/",
   MENU = "/menu",
   CONVERSATION = "/conversation",
+  APPOINTMENT = "/appointment",
+  MAP = "/map",
+  PROFILE = "/profile",
 }
 
 export const publicRoutes: iRouter[] = [
@@ -35,4 +41,7 @@ export const privetRoutes: iRouter[] = [
   { path: PrivetRoutesNames.HOME, component: Home },
   { path: PrivetRoutesNames.MENU, component: Menu },
   { path: PrivetRoutesNames.CONVERSATION, component: Conversation },
+  { path: PrivetRoutesNames.APPOINTMENT, component: Appointment },
+  { path: PrivetRoutesNames.MAP, component: Map },
+  { path: PrivetRoutesNames.PROFILE, component: Profile },
 ];
