@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import calendar from "./assets/img/picture_calendar.png";
 import map from "./assets/img/picture_map.png";
 import phone from "./assets/img/picture_phone.png";
+import { UseLocalStorage } from "../../hooks/useLocalStorage";
 
 export const Introduction: React.FC = () => {
   const [position, setPosition] = useState(0);
@@ -14,9 +15,7 @@ export const Introduction: React.FC = () => {
     setPosition(currentSlide);
   };
 
-  useEffect(() => localStorage.setItem("intro", "true"), []);
-
-  const images = [phone, calendar, map];
+  useEffect(() => UseLocalStorage({ key: "intro", action: "set", data: "true" }), []);
 
   if (position > 2) {
     return <Navigate to={"/"} />;
@@ -25,18 +24,26 @@ export const Introduction: React.FC = () => {
   return (
     <div className="intro__wrapper">
       <div className="intro__container">
-        <img src={images[position]} alt="" />
         <Carousel afterChange={onChange}>
           <div>
             <h2 className="aunt__intro">
-              <div>Бесплатная юридическая консультация</div>
+              <img src={phone} alt="" />
+              <div className="info">Получи бесплатную юридическую помощь от ведущих специалистов юридической клиники</div>
             </h2>
           </div>
           <div>
-            <div className="aunt__intro">Запишишь на очный прием</div>
+            <div className="aunt__intro">
+              <img src={calendar} alt="" />
+              <div className="info">Запишитесь на очное посещение клиники в удобное для вас время </div>
+            </div>
           </div>
           <div>
-            <div className="aunt__intro">Мы ждем тебя, приезжай в ЕГУ им.Бунина</div>
+            <div className="aunt__intro">
+              <img src={map} alt="" />
+              <div className="info">
+                Приезжай к нам в ЕГУ им. И.А Бунина. <br /> Мы ждем тебя!
+              </div>
+            </div>
           </div>
           <div>
             <Spin style={{ marginTop: "40px" }} size="large" />

@@ -40,7 +40,7 @@ export const Auth = () => {
           </Col>
           <Col span={24}>
             <Typography.Title className="auth__title" level={1}>
-              Legal Clinic
+              Юридическая клиника
             </Typography.Title>
           </Col>
         </Row>
@@ -80,7 +80,7 @@ export const Auth = () => {
                 </Space>
               </Row>
               <Row>
-                <NavLink to="/recovery">
+                <NavLink to={PublicRoutesNames.RECOVERY}>
                   <Typography.Text className="auth__forgot">Forgot password?</Typography.Text>
                 </NavLink>
               </Row>

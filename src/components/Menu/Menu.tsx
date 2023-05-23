@@ -1,8 +1,7 @@
 import "./Menu.scss";
 import { Header } from "../UI/Header/Header";
-import person from "./assets/imgs/person_2.png";
 import { calendar, faq, favorite, leave, message, settings } from "./assets/icons";
-import { Badge } from "antd";
+import { Badge, Avatar } from "antd";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { onLogout } from "../../slices/authSlice";
 import { UseLocalStorage } from "../../hooks/useLocalStorage";
@@ -25,7 +24,7 @@ export const Menu = () => {
       <Layout>
         <div className="menu__wrapper">
           <div className="user__info">
-            <img className="person" src={person} alt="" />
+            <Avatar size="large">{"Д"}</Avatar>
             <div className="name">Даниил Дмитриев</div>
           </div>
           <ul className="menu__list">

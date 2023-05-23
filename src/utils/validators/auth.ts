@@ -20,7 +20,7 @@ export const onValidateName = (rule: any, value: string) => {
   const regex = /^[A-я]{3,10} [A-я]{3,10}$/g;
 
   return new Promise((resolve, reject) => {
-    if (value && value.length > 20) {
+    if (value && value.length > 29) {
       reject("Слишком длинное имя");
     }
     if ((value && value[0] === " ") || (value && value[value.length - 1] === " ")) {
