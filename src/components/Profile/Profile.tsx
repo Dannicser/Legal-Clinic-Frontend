@@ -3,15 +3,17 @@ import { Header } from "../UI/Header/Header";
 import { Avatar, Row, Col, Typography, Divider, Button, Input, Space } from "antd";
 import "./Profile.scss";
 import { useState } from "react";
+import { useAppSelector } from "../../hooks/useAppSelector";
 
 const { TextArea } = Input;
-const about =
-  "Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase";
+const about = "Напишите пару слов о себе";
 
 export const Profile = () => {
+  const { name, created } = useAppSelector((state) => state.user);
+
   const [disabled, setDisabled] = useState(true);
   const [value, setValue] = useState({
-    name: "Даниил Дмитриев",
+    name: name,
     about,
   });
 
@@ -40,13 +42,13 @@ export const Profile = () => {
         <Row>
           <Col span={24}>
             <Divider>
-              <Avatar size="large">{"Д"}</Avatar>
+              <Avatar size="large">{name[0]}</Avatar>
             </Divider>
           </Col>
           <Col span={24}>{content}</Col>
           <Col span={24}>
             <Typography.Text type={"secondary"}>
-              Профиль был создан <Typography.Text strong>20.05.2023</Typography.Text>
+              Профиль был создан <Typography.Text strong>{created}</Typography.Text>
             </Typography.Text>
           </Col>
           <Col span={24}>
@@ -55,7 +57,7 @@ export const Profile = () => {
           </Col>
           <Divider />
           <Col span={24}>
-            <Button onClick={onChangeDisabled} type="primary">
+            <Button onClick={onChangeDisabled} size="large" type="primary">
               {disabled ? "Редактировать" : "Сохранить"}
             </Button>
           </Col>

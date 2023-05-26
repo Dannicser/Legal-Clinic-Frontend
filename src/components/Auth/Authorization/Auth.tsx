@@ -9,7 +9,7 @@ import google from "../assets/icons/google.svg";
 import { IAuth } from "../../../types/auth";
 import { onValidateEmail } from "../../../utils/validators/auth";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-import { onGetAuth, onResetErrors } from "../../../slices/authSlice";
+import { onGetAuth, onGetRegisterWithGoogle, onResetErrors } from "../../../slices/authSlice";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useEffect } from "react";
 
@@ -21,8 +21,12 @@ export const Auth = () => {
     dispatch(onResetErrors());
   }, []);
 
-  const onFinish = (values: IAuth) => {
+  const authWithEmail = (values: IAuth) => {
     dispatch(onGetAuth(values));
+  };
+
+  const authWithGoogle = () => {
+    dispatch(onGetRegisterWithGoogle());
   };
 
   if (!localStorage.getItem("intro")) {
@@ -33,7 +37,7 @@ export const Auth = () => {
 
   return (
     <div className="auth__wrapper">
-      <Form initialValues={{ remember: true }} name="basic" onFinish={onFinish}>
+      <Form initialValues={{ remember: true }} name="basic" onFinish={authWithEmail}>
         <Row justify={"space-between"}>
           <Col span={24}>
             <img className="auth__logo" src={logo} alt="" />
@@ -52,7 +56,7 @@ export const Auth = () => {
           </Col>
           <Col span={24}>
             <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name="email">
-              <Input autoComplete="on" placeholder="abc@email.com" className="auth__input" prefix={<img src={login} />} size="large" />
+              <Input max={8} autoComplete="on" placeholder="abc@email.com" className="auth__input" prefix={<img src={login} />} size="large" />
             </Form.Item>
             <Form.Item
               hasFeedback
@@ -98,7 +102,7 @@ export const Auth = () => {
             <div className="auth__or">OR</div>
           </Col>
           <Col span={24}>
-            <Space className="auth__google" size={14}>
+            <Space onClick={authWithGoogle} className="auth__google" size={14}>
               <img src={google} alt="" />
               <Typography.Text strong>Login with Google</Typography.Text>
             </Space>

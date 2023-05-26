@@ -5,12 +5,16 @@ export interface IApointmentState {
   time: Dayjs;
   problem: string;
   type: string;
+  name: string;
+  phone: number;
 }
 
 export interface IApointment {
+  name: string;
   date: string;
   time: string;
   problem: string;
   type: string;
   id: number;
+  phone: number;
 }

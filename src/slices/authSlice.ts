@@ -3,6 +3,7 @@ import { UseAuthService } from "../services/UseAuthService";
 import { IAuth, IRecover, IRegister, IRegisterError } from "../types/auth";
 import { onGetErrorMessage } from "../utils/error/auth";
 import { onShowNotice } from "./notificationSlice";
+import { fetchedUser } from "./userSlice";
 
 interface IState {
   isAuth: boolean;
@@ -25,7 +26,7 @@ export const onGetAuth = createAsyncThunk("auth/get", async (data: IAuth, { disp
         status: "show",
         type: "info",
         message: "Здравствуйте, Даниил Александрович",
-        description: "Как ваше самочувствие?",
+        description: "",
         duration: 3,
         placement: "topRight",
       })
@@ -34,9 +35,11 @@ export const onGetAuth = createAsyncThunk("auth/get", async (data: IAuth, { disp
 });
 
 export const onGetRegister = createAsyncThunk("register/get", async (data: IRegister, { dispatch }) => {
-  const { onGetRegister } = UseAuthService();
+  const { onGetRegisterWithEmail } = UseAuthService();
 
-  return onGetRegister(data).then(() =>
+  dispatch(fetchedUser(data));
+
+  return onGetRegisterWithEmail(data).then(() =>
     dispatch(
       onShowNotice({
         status: "show",
@@ -50,10 +53,42 @@ export const onGetRegister = createAsyncThunk("register/get", async (data: IRegi
   );
 });
 
-export const onGetRecover = createAsyncThunk("recover/get", async (data: IRecover) => {
-  const { onGetRecovery } = UseAuthService();
+export const onGetRegisterWithGoogle = createAsyncThunk("registerGoogle/get", async (_, { dispatch }) => {
+  const { onGetAuthWithGoogle } = UseAuthService();
 
-  return onGetRecovery(data);
+  const response = onGetAuthWithGoogle();
+
+  return response
+    .then((data) =>
+      dispatch(
+        onShowNotice({
+          status: "show",
+          type: "info",
+          message: `Здравствуйте, ${data?.name}`,
+          description: "Как ваше настроение?",
+          duration: 5,
+          placement: "topRight",
+        })
+      )
+    )
+    .then(() =>
+      dispatch(
+        onShowNotice({
+          status: "show",
+          type: "warning",
+          message: "Вы вошли в аккаунт с помощью Google",
+          description: "При необходимости вы можете изменить ваши данные в профиле",
+          duration: 6,
+          placement: "topRight",
+        })
+      )
+    );
+});
+
+export const onGetRecover = createAsyncThunk("recover/get", async (data: IRecover) => {
+  const { onGetRecoveryWithEmail } = UseAuthService();
+
+  return onGetRecoveryWithEmail(data);
 });
 
 export const authSlice = createSlice({
@@ -119,6 +154,19 @@ export const authSlice = createSlice({
 
         state.status = "error";
         state.message = onGetErrorMessage(info.message);
+      })
+      //REGISTER WITH GOOGLE
+      .addCase(onGetRegisterWithGoogle.pending, (state) => {
+        state.message = "";
+        state.status = "loading";
+      })
+      .addCase(onGetRegisterWithGoogle.fulfilled, (state) => {
+        state.status = "successful";
+        state.isAuth = true;
+      })
+      .addCase(onGetRegisterWithGoogle.rejected, (state) => {
+        state.status = "error";
+        state.message = "Произошла непредвиденная ошибка. Используйте другой оператор регистрации";
       })
       .addDefaultCase(() => {});
   },

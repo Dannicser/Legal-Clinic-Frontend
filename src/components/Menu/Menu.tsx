@@ -8,9 +8,11 @@ import { UseLocalStorage } from "../../hooks/useLocalStorage";
 import { NavLink } from "react-router-dom";
 import { PrivetRoutesNames } from "../../routers";
 import { Layout } from "../Layout/Layout";
+import { useAppSelector } from "../../hooks/useAppSelector";
 
 export const Menu = () => {
   const dispatch = useAppDispatch();
+  const { name } = useAppSelector((state) => state.user);
 
   const signOut = () => {
     dispatch(onLogout());
@@ -24,8 +26,8 @@ export const Menu = () => {
       <Layout>
         <div className="menu__wrapper">
           <div className="user__info">
-            <Avatar size="large">{"Д"}</Avatar>
-            <div className="name">Даниил Дмитриев</div>
+            <Avatar size="large">{name[0]}</Avatar>
+            <div className="name">{name}</div>
           </div>
           <ul className="menu__list">
             <NavLink to={PrivetRoutesNames.CONVERSATION}>
