@@ -3,9 +3,12 @@ import { IAuth, IRecover, IRegister } from "../types/auth";
 import { UseLocalStorage } from "../hooks/useLocalStorage";
 import { app } from "../config/firebase";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { firebaseConfig } from "../config/firebase";
 
-const API_KEY = "AIzaSyCb5njo3VC4pcqX_aCrgTHvtmsD7NYA91s";
-const BASE = "https://identitytoolkit.googleapis.com/v1/accounts:";
+//
+const { apiKey, base } = firebaseConfig;
+const API_KEY = apiKey;
+const BASE = base;
 
 export const UseAuthService = () => {
   const onGetAuthWithEmail = async (user: IAuth) => {
@@ -28,15 +31,14 @@ export const UseAuthService = () => {
     const response = await signInWithPopup(auth, provider)
       .then((data) => {
         if (data.user) {
+          UseLocalStorage({ key: "userId", data: data.user.uid, action: "set" });
           return {
             name: data.user.displayName,
-            id: data.user.uid,
+            email: data.user.email,
+            created: data.user.metadata.creationTime,
+            photo: data.user.photoURL,
           };
         }
-      })
-      .then((data) => {
-        UseLocalStorage({ key: "userId", data: data?.id, action: "set" });
-        return data;
       })
       .catch((error) => {
         if (error) throw new Error();

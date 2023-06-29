@@ -13,8 +13,6 @@ export const Notification: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log(state);
-
     if (state.status === "show") {
       openNotificationWithIcon(state.type);
       dispatch(onHideNotice());

@@ -1,0 +1,11 @@
+.map__wrapper {
+  height: 100%;
+  padding-top: 65px;
+  display: flex;
+  align-items: center;
+
+  iframe {
+    height: 100%;
+    padding-bottom: 65px;
+  }
+}

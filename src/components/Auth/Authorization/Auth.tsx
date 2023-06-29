@@ -51,7 +51,7 @@ export const Auth = () => {
         <Row>
           <Col span={24}>
             <Typography.Title className="auth__sing_in" level={3}>
-              Sing in
+              Вход
             </Typography.Title>
           </Col>
           <Col span={24}>
@@ -68,24 +68,26 @@ export const Auth = () => {
               ]}
               name="password"
             >
-              <Input.Password autoComplete="of" placeholder={"Your password"} className="auth__input" prefix={<img src={password} />} size="large" />
+              <Input.Password autoComplete="of" placeholder={"Ваш пароль"} className="auth__input" prefix={<img src={password} />} size="large" />
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Row justify={"space-between"}>
-              <Row align={"bottom"} justify={"start"}>
+            <Row align={"middle"} justify={"space-between"}>
+              <Row align={"middle"} justify={"start"}>
                 <Space size={"small"}>
                   <Form.Item valuePropName="checked" name={"remember"}>
                     <Switch />
                   </Form.Item>
                   <Form.Item name={"remember"}>
-                    <Typography.Text strong>Remember me</Typography.Text>
+                    <Typography.Text style={{ marginRight: 5 }} strong>
+                      Запомнить меня
+                    </Typography.Text>
                   </Form.Item>
                 </Space>
               </Row>
-              <Row>
-                <NavLink to={PublicRoutesNames.RECOVERY}>
-                  <Typography.Text className="auth__forgot">Forgot password?</Typography.Text>
+              <Row align={"top"}>
+                <NavLink className="auth__forgot" to={PublicRoutesNames.RECOVERY}>
+                  <Typography.Text strong>Забыли пароль?</Typography.Text>
                 </NavLink>
               </Row>
             </Row>
@@ -93,25 +95,25 @@ export const Auth = () => {
           <Col span={24}>
             <Form.Item>
               <Button loading={state.status === "loading"} htmlType="submit" size="large" type="primary" block>
-                SIGN IN
+                Войти
               </Button>
               {state.status === "error" && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />}
             </Form.Item>
           </Col>
           <Col span={24}>
-            <div className="auth__or">OR</div>
+            <div className="auth__or">или</div>
           </Col>
           <Col span={24}>
             <Space onClick={authWithGoogle} className="auth__google" size={14}>
               <img src={google} alt="" />
-              <Typography.Text strong>Login with Google</Typography.Text>
+              <Typography.Text strong>Войти с помощью Google</Typography.Text>
             </Space>
           </Col>
           <Col span={24}>
             <div className="auth__sign_up__container">
-              <Typography.Text className="auth__sign_up">Don’t have an account?</Typography.Text>
+              <Typography.Text className="auth__sign_up">Еще нет аккаунта?</Typography.Text>
               <Typography.Text strong>
-                <NavLink to={PublicRoutesNames.REGISTRATION}>Sign Up</NavLink>
+                <NavLink to={PublicRoutesNames.REGISTRATION}>Зарегистрируйтесь</NavLink>
               </Typography.Text>
             </div>
           </Col>

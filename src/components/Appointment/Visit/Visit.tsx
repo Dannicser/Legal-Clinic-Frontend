@@ -39,7 +39,11 @@ export const Visit = () => {
   return (
     <div className="visit__wrapper">
       <Form name="basic" className="visit__form" onFinish={onFinish}>
-        <h2 className="time">Выберите дату и время посещения</h2>
+        <Row>
+          <Col>
+            <Typography.Text strong>Выберите дату и время посещения</Typography.Text>
+          </Col>
+        </Row>
         <Space>
           <Form.Item
             hasFeedback
@@ -92,7 +96,11 @@ export const Visit = () => {
             />
           </Form.Item>
         </Space>
-        <h2 className="category">Выберите категорию вашего дела</h2>
+        <Row>
+          <Col>
+            <Typography.Text strong>Выберите категорию вашего дела</Typography.Text>
+          </Col>
+        </Row>
         <Form.Item
           hasFeedback
           rules={[
@@ -121,7 +129,11 @@ export const Visit = () => {
             ]}
           />
         </Form.Item>
-        <h2 className="problem">Опишите вашу проблему</h2>
+        <Row>
+          <Col>
+            <Typography.Text strong>Опишите вашу проблему</Typography.Text>
+          </Col>
+        </Row>
         <Form.Item
           rules={[
             {
@@ -139,12 +151,17 @@ export const Visit = () => {
           <Col style={{ textAlign: "start" }} span={24}>
             <Typography.Text strong>Введите ваш номер телефона. </Typography.Text>
             <Tooltip title="Наши специалисты свяжутся с вами и подтвердят запись на посещение клиники." color={"green"}>
-              <Typography.Text strong style={{ color: "red" }}>
+              <Typography.Text strong style={{ color: "#00D024" }}>
                 Зачем?
               </Typography.Text>
             </Tooltip>
           </Col>
-          <Form.Item hasFeedback rules={[{ min: 10, max: 10, message: "Должен содержать 10 символов" }]} name={"phone"} className="mt-1">
+          <Form.Item
+            hasFeedback
+            rules={[{ required: true, min: 10, max: 10, message: "Должен содержать 10 символов" }]}
+            name={"phone"}
+            className="mt-1"
+          >
             <Input addonBefore="+7" placeholder={"9802343233"} />
           </Form.Item>
         </Row>

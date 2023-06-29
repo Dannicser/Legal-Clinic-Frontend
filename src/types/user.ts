@@ -1,5 +1,10 @@
-import { IRegister } from "./auth";
+export interface IFetchedUserPayload {
+  name: string;
+  email: string;
+  created: string;
+}
 
 export interface IFetchedUserAction {
-  payload: IRegister;
+  payload: IFetchedUserPayload;
+  type: any;
 }

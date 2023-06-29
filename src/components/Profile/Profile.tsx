@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useAppSelector } from "../../hooks/useAppSelector";
 
 const { TextArea } = Input;
-const about = "Напишите пару слов о себе";
 
 export const Profile = () => {
   const { name, created } = useAppSelector((state) => state.user);
@@ -14,17 +13,26 @@ export const Profile = () => {
   const [disabled, setDisabled] = useState(true);
   const [value, setValue] = useState({
     name: name,
-    about,
+    about: "Напишите пару слов о себе",
   });
 
   const onChangeDisabled = () => {
     setDisabled(!disabled);
+    onChangeText();
   };
 
   const onChangeValue = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue((prev) => {
       return { ...prev, [event.target.name]: event.target.value };
     });
+  };
+
+  const onChangeText = () => {
+    if (disabled) {
+      setValue({ ...value, about: value.about.length ? "" : "Напишите пару слов о себе" });
+    } else {
+      setValue({ ...value });
+    }
   };
 
   const content = disabled ? (

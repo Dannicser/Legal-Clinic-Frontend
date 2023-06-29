@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { IFetchedUserAction } from "../types/user";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { IFetchedUserAction, IFetchedUserPayload } from "../types/user";
 
 interface IState {
   name: string;
@@ -17,7 +17,7 @@ const userSlice = createSlice({
   initialState,
   name: "user",
   reducers: {
-    fetchedUser: (state, action: IFetchedUserAction) => {
+    fetchedUser: (state, action: PayloadAction<IFetchedUserPayload>) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.created = action.payload.created;

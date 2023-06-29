@@ -4,6 +4,7 @@ import { IAuth, IRecover, IRegister, IRegisterError } from "../types/auth";
 import { onGetErrorMessage } from "../utils/error/auth";
 import { onShowNotice } from "./notificationSlice";
 import { fetchedUser } from "./userSlice";
+import { IFetchedUserPayload } from "../types/user";
 
 interface IState {
   isAuth: boolean;
@@ -59,19 +60,7 @@ export const onGetRegisterWithGoogle = createAsyncThunk("registerGoogle/get", as
   const response = onGetAuthWithGoogle();
 
   return response
-    .then((data) =>
-      dispatch(
-        onShowNotice({
-          status: "show",
-          type: "info",
-          message: `Здравствуйте, ${data?.name}`,
-          description: "Как ваше настроение?",
-          duration: 5,
-          placement: "topRight",
-        })
-      )
-    )
-    .then(() =>
+    .then((data) => {
       dispatch(
         onShowNotice({
           status: "show",
@@ -81,8 +70,33 @@ export const onGetRegisterWithGoogle = createAsyncThunk("registerGoogle/get", as
           duration: 6,
           placement: "topRight",
         })
-      )
-    );
+      );
+      return data;
+    })
+    .then((data) => {
+      dispatch(
+        onShowNotice({
+          status: "show",
+          type: "info",
+          message: `Здравствуйте, ${data?.name}`,
+          description: "Как ваше настроение?",
+          duration: 5,
+          placement: "topRight",
+        })
+      );
+      return data;
+    })
+    .then((data) => {
+      if (data?.created && data?.email && data?.name) {
+        dispatch(
+          fetchedUser({
+            name: data.name,
+            email: data.email,
+            created: data.created,
+          })
+        );
+      }
+    });
 });
 
 export const onGetRecover = createAsyncThunk("recover/get", async (data: IRecover) => {

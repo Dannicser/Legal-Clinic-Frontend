@@ -27,9 +27,11 @@ export const PasswordRecovery = () => {
       <div className="recovery__wrapper">
         <div>
           <Typography.Title level={2} className="title__recovery">
-            Resset Password
+            Восстановление пароля
           </Typography.Title>
-          <Typography.Text className="descr__recovery">Please enter your email address to request a password reset</Typography.Text>
+          <Typography.Text className="descr__recovery">
+            Пожалуйста, введите ваш электронный адрес, чтобы мы смогли отправить вам письмо для сброса пароля
+          </Typography.Text>
           <Form onFinish={onFinish}>
             <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name={"email"}>
               <Input autoComplete="on" placeholder={"abc@email.com"} className="auth__input" prefix={<img src={login} />} size="large" />
