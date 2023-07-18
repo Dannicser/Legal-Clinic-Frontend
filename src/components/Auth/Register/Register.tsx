@@ -15,7 +15,6 @@ import { IRegister } from "../../../types/auth";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { useEffect } from "react";
 import { UseLocalStorage } from "../../../hooks/useLocalStorage";
-import { onGetCurrentDate } from "../../../utils/date/date";
 
 export const Register = () => {
   const dispatch = useAppDispatch();
@@ -26,13 +25,15 @@ export const Register = () => {
   }, []);
 
   const onFinish = (values: IRegister) => {
-    dispatch(onGetRegister({ ...values, created: onGetCurrentDate() }));
+    dispatch(onGetRegister(values));
     UseLocalStorage({ key: "user", data: values.name, action: "get" });
   };
 
   if (state.isAuth) {
     return <Navigate to={"/"} />;
   }
+
+  console.log(state);
 
   return (
     <>

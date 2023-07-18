@@ -4,6 +4,7 @@ import { UseLocalStorage } from "../hooks/useLocalStorage";
 import { app } from "../config/firebase";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { firebaseConfig } from "../config/firebase";
+import { IUserAuthParams } from "../types/user";
 
 //
 const { apiKey, base } = firebaseConfig;
@@ -50,8 +51,10 @@ export const UseAuthService = () => {
   const onGetRegisterWithEmail = async (user: IRegister) => {
     const response = await axios
       .post(`${BASE}signUp?key=${API_KEY}`, { ...user, returnSecureToken: true })
-      .then((data) => data.data)
-      .then(({ idToken }) => UseLocalStorage({ key: "userId", data: idToken, action: "set" }))
+      .then(({ data }) => {
+        if (data) UseLocalStorage({ key: "userId", data: data?.idToken, action: "set" });
+        return data;
+      })
       .catch((error) => {
         if (error.response) throw new Error(JSON.stringify(error.response.data.error));
         throw new Error(JSON.stringify({ message: "TRY_LATER" }));
@@ -72,5 +75,15 @@ export const UseAuthService = () => {
     return response;
   };
 
-  return { onGetAuthWithEmail, onGetRegisterWithEmail, onGetRecoveryWithEmail, onGetAuthWithGoogle };
+  const onAddUserToDataBase = async (user: IUserAuthParams) => {
+    const response = await axios.post("http://localhost:5000/api/auth/add-user", user).then(({ data }) => {
+      if (data) {
+        return data;
+      }
+    });
+
+    return response;
+  };
+
+  return { onGetAuthWithEmail, onGetRegisterWithEmail, onGetRecoveryWithEmail, onGetAuthWithGoogle, onAddUserToDataBase };
 };

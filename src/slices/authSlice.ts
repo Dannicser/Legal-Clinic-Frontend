@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UseAuthService } from "../services/UseAuthService";
-import { IAuth, IRecover, IRegister, IRegisterError } from "../types/auth";
+import { IAuth, IRecover, IRegister, IRegisterError, IResponseWithEmail } from "../types/auth";
 import { onGetErrorMessage } from "../utils/error/auth";
 import { onShowNotice } from "./notificationSlice";
 import { fetchedUser } from "./userSlice";
-import { IFetchedUserPayload } from "../types/user";
+import { IUserAuthParams } from "../types/user";
 
 interface IState {
   isAuth: boolean;
@@ -35,23 +35,40 @@ export const onGetAuth = createAsyncThunk("auth/get", async (data: IAuth, { disp
   );
 });
 
-export const onGetRegister = createAsyncThunk("register/get", async (data: IRegister, { dispatch }) => {
-  const { onGetRegisterWithEmail } = UseAuthService();
+export const onGetRegister = createAsyncThunk("register/onGetRegister", async (userdata: IRegister, { dispatch }) => {
+  const { onGetRegisterWithEmail, onAddUserToDataBase } = UseAuthService();
 
-  dispatch(fetchedUser(data));
+  const response = onGetRegisterWithEmail(userdata);
 
-  return onGetRegisterWithEmail(data).then(() =>
-    dispatch(
-      onShowNotice({
-        status: "show",
-        type: "info",
-        message: "Здравствуйте, Даниил Александрович",
-        description: "Спасибо что вы выбрали нас!",
-        duration: 7,
-        placement: "topRight",
-      })
-    )
-  );
+  return response
+    .then((data: IResponseWithEmail) => {
+      const user: IUserAuthParams = {
+        name: userdata.name,
+        email: data.email,
+        userId: data.localId,
+        photo: "",
+        appointment: {},
+      };
+
+      return user;
+    })
+    .then((user: IUserAuthParams) => {
+      const response = onAddUserToDataBase(user);
+
+      return user;
+    })
+    .then((user: IUserAuthParams) =>
+      dispatch(
+        onShowNotice({
+          status: "show",
+          type: "info",
+          message: `Здравствуйте, ${user.name}`,
+          description: "Спасибо, что вы выбрали нас!",
+          duration: 7,
+          placement: "topRight",
+        })
+      )
+    );
 });
 
 export const onGetRegisterWithGoogle = createAsyncThunk("registerGoogle/get", async (_, { dispatch }) => {

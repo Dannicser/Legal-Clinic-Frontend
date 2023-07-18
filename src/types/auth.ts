@@ -7,7 +7,6 @@ export interface IRegister {
   name: string;
   email: string;
   password: string;
-  created: string;
 }
 
 export interface IRegisterError {
@@ -18,4 +17,13 @@ export interface IRegisterError {
 
 export interface IRecover {
   email: string;
+}
+
+export interface IResponseWithEmail {
+  email: string;
+  expiresIn: string;
+  idToken: string;
+  kind: string;
+  localId: string;
+  refreshToken: string;
 }
