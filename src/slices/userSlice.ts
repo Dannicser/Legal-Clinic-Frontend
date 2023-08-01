@@ -1,29 +1,86 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IFetchedUserAction, IFetchedUserPayload } from "../types/user";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+import { UseUserService } from "../services/UseUserService";
+import { IEditProfileState, IGetUserPayload, IUserProfile } from "../types/user";
+import { onShowNotice } from "./notificationSlice";
 
 interface IState {
-  name: string;
-  email: string;
-  created: string;
+  user: IUserProfile;
+  loading: boolean;
+  error: boolean;
+  message: string;
 }
 
 const initialState: IState = {
-  name: "",
-  email: "",
-  created: "",
+  user: {
+    name: "",
+    email: "",
+    photo: "",
+    createdAt: "",
+    about: "",
+  },
+  loading: false,
+  error: false,
+  message: "",
 };
+
+export const onGetUserInfo = createAsyncThunk("onGetUserInfo/get", async () => {
+  const { onGetUser } = UseUserService();
+
+  const response = onGetUser();
+
+  return response;
+});
+
+export const onUpdateUserInfo = createAsyncThunk("onUpdateUserInfo/get", async (data: IEditProfileState, { dispatch }) => {
+  const { onUpdateUser } = UseUserService();
+
+  const response = onUpdateUser(data);
+
+  return response
+    .then(() => {
+      dispatch(
+        onShowNotice({
+          status: "show",
+          type: "success",
+          message: "Данные были успешно обновлены",
+          duration: 3,
+          placement: "topRight",
+        })
+      );
+    })
+    .catch((error) => {
+      console.log(error);
+      dispatch(
+        onShowNotice({
+          status: "show",
+          type: "error",
+          message: "Ошибка, данные пользователя не были обновлены",
+          duration: 3,
+          placement: "topRight",
+        })
+      );
+    });
+});
 
 const userSlice = createSlice({
   initialState,
   name: "user",
-  reducers: {
-    fetchedUser: (state, action: PayloadAction<IFetchedUserPayload>) => {
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-      state.created = action.payload.created;
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(onGetUserInfo.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(onGetUserInfo.fulfilled, (state, action: PayloadAction<IGetUserPayload>) => {
+        state.user = action.payload.data;
+        state.loading = false;
+      })
+      .addCase(onGetUserInfo.rejected, (state) => {
+        state.error = true;
+        state.loading = false;
+      });
   },
 });
 
 export default userSlice.reducer;
-export const { fetchedUser } = userSlice.actions;

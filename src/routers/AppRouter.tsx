@@ -6,18 +6,23 @@ import { useAppSelector } from "../hooks/useAppSelector";
 import { UseLocalStorage } from "../hooks/useLocalStorage";
 import { useLayoutEffect } from "react";
 import { useAppDispatch } from "../hooks/useAppDispatch";
-import { onConfirmAuth } from "../slices/authSlice";
+import { onGetCheckAuth } from "../slices/authSlice";
 import { Navigation } from "../components/Navigation/Navigation";
+import { Spinner } from "../components/UI/Spinner/Spinner";
 
 export const AppRouter: React.FC = () => {
-  const isAuth = useAppSelector((state) => state.auth.isAuth);
+  const { isAuth, isCheckingAuth } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   useLayoutEffect(() => {
-    if (UseLocalStorage({ action: "get", key: "userId" })) {
-      dispatch(onConfirmAuth());
+    if (UseLocalStorage({ action: "get", key: "token" })) {
+      dispatch(onGetCheckAuth());
     }
   }, []);
+
+  if (isCheckingAuth) {
+    return <Spinner />;
+  }
 
   return (
     <>

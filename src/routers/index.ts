@@ -6,8 +6,9 @@ import { Introduction } from "../components/Introduction/Introduction";
 import { Home } from "../pages/Home";
 import { Conversation } from "../components/Conversation/Conversation";
 import { Map } from "../components/Map/Map";
-import { Profile } from "../components/Profile/Profile";
+import { Profile } from "../components/Profile/Profile/Profile";
 import { Appointment } from "../components/Appointment/Appointment";
+import { EditProfile } from "../components/Profile/EditProfile/EditProfile";
 
 export interface iRouter {
   path: string;
@@ -28,6 +29,7 @@ export enum PrivetRoutesNames {
   APPOINTMENT = "/appointment",
   MAP = "/map",
   PROFILE = "/profile",
+  EDIT = "/profile/edit",
 }
 
 export const publicRoutes: iRouter[] = [
@@ -44,4 +46,5 @@ export const privetRoutes: iRouter[] = [
   { path: PrivetRoutesNames.APPOINTMENT, component: Appointment },
   { path: PrivetRoutesNames.MAP, component: Map },
   { path: PrivetRoutesNames.PROFILE, component: Profile },
+  { path: PrivetRoutesNames.EDIT, component: EditProfile },
 ];

@@ -8,7 +8,8 @@ import { onValidateName } from "../../../utils/validators/auth";
 const { TextArea } = Input;
 
 export const Visit = () => {
-  const { name } = useAppSelector((state) => state.user);
+  // const { name } = useAppSelector((state) => state.user);
+  const name = "Моковый";
 
   const [toggle, setToggle] = useState(true);
 

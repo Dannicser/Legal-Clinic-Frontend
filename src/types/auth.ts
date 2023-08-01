@@ -27,3 +27,12 @@ export interface IResponseWithEmail {
   localId: string;
   refreshToken: string;
 }
+
+export interface IUserAuthParams {
+  name: string;
+  email: string;
+  userId: string;
+  photo: string;
+  about: string;
+  appointment: object;
+}

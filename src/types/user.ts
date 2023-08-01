@@ -1,20 +1,18 @@
-export interface IUserAuthParams {
+export interface IUserProfile {
   name: string;
   email: string;
-  userId: string;
   photo: string;
-  appointment: object;
+  createdAt: string;
+  about: string;
+}
+export interface IGetUserPayload {
+  data: IUserProfile;
+  message: string;
+  success: boolean;
 }
 
-export interface IUserAppointment {}
-
-export interface IFetchedUserPayload {
+export interface IEditProfileState {
   name: string;
-  email: string;
-  created: string;
-}
-
-export interface IFetchedUserAction {
-  payload: IFetchedUserPayload;
-  type: any;
+  email?: string;
+  about: string;
 }

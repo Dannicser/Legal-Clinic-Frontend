@@ -3,22 +3,23 @@ import { UseAuthService } from "../services/UseAuthService";
 import { IAuth, IRecover, IRegister, IRegisterError, IResponseWithEmail } from "../types/auth";
 import { onGetErrorMessage } from "../utils/error/auth";
 import { onShowNotice } from "./notificationSlice";
-import { fetchedUser } from "./userSlice";
-import { IUserAuthParams } from "../types/user";
+import { IUserAuthParams } from "../types/auth";
 
 interface IState {
   isAuth: boolean;
+  isCheckingAuth: boolean;
   status: string;
   message: string;
 }
 
 const initialState: IState = {
   isAuth: false,
+  isCheckingAuth: false,
   status: "pending",
   message: "",
 };
 
-export const onGetAuth = createAsyncThunk("auth/get", async (data: IAuth, { dispatch }) => {
+export const onGetAuth = createAsyncThunk("onGetAuth/get", async (data: IAuth, { dispatch }) => {
   const { onGetAuthWithEmail } = UseAuthService();
 
   return onGetAuthWithEmail(data).then(() =>
@@ -26,7 +27,7 @@ export const onGetAuth = createAsyncThunk("auth/get", async (data: IAuth, { disp
       onShowNotice({
         status: "show",
         type: "info",
-        message: "Здравствуйте, Даниил Александрович",
+        message: `Доброго времени суток!`,
         description: "",
         duration: 3,
         placement: "topRight",
@@ -35,7 +36,7 @@ export const onGetAuth = createAsyncThunk("auth/get", async (data: IAuth, { disp
   );
 });
 
-export const onGetRegister = createAsyncThunk("register/onGetRegister", async (userdata: IRegister, { dispatch }) => {
+export const onGetRegister = createAsyncThunk("onGetRegister/register", async (userdata: IRegister, { dispatch }) => {
   const { onGetRegisterWithEmail, onAddUserToDataBase } = UseAuthService();
 
   const response = onGetRegisterWithEmail(userdata);
@@ -47,6 +48,7 @@ export const onGetRegister = createAsyncThunk("register/onGetRegister", async (u
         email: data.email,
         userId: data.localId,
         photo: "",
+        about: "",
         appointment: {},
       };
 
@@ -71,13 +73,17 @@ export const onGetRegister = createAsyncThunk("register/onGetRegister", async (u
     );
 });
 
-export const onGetRegisterWithGoogle = createAsyncThunk("registerGoogle/get", async (_, { dispatch }) => {
-  const { onGetAuthWithGoogle } = UseAuthService();
+export const onGetRegisterWithGoogle = createAsyncThunk("onGetRegisterWithGoogle/get", async (_, { dispatch }) => {
+  const { onGetAuthWithGoogle, onAddUserToDataBase } = UseAuthService();
 
   const response = onGetAuthWithGoogle();
 
   return response
-    .then((data) => {
+    .then((user: any) => {
+      const response = onAddUserToDataBase(user);
+      return user;
+    })
+    .then((user) => {
       dispatch(
         onShowNotice({
           status: "show",
@@ -88,38 +94,33 @@ export const onGetRegisterWithGoogle = createAsyncThunk("registerGoogle/get", as
           placement: "topRight",
         })
       );
-      return data;
+      return user;
     })
-    .then((data) => {
+    .then((user) => {
       dispatch(
         onShowNotice({
           status: "show",
           type: "info",
-          message: `Здравствуйте, ${data?.name}`,
+          message: `Здравствуйте, ${user?.name}`,
           description: "Как ваше настроение?",
           duration: 5,
           placement: "topRight",
         })
       );
-      return data;
-    })
-    .then((data) => {
-      if (data?.created && data?.email && data?.name) {
-        dispatch(
-          fetchedUser({
-            name: data.name,
-            email: data.email,
-            created: data.created,
-          })
-        );
-      }
+      return user;
     });
 });
 
-export const onGetRecover = createAsyncThunk("recover/get", async (data: IRecover) => {
+export const onGetRecover = createAsyncThunk("onGetRecover/get", async (data: IRecover) => {
   const { onGetRecoveryWithEmail } = UseAuthService();
 
   return onGetRecoveryWithEmail(data);
+});
+
+export const onGetCheckAuth = createAsyncThunk("onGetCheckAuth/get", async () => {
+  const { onCheckAuth } = UseAuthService();
+
+  return onCheckAuth();
 });
 
 export const authSlice = createSlice({
@@ -132,9 +133,6 @@ export const authSlice = createSlice({
     },
     onLogout: (state) => {
       state.isAuth = false;
-    },
-    onConfirmAuth: (state) => {
-      state.isAuth = true;
     },
   },
   extraReducers: (builder) => {
@@ -199,9 +197,21 @@ export const authSlice = createSlice({
         state.status = "error";
         state.message = "Произошла непредвиденная ошибка. Используйте другой оператор регистрации";
       })
+      //CHECK AUTH
+      .addCase(onGetCheckAuth.pending, (state) => {
+        state.isCheckingAuth = true;
+      })
+      .addCase(onGetCheckAuth.fulfilled, (state) => {
+        state.isCheckingAuth = false;
+        state.isAuth = true;
+      })
+      .addCase(onGetCheckAuth.rejected, (state) => {
+        state.isCheckingAuth = false;
+        state.isAuth = false;
+      })
       .addDefaultCase(() => {});
   },
 });
 
-export const { onResetErrors, onLogout, onConfirmAuth } = authSlice.actions;
+export const { onResetErrors, onLogout } = authSlice.actions;
 export default authSlice.reducer;

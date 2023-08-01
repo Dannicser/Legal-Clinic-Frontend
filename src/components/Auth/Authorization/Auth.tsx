@@ -33,7 +33,7 @@ export const Auth = () => {
     return <Navigate to={"/intro"} />;
   }
 
-  console.log(state);
+  // console.log(state);
 
   return (
     <div className="auth__wrapper">

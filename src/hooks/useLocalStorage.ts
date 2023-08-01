@@ -7,7 +7,7 @@ interface IProps {
 export const UseLocalStorage = ({ key, data, action }: IProps): any => {
   switch (action) {
     case "set":
-      return localStorage.setItem(key, JSON.stringify(data));
+      return localStorage.setItem(key, data + "");
 
     case "get":
       return localStorage.getItem(key);

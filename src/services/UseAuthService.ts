@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from "../config/axios";
 import { IAuth, IRecover, IRegister } from "../types/auth";
 import { UseLocalStorage } from "../hooks/useLocalStorage";
 import { app } from "../config/firebase";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { firebaseConfig } from "../config/firebase";
-import { IUserAuthParams } from "../types/user";
+import { IUserAuthParams } from "../types/auth";
 
 //
 const { apiKey, base } = firebaseConfig;
@@ -16,7 +16,7 @@ export const UseAuthService = () => {
     const response = await axios
       .post(`${BASE}signInWithPassword?key=${API_KEY}`, { ...user, returnSecureToken: true })
       .then((data) => data.data)
-      .then(({ idToken }) => user.remember && UseLocalStorage({ key: "userId", data: idToken, action: "set" }))
+      .then(({ localId }) => user.remember && UseLocalStorage({ key: "token", data: localId, action: "set" }))
       .catch((error) => {
         if (error.response) throw new Error(JSON.stringify(error.response.data.error));
         throw new Error(JSON.stringify({ message: "TRY_LATER" }));
@@ -32,12 +32,12 @@ export const UseAuthService = () => {
     const response = await signInWithPopup(auth, provider)
       .then((data) => {
         if (data.user) {
-          UseLocalStorage({ key: "userId", data: data.user.uid, action: "set" });
+          UseLocalStorage({ key: "token", data: data.user.uid, action: "set" });
           return {
             name: data.user.displayName,
             email: data.user.email,
-            created: data.user.metadata.creationTime,
             photo: data.user.photoURL,
+            userId: data.user.uid,
           };
         }
       })
@@ -52,7 +52,7 @@ export const UseAuthService = () => {
     const response = await axios
       .post(`${BASE}signUp?key=${API_KEY}`, { ...user, returnSecureToken: true })
       .then(({ data }) => {
-        if (data) UseLocalStorage({ key: "userId", data: data?.idToken, action: "set" });
+        if (data) UseLocalStorage({ key: "token", data: data?.localId, action: "set" });
         return data;
       })
       .catch((error) => {
@@ -76,14 +76,17 @@ export const UseAuthService = () => {
   };
 
   const onAddUserToDataBase = async (user: IUserAuthParams) => {
-    const response = await axios.post("http://localhost:5000/api/auth/add-user", user).then(({ data }) => {
-      if (data) {
-        return data;
-      }
+    const response = await axios.post("/user/add-user", user).then(({ data }) => {
+      return data;
     });
 
     return response;
   };
 
-  return { onGetAuthWithEmail, onGetRegisterWithEmail, onGetRecoveryWithEmail, onGetAuthWithGoogle, onAddUserToDataBase };
+  const onCheckAuth = async () => {
+    const response = await axios.get("/user/check-access").then(({ data }) => data);
+    return response;
+  };
+
+  return { onGetAuthWithEmail, onGetRegisterWithEmail, onGetRecoveryWithEmail, onGetAuthWithGoogle, onAddUserToDataBase, onCheckAuth };
 };

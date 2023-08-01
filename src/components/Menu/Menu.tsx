@@ -12,12 +12,12 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 
 export const Menu = () => {
   const dispatch = useAppDispatch();
-  const { name } = useAppSelector((state) => state.user);
+  // const { name } = useAppSelector((state) => state.user);
 
   const signOut = () => {
     dispatch(onLogout());
 
-    UseLocalStorage({ key: "userId", action: "remove" });
+    UseLocalStorage({ key: "token", action: "remove" });
   };
 
   return (
@@ -26,8 +26,8 @@ export const Menu = () => {
       <Layout>
         <div className="menu__wrapper">
           <div className="user__info">
-            <Avatar size="large">{name[0]}</Avatar>
-            <div className="name">{name}</div>
+            <Avatar size="large">{"Моковый"}</Avatar>
+            <div className="name">{"Моковый"}</div>
           </div>
           <ul className="menu__list">
             <NavLink to={PrivetRoutesNames.CONVERSATION}>
