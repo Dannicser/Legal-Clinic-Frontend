@@ -6,31 +6,36 @@ import { PrivetRoutesNames } from "../../routers";
 export const Navigation = () => {
   return (
     <nav>
-      <div className="nav__menu">
-        <NavLink to={"/"}>
-          <div className="nav__item">
-            <img src={main} alt="" />
-            <div className="title">Главная</div>
-          </div>
-        </NavLink>
-        <NavLink to={PrivetRoutesNames.APPOINTMENT}>
-          <div className="nav__item">
-            <img src={events} alt="" />
-            <div className="title">Запись</div>
-          </div>
-        </NavLink>
-        <NavLink to={PrivetRoutesNames.MAP}>
-          <div className="nav__item">
-            <img src={map} alt="" />
-            <div className="title">Карта</div>
-          </div>
-        </NavLink>
-        <NavLink to={PrivetRoutesNames.PROFILE}>
-          <div className="nav__item">
-            <img src={profile} alt="" />
-            <div className="title">Профиль</div>
-          </div>
-        </NavLink>
+      <div className="nav__container">
+        <ul className="nav__menu">
+          <li className="nav__item">
+            <NavLink to={"/"}>
+              <img src={main} alt="" />
+              <div className="title">Главная</div>{" "}
+            </NavLink>
+          </li>
+
+          <li className="nav__item">
+            <NavLink to={PrivetRoutesNames.APPOINTMENT}>
+              <img src={events} alt="" />
+              <div className="title">Запись</div>{" "}
+            </NavLink>
+          </li>
+
+          <li className="nav__item">
+            <NavLink to={PrivetRoutesNames.MAP}>
+              <img src={map} alt="" />
+              <div className="title">Карта</div>
+            </NavLink>
+          </li>
+
+          <li className="nav__item">
+            <NavLink to={PrivetRoutesNames.PROFILE}>
+              <img src={profile} alt="" />
+              <div className="title">Профиль</div>{" "}
+            </NavLink>
+          </li>
+        </ul>
       </div>
     </nav>
   );

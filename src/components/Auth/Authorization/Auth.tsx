@@ -1,4 +1,3 @@
-import "./Auth.scss";
 import { NavLink, Navigate } from "react-router-dom";
 import { PublicRoutesNames } from "../../../routers";
 import { Col, Row, Typography, Form, Input, Space, Switch, Button, Alert } from "antd";
@@ -6,34 +5,32 @@ import logo from "../assets/img/logo.png";
 import login from "../assets/icons/login.svg";
 import password from "../assets/icons/password.svg";
 import google from "../assets/icons/google.svg";
-import { IAuth } from "../../../types/auth";
+import { IAuthValues } from "../../../types/auth";
 import { onValidateEmail } from "../../../utils/validators/auth";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-import { onGetAuth, onGetRegisterWithGoogle, onResetErrors } from "../../../slices/authSlice";
+import { thunkAuthWithEmail, onResetErrors } from "../../../slices/authSlice";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useEffect } from "react";
+
+import "./Auth.scss";
 
 export const Auth = () => {
   const state = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(onResetErrors());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(onResetErrors());
+  // }, []);
 
-  const authWithEmail = (values: IAuth) => {
-    dispatch(onGetAuth(values));
+  const authWithEmail = (values: IAuthValues) => {
+    dispatch(thunkAuthWithEmail(values));
   };
 
-  const authWithGoogle = () => {
-    dispatch(onGetRegisterWithGoogle());
-  };
+  const authWithGoogle = () => {};
 
   if (!localStorage.getItem("intro")) {
     return <Navigate to={"/intro"} />;
   }
-
-  // console.log(state);
 
   return (
     <div className="auth__wrapper">
@@ -94,10 +91,10 @@ export const Auth = () => {
           </Col>
           <Col span={24}>
             <Form.Item>
-              <Button loading={state.status === "loading"} htmlType="submit" size="large" type="primary" block>
+              <Button loading={state.isLoading} htmlType="submit" size="large" type="primary" block>
                 Войти
               </Button>
-              {state.status === "error" && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />}
+              {state.isError && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />}
             </Form.Item>
           </Col>
           <Col span={24}>

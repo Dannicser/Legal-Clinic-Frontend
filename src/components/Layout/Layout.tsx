@@ -1,7 +1,31 @@
 import "./Layout.scss";
 
-export type IProps = React.PropsWithChildren;
+interface IExternalParams {
+  paddingTop: number;
+  paddingBottom: number;
+  paddingRight: number;
+  paddingLeft: number;
+}
 
-export const Layout: React.FC<IProps> = ({ children }) => {
-  return <div className="layout__app">{children}</div>;
+interface IInternalParams {
+  paddingTop: number;
+  paddingBottom: number;
+  paddingRight: number;
+  paddingLeft: number;
+}
+
+interface IPropsLayout {
+  children: React.ReactNode;
+  external?: IExternalParams;
+  internal?: IInternalParams;
+}
+
+export const Layout: React.FC<IPropsLayout> = ({ children, external = {}, internal = {} }) => {
+  return (
+    <div style={external} className="layout__container">
+      <div style={internal} className="layout__app">
+        {children}
+      </div>
+    </div>
+  );
 };

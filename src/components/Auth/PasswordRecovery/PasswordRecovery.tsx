@@ -5,8 +5,7 @@ import login from "../assets/icons/login.svg";
 import { onValidateEmail } from "../../../utils/validators/auth";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-import { onGetRecover, onResetErrors } from "../../../slices/authSlice";
-import { IRecover } from "../../../types/auth";
+import { onResetErrors } from "../../../slices/authSlice";
 import { useEffect } from "react";
 
 export const PasswordRecovery = () => {
@@ -16,10 +15,6 @@ export const PasswordRecovery = () => {
   useEffect(() => {
     dispatch(onResetErrors());
   }, []);
-
-  const onFinish = (values: IRecover) => {
-    dispatch(onGetRecover(values));
-  };
 
   return (
     <>
@@ -32,18 +27,18 @@ export const PasswordRecovery = () => {
           <Typography.Text className="descr__recovery">
             Пожалуйста, введите ваш электронный адрес, чтобы мы смогли отправить вам письмо для сброса пароля
           </Typography.Text>
-          <Form onFinish={onFinish}>
+          <Form>
             <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name={"email"}>
               <Input autoComplete="on" placeholder={"abc@email.com"} className="auth__input" prefix={<img src={login} />} size="large" />
             </Form.Item>
             <Form.Item>
-              <Button loading={state.status === "loading"} htmlType="submit" size="large" type="primary" block>
+              <Button loading={state.isLoading} htmlType="submit" size="large" type="primary" block>
                 SEND
               </Button>
-              {state.status === "successful" && (
+              {/* {state.status === "successful" && (
                 <Alert message="На указанный вами адрес отправленно письмо со сбросом пароля" className="mt-1" closable type="info" showIcon />
               )}
-              {state.status === "error" && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />}
+              {state.status === "error" && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />} */}
             </Form.Item>
           </Form>
         </div>

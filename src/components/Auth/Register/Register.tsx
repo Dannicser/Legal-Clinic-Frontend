@@ -10,8 +10,8 @@ import { PublicRoutesNames } from "../../../routers";
 import { FormUI } from "../../UI/FormUI/FormUI";
 import { onValidatePassword, onValidateName, onValidateEmail } from "../../../utils/validators/auth";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
-import { onGetRegister, onResetErrors } from "../../../slices/authSlice";
-import { IRegister } from "../../../types/auth";
+import { thunkRegisterWithEmail, onResetErrors } from "../../../slices/authSlice";
+import { IRegisterValues } from "../../../types/auth";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { useEffect } from "react";
 import { UseLocalStorage } from "../../../hooks/useLocalStorage";
@@ -24,9 +24,8 @@ export const Register = () => {
     dispatch(onResetErrors());
   }, []);
 
-  const onFinish = (values: IRegister) => {
-    dispatch(onGetRegister(values));
-    UseLocalStorage({ key: "user", data: values.name, action: "get" });
+  const onFinish = (values: IRegisterValues) => {
+    dispatch(thunkRegisterWithEmail(values));
   };
 
   if (state.isAuth) {
@@ -47,8 +46,27 @@ export const Register = () => {
           </Col>
           <Col span={24}>
             <FormUI callback={onFinish}>
-              <Form.Item hasFeedback rules={[{ validator: onValidateName }, { transform: (value) => value.trim() }]} name={"name"}>
-                <Input autoComplete="off" placeholder={"Ваше имя и отчество"} className="auth__input" prefix={<img src={name} />} size="large" />
+              <Form.Item
+                hasFeedback
+                rules={[
+                  { min: 2, message: "Имя должно быть длиннее 2 символов", required: true },
+                  { max: 20, message: "Имя не может быть длиннее 20 символов" },
+                  { transform: (value) => value.trim() },
+                ]}
+                name={"first_name"}
+              >
+                <Input autoComplete="off" placeholder={"Ваше имя"} className="auth__input" prefix={<img src={name} />} size="large" />
+              </Form.Item>
+              <Form.Item
+                hasFeedback
+                rules={[
+                  { min: 2, message: "Отчество должно быть длиннее 2 символов", required: true },
+                  { max: 20, message: "Отчество не может быть длиннее 20 символов" },
+                  { transform: (value) => value.trim() },
+                ]}
+                name={"last_name"}
+              >
+                <Input autoComplete="off" placeholder={"Ваше отчество"} className="auth__input" prefix={<img src={name} />} size="large" />
               </Form.Item>
               <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name={"email"}>
                 <Input autoComplete="on" placeholder={"abc@email.com"} className="auth__input" prefix={<img src={login} />} size="large" />
@@ -84,10 +102,10 @@ export const Register = () => {
               </Form.Item>
               <Col span={24}>
                 <Form.Item>
-                  <Button loading={state.status === "loading"} htmlType="submit" size="large" type="primary" block>
+                  <Button loading={state.isLoading} htmlType="submit" size="large" type="primary" block>
                     Создать аккаунт
                   </Button>
-                  {state.message && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />}
+                  {state.isError && <Alert type="error" showIcon className="error__message" message={"Произошла ошибка"} banner closable />}
                 </Form.Item>
               </Col>
             </FormUI>

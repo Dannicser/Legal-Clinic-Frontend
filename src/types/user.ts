@@ -1,18 +1,22 @@
 export interface IUserProfile {
-  name: string;
   email: string;
+  first_name: string;
+  last_name: string;
   photo: string;
-  createdAt: string;
+  _id: string;
+  is_admin: boolean;
+  is_appointment: boolean;
   about: string;
-}
-export interface IGetUserPayload {
-  data: IUserProfile;
-  message: string;
-  success: boolean;
+  createdAt: string;
 }
 
 export interface IEditProfileState {
-  name: string;
+  first_name: string;
+  last_name: string;
   email?: string;
   about: string;
+}
+
+export interface IResponseUpdateUser {
+  message: string;
 }

@@ -1,8 +1,9 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { UseUserService } from "../services/UseUserService";
-import { IEditProfileState, IGetUserPayload, IUserProfile } from "../types/user";
+import { IEditProfileState, IUserProfile } from "../types/user";
 import { onShowNotice } from "./notificationSlice";
+import { IUserResponseRegisterWithEmail } from "../types/auth";
 
 interface IState {
   user: IUserProfile;
@@ -13,18 +14,22 @@ interface IState {
 
 const initialState: IState = {
   user: {
-    name: "",
+    first_name: "",
+    last_name: "",
     email: "",
+    about: "",
     photo: "",
     createdAt: "",
-    about: "",
+    is_admin: false,
+    is_appointment: false,
+    _id: "",
   },
   loading: false,
   error: false,
   message: "",
 };
 
-export const onGetUserInfo = createAsyncThunk("onGetUserInfo/get", async () => {
+export const thunkGetUserInfo = createAsyncThunk("onGetUserInfo/get", async () => {
   const { onGetUser } = UseUserService();
 
   const response = onGetUser();
@@ -32,7 +37,7 @@ export const onGetUserInfo = createAsyncThunk("onGetUserInfo/get", async () => {
   return response;
 });
 
-export const onUpdateUserInfo = createAsyncThunk("onUpdateUserInfo/get", async (data: IEditProfileState, { dispatch }) => {
+export const thunkUpdateUserInfo = createAsyncThunk("onUpdateUserInfo/get", async (data: IEditProfileState, { dispatch }) => {
   const { onUpdateUser } = UseUserService();
 
   const response = onUpdateUser(data);
@@ -50,7 +55,6 @@ export const onUpdateUserInfo = createAsyncThunk("onUpdateUserInfo/get", async (
       );
     })
     .catch((error) => {
-      console.log(error);
       dispatch(
         onShowNotice({
           status: "show",
@@ -66,21 +70,38 @@ export const onUpdateUserInfo = createAsyncThunk("onUpdateUserInfo/get", async (
 const userSlice = createSlice({
   initialState,
   name: "user",
-  reducers: {},
+  reducers: {
+    onFetchUser: (state, action: PayloadAction<IUserResponseRegisterWithEmail>) => {
+      state.user = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(onGetUserInfo.pending, (state) => {
+      //get
+      .addCase(thunkGetUserInfo.pending, (state) => {
         state.loading = true;
       })
-      .addCase(onGetUserInfo.fulfilled, (state, action: PayloadAction<IGetUserPayload>) => {
-        state.user = action.payload.data;
+      .addCase(thunkGetUserInfo.fulfilled, (state, action: PayloadAction<IUserProfile>) => {
+        state.user = action.payload;
         state.loading = false;
       })
-      .addCase(onGetUserInfo.rejected, (state) => {
+      .addCase(thunkGetUserInfo.rejected, (state) => {
         state.error = true;
+        state.loading = false;
+      })
+      //update
+      .addCase(thunkUpdateUserInfo.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(thunkUpdateUserInfo.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(thunkUpdateUserInfo.rejected, (state) => {
         state.loading = false;
       });
   },
 });
+
+export const { onFetchUser } = userSlice.actions;
 
 export default userSlice.reducer;

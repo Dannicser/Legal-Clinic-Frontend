@@ -1,0 +1,8 @@
+.post__list__container {
+  width: 100%;
+  display: flex;
+  overflow-x: scroll;
+}
+.post__list__container::-webkit-scrollbar {
+  display: none;
+}

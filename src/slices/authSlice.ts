@@ -1,126 +1,84 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UseAuthService } from "../services/UseAuthService";
-import { IAuth, IRecover, IRegister, IRegisterError, IResponseWithEmail } from "../types/auth";
-import { onGetErrorMessage } from "../utils/error/auth";
+import { IAuthValues, IRegisterValues, IUserResponseRegisterWithEmail } from "../types/auth";
 import { onShowNotice } from "./notificationSlice";
-import { IUserAuthParams } from "../types/auth";
+import { UseLocalStorage } from "../hooks/useLocalStorage";
+import { onFetchUser } from "./userSlice";
 
 interface IState {
   isAuth: boolean;
   isCheckingAuth: boolean;
-  status: string;
+  isLoading: boolean;
+  isError: boolean;
   message: string;
 }
 
 const initialState: IState = {
   isAuth: false,
   isCheckingAuth: false,
-  status: "pending",
+  isLoading: false,
+  isError: false,
   message: "",
 };
 
-export const onGetAuth = createAsyncThunk("onGetAuth/get", async (data: IAuth, { dispatch }) => {
+export const thunkAuthWithEmail = createAsyncThunk("onGetAuth/get", async (data: IAuthValues, { dispatch }) => {
   const { onGetAuthWithEmail } = UseAuthService();
 
-  return onGetAuthWithEmail(data).then(() =>
+  return onGetAuthWithEmail(data).then((data) => {
     dispatch(
       onShowNotice({
         status: "show",
         type: "info",
-        message: `Доброго времени суток!`,
+        message: `Доброго времени суток, ${data.user.first_name}!`,
         description: "",
         duration: 3,
         placement: "topRight",
       })
-    )
-  );
-});
-
-export const onGetRegister = createAsyncThunk("onGetRegister/register", async (userdata: IRegister, { dispatch }) => {
-  const { onGetRegisterWithEmail, onAddUserToDataBase } = UseAuthService();
-
-  const response = onGetRegisterWithEmail(userdata);
-
-  return response
-    .then((data: IResponseWithEmail) => {
-      const user: IUserAuthParams = {
-        name: userdata.name,
-        email: data.email,
-        userId: data.localId,
-        photo: "",
-        about: "",
-        appointment: {},
-      };
-
-      return user;
-    })
-    .then((user: IUserAuthParams) => {
-      const response = onAddUserToDataBase(user);
-
-      return user;
-    })
-    .then((user: IUserAuthParams) =>
-      dispatch(
-        onShowNotice({
-          status: "show",
-          type: "info",
-          message: `Здравствуйте, ${user.name}`,
-          description: "Спасибо, что вы выбрали нас!",
-          duration: 7,
-          placement: "topRight",
-        })
-      )
     );
+
+    return data;
+  });
 });
 
-export const onGetRegisterWithGoogle = createAsyncThunk("onGetRegisterWithGoogle/get", async (_, { dispatch }) => {
-  const { onGetAuthWithGoogle, onAddUserToDataBase } = UseAuthService();
+export const thunkRegisterWithEmail = createAsyncThunk("thunkRegisterWithEmail/register", async (userdata: IRegisterValues, { dispatch }) => {
+  const { onGetRegisterWithEmail } = UseAuthService();
 
-  const response = onGetAuthWithGoogle();
+  const response = await onGetRegisterWithEmail(userdata);
 
-  return response
-    .then((user: any) => {
-      const response = onAddUserToDataBase(user);
-      return user;
+  return response;
+});
+
+export const thunkLogoutWithEmail = createAsyncThunk("thunkLogoutWithEmail/logout", async (_, { dispatch }) => {
+  const { onLogoutWithEmail } = UseAuthService();
+
+  return onLogoutWithEmail()
+    .then(() => {
+      UseLocalStorage({ key: "accessToken", action: "remove" });
     })
-    .then((user) => {
+    .catch(() => {
       dispatch(
         onShowNotice({
           status: "show",
-          type: "warning",
-          message: "Вы вошли в аккаунт с помощью Google",
-          description: "При необходимости вы можете изменить ваши данные в профиле",
-          duration: 6,
-          placement: "topRight",
-        })
-      );
-      return user;
-    })
-    .then((user) => {
-      dispatch(
-        onShowNotice({
-          status: "show",
-          type: "info",
-          message: `Здравствуйте, ${user?.name}`,
-          description: "Как ваше настроение?",
+          type: "error",
+          message: `Произошла ошибка при закрытии сессии`,
+          description: "Попробуйте позже",
           duration: 5,
           placement: "topRight",
         })
       );
-      return user;
     });
 });
 
-export const onGetRecover = createAsyncThunk("onGetRecover/get", async (data: IRecover) => {
-  const { onGetRecoveryWithEmail } = UseAuthService();
-
-  return onGetRecoveryWithEmail(data);
-});
-
-export const onGetCheckAuth = createAsyncThunk("onGetCheckAuth/get", async () => {
+export const thunkCheckAuth = createAsyncThunk("onCheckAuth/get", async (_, { dispatch }) => {
   const { onCheckAuth } = UseAuthService();
 
-  return onCheckAuth();
+  const response = onCheckAuth();
+
+  return response.then((data) => {
+    dispatch(onFetchUser(data.user));
+
+    return data;
+  });
 });
 
 export const authSlice = createSlice({
@@ -128,90 +86,60 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     onResetErrors: (state) => {
-      state.status = "pending";
       state.message = "";
-    },
-    onLogout: (state) => {
-      state.isAuth = false;
     },
   },
   extraReducers: (builder) => {
     builder
       //AUTH
-      .addCase(onGetAuth.pending, (state) => {
-        state.status = "loading";
+      .addCase(thunkAuthWithEmail.pending, (state) => {
+        state.isLoading = true;
         state.message = "";
       })
-      .addCase(onGetAuth.fulfilled, (state) => {
+      .addCase(thunkAuthWithEmail.fulfilled, (state) => {
         state.isAuth = true;
-        state.status = "successful";
+        state.isLoading = false;
         state.message = "";
       })
-      .addCase(onGetAuth.rejected, (state, data: any) => {
-        const info: IRegisterError = JSON.parse(data.error.message);
-
-        state.status = "error";
-        state.message = onGetErrorMessage(info.message);
+      .addCase(thunkAuthWithEmail.rejected, (state, payload) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = "Неверный логин или пароль";
       })
       //REGISTER
-      .addCase(onGetRegister.pending, (state) => {
-        state.status = "loading";
+      .addCase(thunkRegisterWithEmail.pending, (state) => {
+        state.isLoading = true;
         state.message = "";
       })
-      .addCase(onGetRegister.fulfilled, (state) => {
+      .addCase(thunkRegisterWithEmail.fulfilled, (state) => {
         state.isAuth = true;
-        state.status = "successful";
+        state.isLoading = false;
         state.message = "";
       })
-      .addCase(onGetRegister.rejected, (state, data: any) => {
-        const info: IRegisterError = JSON.parse(data.error.message);
-
-        state.status = "error";
-        state.message = onGetErrorMessage(info.message);
+      .addCase(thunkRegisterWithEmail.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
       })
-      //RECOVERY
-      .addCase(onGetRecover.pending, (state) => {
-        state.status = "loading";
-        state.message = "";
-      })
-      .addCase(onGetRecover.fulfilled, (state) => {
-        state.status = "successful";
-        state.message = "";
-      })
-      .addCase(onGetRecover.rejected, (state, data: any) => {
-        const info: IRegisterError = JSON.parse(data.error.message);
-
-        state.status = "error";
-        state.message = onGetErrorMessage(info.message);
-      })
-      //REGISTER WITH GOOGLE
-      .addCase(onGetRegisterWithGoogle.pending, (state) => {
-        state.message = "";
-        state.status = "loading";
-      })
-      .addCase(onGetRegisterWithGoogle.fulfilled, (state) => {
-        state.status = "successful";
-        state.isAuth = true;
-      })
-      .addCase(onGetRegisterWithGoogle.rejected, (state) => {
-        state.status = "error";
-        state.message = "Произошла непредвиденная ошибка. Используйте другой оператор регистрации";
-      })
-      //CHECK AUTH
-      .addCase(onGetCheckAuth.pending, (state) => {
+      //CHECKING
+      .addCase(thunkCheckAuth.pending, (state) => {
         state.isCheckingAuth = true;
       })
-      .addCase(onGetCheckAuth.fulfilled, (state) => {
-        state.isCheckingAuth = false;
+      .addCase(thunkCheckAuth.fulfilled, (state) => {
         state.isAuth = true;
-      })
-      .addCase(onGetCheckAuth.rejected, (state) => {
         state.isCheckingAuth = false;
+      })
+      .addCase(thunkCheckAuth.rejected, (state) => {
+        state.isError = true;
+        state.isCheckingAuth = false;
+        state.message = "Доступ к профилю не был получен";
         state.isAuth = false;
       })
-      .addDefaultCase(() => {});
+      //LOGOUT
+      .addCase(thunkLogoutWithEmail.fulfilled, (state) => {
+        state.isAuth = false;
+      });
   },
 });
 
-export const { onResetErrors, onLogout } = authSlice.actions;
+export const { onResetErrors } = authSlice.actions;
 export default authSlice.reducer;

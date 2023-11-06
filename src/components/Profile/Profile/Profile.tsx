@@ -1,20 +1,21 @@
 import { Layout } from "../../Layout/Layout";
 import { Header } from "../../UI/Header/Header";
-import { NotFound } from "../../UI/NotFound/NotFound";
 
-import { Avatar, Row, Col, Typography, Divider, Button, Input, Space, Skeleton, Card } from "antd";
+import { Avatar, Row, Col, Typography, Divider, Button, Input, Space, Skeleton, Card, Result } from "antd";
 
 import { useEffect } from "react";
 
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 
-import { onGetUserInfo } from "../../../slices/userSlice";
 import { onValidateDate } from "../../../utils/validators/date";
 
-import "./Profile.scss";
+import dayjs from "dayjs";
+
 import { NavLink } from "react-router-dom";
 import { PrivetRoutesNames } from "../../../routers";
+import { onGetMonth } from "../../../utils/date/date";
+import { thunkGetUserInfo } from "../../../slices/userSlice";
 
 export const Profile = () => {
   const { loading, error, user } = useAppSelector((state) => state.user);
@@ -22,7 +23,7 @@ export const Profile = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(onGetUserInfo());
+    dispatch(thunkGetUserInfo());
   }, []);
 
   const loader = !error && loading && <Loader />;
@@ -31,11 +32,13 @@ export const Profile = () => {
     <Row>
       <Col span={24}>
         <Divider>
-          <Avatar size="large">{user?.name[0]}</Avatar>
+          <Avatar size="large">{user.first_name[0]}</Avatar>
         </Divider>
       </Col>
       <Col span={24}>
-        <Typography.Title level={2}>{user.name}</Typography.Title>
+        <Typography.Title level={2}>
+          {user.first_name} {user.last_name}
+        </Typography.Title>
       </Col>
       <Col span={24}>
         <Typography.Text type={"secondary"}>
@@ -54,7 +57,7 @@ export const Profile = () => {
             </Typography.Text>
           ) : (
             <Typography.Text type="secondary" strong>
-              Напиши пару слов о себе...
+              Напишите пару слов о себе...
             </Typography.Text>
           )}
         </Card>
@@ -72,11 +75,10 @@ export const Profile = () => {
 
   return (
     <>
-      <Header title="Профиль" />
       <Layout>
         {content}
         {loader}
-        {error && <NotFound title="Ошибка 404" descr="Пользователь не найден, попробуйте обновить страницу" />}
+        {error && <Result status="500" title="500" subTitle="Что-то пошло нет так..." />}
       </Layout>
     </>
   );

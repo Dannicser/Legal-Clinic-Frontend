@@ -1,41 +1,54 @@
-import "./Visit.scss";
+import "./VisitForm.scss";
 import { DatePicker, Select, TimePicker, Input, Button, Space, Form, Checkbox, Typography, Row, InputNumber, Tooltip, Col } from "antd";
-import { IApointment, IApointmentState } from "../../../types/appointment";
+import { IRegisterApointmentData, IApointmentState } from "../../../../types/appointment";
 import { useState } from "react";
-import { useAppSelector } from "../../../hooks/useAppSelector";
-import { onValidateName } from "../../../utils/validators/auth";
+import { useAppSelector } from "../../../../hooks/useAppSelector";
+import { useAppDispatch } from "../../../../hooks/useAppDispatch";
+import { thunkGetRegisterAppointment } from "../../../../slices/appointmentSlice";
+import { VisitMain } from "../VisitMain/VisitMain";
 
 const { TextArea } = Input;
 
-export const Visit = () => {
-  // const { name } = useAppSelector((state) => state.user);
-  const name = "Моковый";
+export const VisitForm = () => {
+  const { user } = useAppSelector((state) => state.user);
+  const { isLoading, isError } = useAppSelector((state) => state.appointment);
+  const dispatch = useAppDispatch();
 
   const [toggle, setToggle] = useState(true);
 
   const onFinish = (values: IApointmentState) => {
-    const data: IApointment = {
+    const data: IRegisterApointmentData = {
       ...values,
+      phone: 8 + values.phone,
       date: values.date.format("DD-MM-YYYY"),
       time: values.time.format("H:mm"),
-      id: Math.random(),
-      name: toggle ? name : values.name,
+      first_name: toggle ? user.first_name : values.first_name,
+      last_name: toggle ? user.last_name : values.last_name,
     };
 
-    console.log(data);
+    dispatch(thunkGetRegisterAppointment(data));
   };
 
   const content = toggle ? null : (
     <>
       <Row justify={"start"}>
-        <Typography.Text strong>Введите ваше имя и отчество</Typography.Text>
+        <Typography.Text strong>Введите ваше имя</Typography.Text>
       </Row>
-
-      <Form.Item hasFeedback rules={[{ validator: onValidateName }]} name={"name"} className="mt-1">
-        <Input placeholder="Иван Иванович" />
+      <Form.Item hasFeedback rules={[{ min: 2, max: 20, message: "Не менее 2 и не более 20 символов", required: true }]} name={"first_name"}>
+        <Input placeholder="Иван" />
+      </Form.Item>
+      <Row justify={"start"}>
+        <Typography.Text strong>Введите ваше отчество</Typography.Text>
+      </Row>
+      <Form.Item hasFeedback rules={[{ min: 2, max: 20, message: "Не менее 2 и не более 20 символов", required: true }]} name={"last_name"}>
+        <Input placeholder="Иванович" />
       </Form.Item>
     </>
   );
+
+  // if (!isError && !isLoading) {
+  //   return <VisitMain />;
+  // }
 
   return (
     <div className="visit__wrapper">
@@ -139,14 +152,14 @@ export const Visit = () => {
           rules={[
             {
               required: true,
-              message: "Необходимо более детально описать проблему",
-              min: 50,
+              message: "от 30 до 1000 символов",
+              min: 30,
               max: 1000,
             },
           ]}
           name={"problem"}
         >
-          <TextArea rows={4} placeholder="Не более 1000 символов" maxLength={1000} />
+          <TextArea rows={4} placeholder="Не более 1000 символов" maxLength={1001} />
         </Form.Item>
         <Row justify={"start"}>
           <Col style={{ textAlign: "start" }} span={24}>
@@ -176,11 +189,11 @@ export const Visit = () => {
         {content}
         <Form.Item>
           <div className="button__visit">
-            <Button htmlType="submit" type="primary">
+            <Button loading={isLoading} htmlType="submit" type="primary">
               Записаться
             </Button>
           </div>
-        </Form.Item>{" "}
+        </Form.Item>
       </Form>
     </div>
   );
