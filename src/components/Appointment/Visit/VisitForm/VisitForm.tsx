@@ -1,11 +1,14 @@
 import "./VisitForm.scss";
-import { DatePicker, Select, TimePicker, Input, Button, Space, Form, Checkbox, Typography, Row, InputNumber, Tooltip, Col } from "antd";
+import { DatePicker, Select, TimePicker, Input, Button, Space, Form, Checkbox, Typography, Row, InputNumber, Tooltip, Col, Alert } from "antd";
+
+import locale from "antd/es/date-picker/locale/ru_RU";
+import dayjs from "dayjs";
+
 import { IRegisterApointmentData, IApointmentState } from "../../../../types/appointment";
 import { useState } from "react";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
 import { useAppDispatch } from "../../../../hooks/useAppDispatch";
 import { thunkGetRegisterAppointment } from "../../../../slices/appointmentSlice";
-import { VisitMain } from "../VisitMain/VisitMain";
 
 const { TextArea } = Input;
 
@@ -20,7 +23,7 @@ export const VisitForm = () => {
     const data: IRegisterApointmentData = {
       ...values,
       phone: 8 + values.phone,
-      date: values.date.format("DD-MM-YYYY"),
+      date: values.date.format("MM-DD-YYYY"),
       time: values.time.format("H:mm"),
       first_name: toggle ? user.first_name : values.first_name,
       last_name: toggle ? user.last_name : values.last_name,
@@ -46,10 +49,6 @@ export const VisitForm = () => {
     </>
   );
 
-  // if (!isError && !isLoading) {
-  //   return <VisitMain />;
-  // }
-
   return (
     <div className="visit__wrapper">
       <Form name="basic" className="visit__form" onFinish={onFinish}>
@@ -71,8 +70,12 @@ export const VisitForm = () => {
           >
             <DatePicker
               inputReadOnly
+              locale={locale}
               disabledDate={(date) => {
-                if (date.format("dddd") !== "Wednesday") {
+                if (date.valueOf() < Date.now()) {
+                  return true;
+                }
+                if (date.format("dddd") !== "Wednesday" && date.valueOf() > Date.now()) {
                   return true;
                 } else {
                   return false;
@@ -83,7 +86,7 @@ export const VisitForm = () => {
               renderExtraFooter={() => {
                 return (
                   <>
-                    <p style={{ paddingLeft: 20 }}>Режим работы: среда, 15:00 - 17:00</p>
+                    <p style={{ paddingLeft: 20, color: "grey" }}>Режим работы: среда, 15:00 - 17:00</p>
                   </>
                 );
               }}
@@ -194,6 +197,15 @@ export const VisitForm = () => {
             </Button>
           </div>
         </Form.Item>
+
+        {isError && (
+          <Alert
+            type="error"
+            style={{ fontWeight: 600, fontFamily: "font-family: Montserrat, sans-serif" }}
+            showIcon
+            message={"Произошла непредвиденная ошибка, попробуйте еще раз"}
+          />
+        )}
       </Form>
     </div>
   );

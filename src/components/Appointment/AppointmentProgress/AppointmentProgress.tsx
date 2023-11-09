@@ -1,24 +1,28 @@
 import { Progress } from "antd";
-import { Status } from "../../../types/appointment";
+import { AppointmentStatus, Status } from "../../../types/appointment";
 
 interface IAppointmentProgress {
   status: Status;
 }
 
 export const AppointmentProgress: React.FC<IAppointmentProgress> = ({ status }) => {
-  if (status === "accepted") {
-    return <Progress percent={40} status="active" showInfo={false} />;
+  if (status === AppointmentStatus.ACCEPTED) {
+    return <Progress percent={25} status="active" showInfo={false} />;
   }
 
-  if (status === "rejected") {
+  if (status === AppointmentStatus.REJECTED) {
     return <Progress percent={100} status="exception" showInfo={true} />;
   }
 
-  if (status === "provided") {
+  if (status === AppointmentStatus.CONFIRMED) {
+    return <Progress percent={65} status="success" showInfo={true} />;
+  }
+
+  if (status === AppointmentStatus.PROVIDED) {
     return <Progress percent={100} status="success" showInfo={true} />;
   }
 
-  if (status === "error") {
+  if (status === AppointmentStatus.ERROR) {
     return <Progress percent={0} showInfo={false} />;
   }
 

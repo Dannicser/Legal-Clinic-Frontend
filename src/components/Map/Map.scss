@@ -1,12 +1,17 @@
 .map__wrapper {
+  position: relative;
   height: 100%;
+  width: 100%;
 
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 65px 10px 0px 10px;
 
   iframe {
     height: 100%;
     padding-bottom: 65px;
+    position: relative;
+    z-index: 0;
   }
 }

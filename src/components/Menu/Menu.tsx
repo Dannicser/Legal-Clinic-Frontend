@@ -1,9 +1,18 @@
 import "./Menu.scss";
 import { Header } from "../UI/Header/Header";
-import { calendar, faq, favorite, leave, message, settings } from "./assets/icons";
 
 import { Badge, Avatar, Spin, Alert, Typography } from "antd";
-import { FrownOutlined } from "@ant-design/icons";
+
+import {
+  FrownOutlined,
+  HistoryOutlined,
+  QuestionCircleOutlined,
+  HeartOutlined,
+  SettingOutlined,
+  CalendarOutlined,
+  MessageOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { thunkLogoutWithEmail } from "../../slices/authSlice";
@@ -52,30 +61,36 @@ export const Menu = () => {
             <NavLink to={PrivetRoutesNames.CONVERSATION}>
               <li className="menu__item">
                 <Badge size="small" count={1}>
-                  <img src={message} alt="" />{" "}
+                  <MessageOutlined />
                 </Badge>
                 <div className="title">Сообщения</div>
               </li>
             </NavLink>
             <li className="menu__item">
-              <img src={calendar} alt="" />
+              <CalendarOutlined />
               <div className="title">Календарь</div>
             </li>{" "}
             <li className="menu__item">
-              <img src={faq} alt="" />
+              <QuestionCircleOutlined />
               <div className="title">Часто задаваемые вопросы</div>
             </li>
             <li className="menu__item">
-              <img src={favorite} alt="" />
+              <HeartOutlined />
               <div className="title">Избранное</div>
             </li>
+            <NavLink to={PrivetRoutesNames.APPOINTMENT_HISTOTY}>
+              <li className="menu__item">
+                <HistoryOutlined />
+                <div className="title">История обращений</div>
+              </li>
+            </NavLink>
             <li className="menu__item">
-              <img src={settings} alt="" />
+              <SettingOutlined />
               <div className="title">Настройки</div>
             </li>
             <NavLink to={"/"}>
               <li onClick={signOut} className="menu__item">
-                <img src={leave} alt="" />
+                <LogoutOutlined />
                 <div className="title">Выход</div>
               </li>
             </NavLink>

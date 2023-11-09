@@ -18,6 +18,14 @@
       display: flex;
       margin-bottom: 25px;
 
+      //ant class
+      svg {
+        color: rgba(118, 118, 118, 1);
+        width: 20px;
+        height: 20px;
+        margin: 0px 2px;
+      }
+
       img {
         width: 25px;
         height: 25px;

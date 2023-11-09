@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
 import "./Navigation.scss";
 import { map, main, events, profile } from "./icons/index";
+
+import { EnvironmentOutlined, UserOutlined, HomeOutlined, CalendarOutlined } from "@ant-design/icons";
 import { PrivetRoutesNames } from "../../routers";
 
 export const Navigation = () => {
@@ -10,29 +12,29 @@ export const Navigation = () => {
         <ul className="nav__menu">
           <li className="nav__item">
             <NavLink to={"/"}>
-              <img src={main} alt="" />
+              <HomeOutlined />
               <div className="title">Главная</div>{" "}
             </NavLink>
           </li>
 
           <li className="nav__item">
             <NavLink to={PrivetRoutesNames.APPOINTMENT}>
-              <img src={events} alt="" />
+              <CalendarOutlined />
               <div className="title">Запись</div>{" "}
             </NavLink>
           </li>
 
           <li className="nav__item">
             <NavLink to={PrivetRoutesNames.MAP}>
-              <img src={map} alt="" />
+              <EnvironmentOutlined />
               <div className="title">Карта</div>
             </NavLink>
           </li>
 
           <li className="nav__item">
             <NavLink to={PrivetRoutesNames.PROFILE}>
-              <img src={profile} alt="" />
-              <div className="title">Профиль</div>{" "}
+              <UserOutlined />
+              <div className="title">Профиль</div>
             </NavLink>
           </li>
         </ul>

@@ -20,7 +20,7 @@ export const AppRouter: React.FC = () => {
   useLayoutEffect(() => {
     if (UseLocalStorage({ action: "get", key: "accessToken" }) || window.sessionStorage.getItem("accessToken")) {
       dispatch(thunkCheckAuth());
-      dispatch(thunkGetStatusAppointment());
+      // dispatch(thunkGetStatusAppointment());
     }
   }, []);
 

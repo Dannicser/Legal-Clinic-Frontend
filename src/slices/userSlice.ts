@@ -21,7 +21,6 @@ const initialState: IState = {
     photo: "",
     createdAt: "",
     is_admin: false,
-    is_appointment: false,
     _id: "",
   },
   loading: false,

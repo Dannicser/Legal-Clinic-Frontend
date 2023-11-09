@@ -22,21 +22,43 @@ export interface IRegisterApointmentData {
 
 export interface IRegisterApointmentDataResponse {
   message: string;
+  status?: Status;
 }
 
 export enum AppointmentStatus {
   NONE = "none",
   ERROR = "error",
-  CONSIDERING = "considering",
   ACCEPTED = "accepted",
   REJECTED = "rejected",
   PROVIDED = "provided",
+  CONFIRMED = "confirmed",
 }
 
-export type Status = "none" | "error" | "accepted" | "rejected" | "provided";
+export type Status = "none" | "error" | "accepted" | "confirmed" | "rejected" | "provided";
 
-export interface IGetApointmentStatusResponse {
-  message: string;
+export interface AppointmentGetInfoResponseData {
+  problem: string;
+  type: string;
   status: Status;
-  id?: string;
+  id: string;
+  time: string;
+  date: string;
+  phone: string;
+  createdAt: string;
+}
+
+export interface IGetApointmentInfoResponse {
+  message: string;
+  data: AppointmentGetInfoResponseData;
+  status?: Status;
+}
+export interface IGetApointmentInfoResponseError {
+  message: string;
+  error: string;
+  status: string;
+}
+
+export interface IRemoveAppointmentResponse {
+  message: string;
+  status: string;
 }

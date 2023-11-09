@@ -5,7 +5,6 @@ export interface IUserProfile {
   photo: string;
   _id: string;
   is_admin: boolean;
-  is_appointment: boolean;
   about: string;
   createdAt: string;
 }

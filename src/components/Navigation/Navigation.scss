@@ -1,3 +1,5 @@
+@import url(../../style/vars.scss);
+
 nav {
   .nav__container {
     background-color: #fff;
@@ -17,11 +19,15 @@ nav {
       margin-top: auto;
 
       .nav__item {
-        img {
-          height: 21px;
+        svg {
+          width: 18px;
+          height: 19px;
         }
         .title {
           font-size: 13px;
+        }
+        .active {
+          color: blue;
         }
       }
     }

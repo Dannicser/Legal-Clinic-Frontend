@@ -6,14 +6,12 @@ export const Accepted: React.FC = () => {
   return (
     <>
       <Result
-        status="success"
+        status="info"
         title={`Заявление было успешно зарегистрировано`}
-        subTitle={`Сотрудники юридической клиники рассмотрят его в кратчайшие сроки`}
+        subTitle={`Сотрудники юридической клиники рассмотрят его в кратчайшие сроки и свяжутся с вами по телефону.`}
         extra={[
           <NavLink to={PrivetRoutesNames.APPOINTMENT_EDIT}>
-            <Button key="1" type="primary">
-              Изменить
-            </Button>
+            <Button type="primary">Изменить</Button>
           </NavLink>,
         ]}
       />

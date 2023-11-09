@@ -1,12 +1,20 @@
 import { Button, Divider, Input, Rate, Result, Space, Typography, Form } from "antd";
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { useAppDispatch } from "../../../../hooks/useAppDispatch";
+import { thunkRemoveAppointment } from "../../../../slices/appointmentSlice";
+import { useAppSelector } from "../../../../hooks/useAppSelector";
+import axios from "../../../../config/axios";
+import { UseLocalStorage } from "../../../../hooks/useLocalStorage";
 
 export const Provided: React.FC = () => {
   const [rate, setRate] = useState<number>(5);
   const [isReview, isSetReview] = useState<boolean>(false);
   const [review, setReview] = useState<string>("");
   const [isFinished, setIsFinished] = useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
+  const { problem, type, date } = useAppSelector((state) => state.appointment.data);
 
   const onOpenReview = () => {
     isSetReview(true);
@@ -16,10 +24,12 @@ export const Provided: React.FC = () => {
     setReview(event.target.value);
   };
 
-  const onFetchData = () => {
-    console.log({ review, rate });
-
+  const onFetchData = async () => {
+    await axios.post("./appointment/history", { review, rate, problem, type, date });
+    dispatch(thunkRemoveAppointment());
     setIsFinished(true);
+    UseLocalStorage({ key: "roadhelp", action: "remove" });
+    console.log("delete");
   };
 
   if (isFinished) {
@@ -42,7 +52,7 @@ export const Provided: React.FC = () => {
           {isReview ? (
             <>
               <Typography.Paragraph strong>Что не понравилось вам больше всего?</Typography.Paragraph>
-              <Form initialValues={{ review: "" }} onFinish={onFetchData}>
+              <Form initialValues={{ review: "" }}>
                 <Form.Item
                   hasFeedback
                   name={"review"}

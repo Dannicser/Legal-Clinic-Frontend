@@ -1,42 +1,84 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IGetApointmentStatusResponse, IRegisterApointmentData, IRegisterApointmentDataResponse, Status } from "../types/appointment";
+import {
+  AppointmentGetInfoResponseData,
+  IGetApointmentInfoResponse,
+  IRegisterApointmentData,
+  IRegisterApointmentDataResponse,
+  IRemoveAppointmentResponse,
+  Status,
+} from "../types/appointment";
+
 import { UseAppointmentService } from "../services/UseAppointmentService";
 
+import dayjs from "dayjs";
+import "dayjs/locale/ru";
+
 interface IState {
-  status: Status;
-  id?: string;
+  data: AppointmentGetInfoResponseData;
   message: string;
   isLoading: boolean;
   isError: boolean;
 }
 
 const initialState: IState = {
-  status: "none",
+  data: {
+    problem: "",
+    type: "",
+    status: "none",
+    phone: "",
+    time: "",
+    date: "",
+    id: "",
+    createdAt: "",
+  },
   message: "",
   isLoading: false,
   isError: false,
 };
 
-export const thunkGetStatusAppointment = createAsyncThunk<IGetApointmentStatusResponse>("thunkGetStatusAppointment/get", async () => {
-  const { onGetStatusAppointment } = UseAppointmentService();
+export const thunkGetStatusAppointment = createAsyncThunk<IGetApointmentInfoResponse>(
+  "thunkGetStatusAppointment/get",
+  async (_, { rejectWithValue }) => {
+    const { onGetStatusAppointment } = UseAppointmentService();
 
-  const response = await onGetStatusAppointment();
+    const response = await onGetStatusAppointment();
 
-  return response as IGetApointmentStatusResponse;
-});
+    if (response.status === "error") {
+      return rejectWithValue(response);
+    }
+
+    return response as IGetApointmentInfoResponse;
+  }
+);
 
 export const thunkGetRegisterAppointment = createAsyncThunk<IRegisterApointmentDataResponse, IRegisterApointmentData>(
-  "thunkGetRegisterAppointment/get",
-  async (data) => {
+  "thunkGetRegisterAppointment/post",
+  async (data, { rejectWithValue }) => {
     const { onGetRegisterAppointment } = UseAppointmentService();
 
     const response = await onGetRegisterAppointment(data);
+
+    if (response.status === "error") {
+      return rejectWithValue(response);
+    }
 
     return response as IRegisterApointmentDataResponse;
   }
 );
 
-const notificationSlice = createSlice({
+export const thunkRemoveAppointment = createAsyncThunk<IRemoveAppointmentResponse>("thunkRemoveAppointment/get", async (_, { rejectWithValue }) => {
+  const { onRemoveAppointment } = UseAppointmentService();
+
+  const response = await onRemoveAppointment();
+
+  if (response.status === "error") {
+    return rejectWithValue(response);
+  }
+
+  return response as IRemoveAppointmentResponse;
+});
+
+const appointmentSlice = createSlice({
   initialState,
   name: "appointment",
   reducers: {},
@@ -47,13 +89,13 @@ const notificationSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(thunkGetStatusAppointment.fulfilled, (state, action) => {
-        state.status = action.payload.status;
-        state.id = action.payload.id;
         state.message = action.payload.message;
+        state.data = action.payload.data;
+        state.data.date = dayjs(action.payload.data.date).locale("ru").format("D MMMM");
         state.isLoading = false;
       })
       .addCase(thunkGetStatusAppointment.rejected, (state, action: any) => {
-        state.status = "error";
+        state.data.status = "error";
         state.message = "";
         state.isLoading = false;
       })
@@ -63,15 +105,25 @@ const notificationSlice = createSlice({
       })
       .addCase(thunkGetRegisterAppointment.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.data.status = "accepted";
       })
       .addCase(thunkGetRegisterAppointment.rejected, (state, action: any) => {
-        state.status = "error";
+        state.data.status = "error";
         state.message = "";
         state.isLoading = false;
         state.isError = true;
+      })
+      //remove
+      .addCase(thunkRemoveAppointment.pending, (state) => {})
+      .addCase(thunkRemoveAppointment.fulfilled, (state, action) => {
+        state.data.status = "none";
+      })
+      .addCase(thunkRemoveAppointment.rejected, (state, action) => {
+        state.message = "Произошла непредвиденная ошибка";
+        state.data.status = "error";
       });
   },
 });
 
-export default notificationSlice.reducer;
-export const {} = notificationSlice.actions;
+export default appointmentSlice.reducer;
+export const {} = appointmentSlice.actions;
