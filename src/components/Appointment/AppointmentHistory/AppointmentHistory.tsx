@@ -4,8 +4,12 @@ import axios from "../../../config/axios";
 
 import { Layout } from "../../Layout/Layout";
 import { Header } from "../../UI/Header/Header";
-import { Avatar, Divider, Empty, List, Rate, Skeleton } from "antd";
+import { Avatar, Button, Col, Divider, Empty, List, Rate, Result, Row, Skeleton, Tooltip } from "antd";
 import { onCutText } from "../../../utils/helpers";
+
+import Typography from "antd/es/typography";
+import { NavLink } from "react-router-dom";
+import { PrivetRoutesNames } from "../../../routers";
 
 interface IAppointmentHistoryResponse {
   data: IAppointmentHistoryData[];
@@ -19,6 +23,8 @@ interface IAppointmentHistoryData {
   createdAt: string;
   rate: string;
   review: string;
+  rejected: boolean;
+  message: string;
 }
 
 export const AppointmentHistory = () => {
@@ -50,7 +56,22 @@ export const AppointmentHistory = () => {
     <Empty description={"История обращений пуста"} image={Empty.PRESENTED_IMAGE_SIMPLE} />
   );
 
-  console.log(appointments);
+  if (isError) {
+    return (
+      <>
+        <Result
+          status="500"
+          title="500"
+          subTitle="Что-то пошло не так"
+          extra={
+            <NavLink to={PrivetRoutesNames.HOME}>
+              <Button type="primary">Главная</Button>
+            </NavLink>
+          }
+        />
+      </>
+    );
+  }
 
   return (
     <>
@@ -69,28 +90,62 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
     <List
       itemLayout="horizontal"
       dataSource={data}
-      renderItem={(item, index) => (
-        <List.Item>
-          <List.Item.Meta
-            avatar={<Avatar style={{ backgroundColor: "#4a43ec" }} icon={index + 1} />}
-            title={
-              <Divider>
-                <strong>
-                  Запись от {item.date} {onCutText(item.createdAt, 0, 4, false)}
-                </strong>
-              </Divider>
-            }
-            description={
-              <>
-                {onCutText(item.problem, 0, 150, true)}
-                <br />
-                <Rate disabled value={Number(item.rate)} />
-              </>
-            }
-            style={{ textAlign: "start" }}
-          />
-        </List.Item>
-      )}
+      renderItem={(item, index) =>
+        item.rejected ? (
+          <List.Item>
+            <List.Item.Meta
+              avatar={<Avatar style={{ backgroundColor: "red" }} icon={index + 1} />}
+              title={
+                <Divider>
+                  <Typography.Title level={5} style={{ color: "red" }}>
+                    Запись от {item.date} {onCutText(item.createdAt, 0, 4, false)}
+                  </Typography.Title>
+                </Divider>
+              }
+              description={
+                <>
+                  {onCutText(item.problem, 0, 150, true)} <br />
+                  <Typography.Text strong style={{ color: "red" }}>
+                    Отказано
+                  </Typography.Text>
+                  <br />
+                  <Row justify={"end"}>
+                    <Tooltip title={item.message} color={"red"}>
+                      <Button danger type="primary">
+                        Причина
+                      </Button>
+                    </Tooltip>
+                  </Row>
+                </>
+              }
+              style={{ textAlign: "start" }}
+            />
+          </List.Item>
+        ) : (
+          <List.Item>
+            <List.Item.Meta
+              avatar={<Avatar style={{ backgroundColor: "#4a43ec" }} icon={index + 1} />}
+              title={
+                <Divider>
+                  <Typography.Title level={5}>
+                    Запись от {item.date} {onCutText(item.createdAt, 0, 4, false)}
+                  </Typography.Title>
+                </Divider>
+              }
+              description={
+                <>
+                  <Tooltip title={item.problem} color={"#4a43ec"}>
+                    {onCutText(item.problem, 0, 150, true)}
+                    <br />
+                    <Rate disabled value={Number(item.rate)} />
+                  </Tooltip>
+                </>
+              }
+              style={{ textAlign: "start" }}
+            />
+          </List.Item>
+        )
+      }
     />
   );
 };

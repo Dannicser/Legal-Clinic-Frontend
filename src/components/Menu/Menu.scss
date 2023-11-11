@@ -14,11 +14,13 @@
 
   .menu__list {
     margin-top: 30px;
+
     .menu__item {
       display: flex;
       margin-bottom: 25px;
 
       //ant class
+
       svg {
         color: rgba(118, 118, 118, 1);
         width: 20px;
@@ -35,6 +37,13 @@
         margin-left: 10px;
         font-weight: 200;
       }
+    }
+
+    .alert_visit {
+      font-weight: 400;
+      text-align: center;
+      color: rgb(33, 33, 33);
+      font-family: "Montserrat", sans-serif;
     }
   }
 }

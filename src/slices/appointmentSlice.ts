@@ -1,6 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  AppointmentGetInfoResponseData,
   IGetApointmentInfoResponse,
   IRegisterApointmentData,
   IRegisterApointmentDataResponse,
@@ -13,8 +12,19 @@ import { UseAppointmentService } from "../services/UseAppointmentService";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 
+export interface IStateData {
+  problem: string;
+  type: string;
+  status: Status;
+  id: string;
+  time: string;
+  date: string;
+  phone: string;
+  createdAt: string;
+}
+
 interface IState {
-  data: AppointmentGetInfoResponseData;
+  data: IStateData;
   message: string;
   isLoading: boolean;
   isError: boolean;
@@ -89,9 +99,8 @@ const appointmentSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(thunkGetStatusAppointment.fulfilled, (state, action) => {
-        state.message = action.payload.message;
         state.data = action.payload.data;
-        state.data.date = dayjs(action.payload.data.date).locale("ru").format("D MMMM");
+        state.message = action.payload.message;
         state.isLoading = false;
       })
       .addCase(thunkGetStatusAppointment.rejected, (state, action: any) => {

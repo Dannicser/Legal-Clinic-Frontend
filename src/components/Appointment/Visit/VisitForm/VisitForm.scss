@@ -1,14 +1,11 @@
 .visit__wrapper {
   margin-top: 25px;
   text-align: right;
+  position: relative;
 
   form {
-    .button__visit {
-      margin-top: 30px;
-      text-align: center;
-      button {
-        width: 250px;
-      }
+    button {
+      min-width: 100px;
     }
   }
 }

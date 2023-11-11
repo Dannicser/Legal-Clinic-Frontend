@@ -1,7 +1,7 @@
 import "./Menu.scss";
 import { Header } from "../UI/Header/Header";
 
-import { Badge, Avatar, Spin, Alert, Typography } from "antd";
+import { Badge, Avatar, Spin, Alert, Typography, Result, Popconfirm, Tooltip, Button } from "antd";
 
 import {
   FrownOutlined,
@@ -25,9 +25,13 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { useEffect } from "react";
 import { thunkGetUserInfo } from "../../slices/userSlice";
 
+import dayjs from "dayjs";
+import { AppointmentStatus } from "../../types/appointment";
+
 export const Menu = () => {
   const dispatch = useAppDispatch();
   const { user, loading, error } = useAppSelector((state) => state.user);
+  const { date, time, status } = useAppSelector((state) => state.appointment.data);
 
   useEffect(() => {
     dispatch(thunkGetUserInfo());
@@ -36,6 +40,17 @@ export const Menu = () => {
   const signOut = () => {
     dispatch(thunkLogoutWithEmail());
   };
+
+  const banner =
+    status === AppointmentStatus.CONFIRMED ? (
+      <Alert
+        message={`Запланировано посещение юридической клиники ${dayjs(date).locale("ru").format("D MMMM")} в ${time}.`}
+        banner
+        showIcon
+        type="info"
+        className="alert_visit"
+      />
+    ) : null;
 
   return (
     <>
@@ -88,15 +103,24 @@ export const Menu = () => {
               <SettingOutlined />
               <div className="title">Настройки</div>
             </li>
-            <NavLink to={"/"}>
-              <li onClick={signOut} className="menu__item">
-                <LogoutOutlined />
+            <li className="menu__item">
+              <LogoutOutlined />
+              <Popconfirm
+                placement="bottom"
+                title={<Typography.Title level={5}>Вы действительно хотите выйти из профиля?</Typography.Title>}
+                onConfirm={signOut}
+                okText="Да"
+                cancelText="Нет"
+              >
                 <div className="title">Выход</div>
-              </li>
-            </NavLink>
+              </Popconfirm>
+            </li>
+            <li>{banner}</li>
           </ul>
         </div>
       </Layout>
     </>
   );
 };
+
+// ${dayjs(date).locale("ru").format("D MMMM")} в ${time}

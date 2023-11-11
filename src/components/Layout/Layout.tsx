@@ -1,17 +1,17 @@
 import "./Layout.scss";
 
 interface IExternalParams {
-  paddingTop: number;
-  paddingBottom: number;
-  paddingRight: number;
-  paddingLeft: number;
+  paddingTop?: number;
+  paddingBottom?: number;
+  paddingRight?: number;
+  paddingLeft?: number;
 }
 
 interface IInternalParams {
-  paddingTop: number;
-  paddingBottom: number;
-  paddingRight: number;
-  paddingLeft: number;
+  paddingTop?: number;
+  paddingBottom?: number;
+  paddingRight?: number;
+  paddingLeft?: number;
 }
 
 interface IPropsLayout {

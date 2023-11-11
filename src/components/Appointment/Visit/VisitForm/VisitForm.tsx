@@ -1,57 +1,158 @@
 import "./VisitForm.scss";
-import { DatePicker, Select, TimePicker, Input, Button, Space, Form, Checkbox, Typography, Row, InputNumber, Tooltip, Col, Alert } from "antd";
+import {
+  DatePicker,
+  Select,
+  TimePicker,
+  Input,
+  Button,
+  Space,
+  Form,
+  Checkbox,
+  Typography,
+  Row,
+  InputNumber,
+  Tooltip,
+  Col,
+  Alert,
+  Popconfirm,
+} from "antd";
 
 import locale from "antd/es/date-picker/locale/ru_RU";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
-import { IRegisterApointmentData, IApointmentState } from "../../../../types/appointment";
-import { useState } from "react";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { AppointmentStatus, IEditAppointmentData, Status } from "../../../../types/appointment";
+
 import { useAppSelector } from "../../../../hooks/useAppSelector";
 import { useAppDispatch } from "../../../../hooks/useAppDispatch";
-import { thunkGetRegisterAppointment } from "../../../../slices/appointmentSlice";
+import { thunkGetRegisterAppointment, thunkRemoveAppointment } from "../../../../slices/appointmentSlice";
+import { Navigate } from "react-router-dom";
+import { PrivetRoutesNames } from "../../../../routers";
+import { useState } from "react";
 
 const { TextArea } = Input;
 
-export const VisitForm = () => {
-  const { user } = useAppSelector((state) => state.user);
+interface IVisitFormProps {
+  onGetState?: (state: IEditAppointmentData) => void;
+  edit?: boolean;
+  state?: IEditAppointmentData;
+  status?: Status;
+  isErrorEdit?: boolean;
+  isLoadingEdit?: boolean;
+}
+
+interface IEditValues {
+  date: Dayjs;
+  time: Dayjs;
+  phone: number;
+  problem: string;
+  type: string;
+}
+
+export const VisitForm: React.FC<IVisitFormProps> = (props) => {
+  console.log("render");
+  const { onGetState, edit, state, status, isErrorEdit, isLoadingEdit } = props;
+
+  const [form] = Form.useForm();
+
   const { isLoading, isError } = useAppSelector((state) => state.appointment);
   const dispatch = useAppDispatch();
 
-  const [toggle, setToggle] = useState(true);
+  const onFormError = () => {
+    console.log("er");
+    let isError = false;
+    form.getFieldsError().map((el) => {
+      if (el.errors.length) {
+        isError = true;
+      }
+    });
 
-  const onFinish = (values: IApointmentState) => {
-    const data: IRegisterApointmentData = {
-      ...values,
-      phone: 8 + values.phone,
-      date: values.date.format("MM-DD-YYYY"),
-      time: values.time.format("H:mm"),
-      first_name: toggle ? user.first_name : values.first_name,
-      last_name: toggle ? user.last_name : values.last_name,
-    };
-
-    dispatch(thunkGetRegisterAppointment(data));
+    return isError;
   };
 
-  const content = toggle ? null : (
-    <>
-      <Row justify={"start"}>
-        <Typography.Text strong>Введите ваше имя</Typography.Text>
-      </Row>
-      <Form.Item hasFeedback rules={[{ min: 2, max: 20, message: "Не менее 2 и не более 20 символов", required: true }]} name={"first_name"}>
-        <Input placeholder="Иван" />
-      </Form.Item>
-      <Row justify={"start"}>
-        <Typography.Text strong>Введите ваше отчество</Typography.Text>
-      </Row>
-      <Form.Item hasFeedback rules={[{ min: 2, max: 20, message: "Не менее 2 и не более 20 символов", required: true }]} name={"last_name"}>
-        <Input placeholder="Иванович" />
-      </Form.Item>
-    </>
+  const onEditAppointment = (values: IEditValues) => {
+    const data = {
+      ...values,
+      phone: values.phone.toString(),
+      date: values.date.format("MM-DD-YYYY"),
+      time: values.time.format("H:mm"),
+    };
+
+    return edit && onGetState ? onGetState(data) : null;
+  };
+
+  const onCancelAppointment = () => {
+    dispatch(thunkRemoveAppointment());
+  };
+
+  const onRegisterAppointment = () => {
+    if (!onFormError()) {
+      const data = {
+        ...form.getFieldsValue(),
+        time: form.getFieldValue("time").format("H:mm"),
+        date: form.getFieldValue("date").format("MM-DD-YYYY"),
+      };
+
+      dispatch(thunkGetRegisterAppointment(data));
+    }
+  };
+
+  const initialValues = edit
+    ? {
+        problem: state?.problem,
+        phone: state?.phone,
+        type: state?.type,
+        time: dayjs(state?.time, "HH:mm"),
+        date: dayjs(state?.date, "MM-DD-YYYY"),
+      }
+    : {};
+
+  const contentEdit = (
+    <Space>
+      <Col>
+        <Button loading={isLoadingEdit} htmlType="submit" type="primary">
+          <EditOutlined />
+        </Button>
+      </Col>
+      <Col>
+        <Popconfirm
+          title="Вы действительно хотите отменить ваше обращение?"
+          description="В случае отмены, мы не сможем вам помочь :("
+          okText="Да"
+          cancelText="Нет"
+          onConfirm={onCancelAppointment}
+        >
+          <Button danger type="primary">
+            <DeleteOutlined />
+          </Button>
+        </Popconfirm>
+      </Col>
+    </Space>
   );
+
+  const contentRegister = (
+    <Col>
+      <Popconfirm
+        title="Вы действительно хотите записаться на посещение Юридической Клиники?"
+        description="Необходимо, чтобы ваши данные были корректны, иначе нам придется вам отказать"
+        okText="Да"
+        cancelText="Нет"
+        onConfirm={onRegisterAppointment}
+      >
+        <Button loading={isLoading} htmlType="submit" type="primary">
+          Оформить обращение
+        </Button>
+      </Popconfirm>
+    </Col>
+  );
+
+  if (edit && status !== AppointmentStatus.ACCEPTED) {
+    return <Navigate to={PrivetRoutesNames.APPOINTMENT} />;
+  }
 
   return (
     <div className="visit__wrapper">
-      <Form name="basic" className="visit__form" onFinish={onFinish}>
+      <Form form={form} initialValues={initialValues} name="basic" onFinish={onEditAppointment} className="visit__form">
         <Row>
           <Col>
             <Typography.Text strong>Выберите дату и время посещения</Typography.Text>
@@ -75,7 +176,7 @@ export const VisitForm = () => {
                 if (date.valueOf() < Date.now()) {
                   return true;
                 }
-                if (date.format("dddd") !== "Wednesday" && date.valueOf() > Date.now()) {
+                if (date.format("dddd") !== "Tuesday" && date.valueOf() > Date.now()) {
                   return true;
                 } else {
                   return false;
@@ -86,7 +187,7 @@ export const VisitForm = () => {
               renderExtraFooter={() => {
                 return (
                   <>
-                    <p style={{ paddingLeft: 20, color: "grey" }}>Режим работы: среда, 15:00 - 17:00</p>
+                    <p style={{ paddingLeft: 20, color: "grey" }}>Режим работы: вторник, 16:00 - 18:00</p>
                   </>
                 );
               }}
@@ -106,8 +207,8 @@ export const VisitForm = () => {
               inputReadOnly
               placeholder="Выберите время"
               showNow={false}
-              minuteStep={30}
-              disabledHours={() => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 24]}
+              minuteStep={15}
+              disabledHours={() => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23, 24]}
               format={"HH:mm"}
               hideDisabledOptions
             />
@@ -182,30 +283,18 @@ export const VisitForm = () => {
             <Input addonBefore="+7" placeholder={"9802343233"} />
           </Form.Item>
         </Row>
-        <Row justify={"start"}>
-          <Form.Item>
-            <Checkbox onChange={() => setToggle(!toggle)} defaultChecked>
-              <Typography.Text strong>Использовать ваше ФИО из профиля</Typography.Text>
-            </Checkbox>
-          </Form.Item>
-        </Row>
-        {content}
         <Form.Item>
-          <div className="button__visit">
-            <Button loading={isLoading} htmlType="submit" type="primary">
-              Записаться
-            </Button>
-          </div>
+          <Row justify={"center"}>{edit ? contentEdit : contentRegister}</Row>
         </Form.Item>
-
-        {isError && (
-          <Alert
-            type="error"
-            style={{ fontWeight: 600, fontFamily: "font-family: Montserrat, sans-serif" }}
-            showIcon
-            message={"Произошла непредвиденная ошибка, попробуйте еще раз"}
-          />
-        )}
+        {isError ||
+          (isErrorEdit && (
+            <Alert
+              type="error"
+              style={{ fontWeight: 600, fontFamily: "font-family: Montserrat, sans-serif" }}
+              showIcon
+              message={"Произошла непредвиденная ошибка, попробуйте еще раз"}
+            />
+          ))}
       </Form>
     </div>
   );

@@ -1,8 +1,6 @@
 import type { Dayjs } from "dayjs";
 
 export interface IApointmentState {
-  first_name: string;
-  last_name: string;
   date: Dayjs;
   time: Dayjs;
   problem: string;
@@ -11,13 +9,11 @@ export interface IApointmentState {
 }
 
 export interface IRegisterApointmentData {
-  first_name: string;
-  last_name: string;
   date: string;
   time: string;
   problem: string;
   type: string;
-  phone: number;
+  phone: number | string;
 }
 
 export interface IRegisterApointmentDataResponse {
@@ -61,4 +57,12 @@ export interface IGetApointmentInfoResponseError {
 export interface IRemoveAppointmentResponse {
   message: string;
   status: string;
+}
+
+export interface IEditAppointmentData {
+  problem: string;
+  type: string;
+  time: string;
+  date: string;
+  phone: string;
 }

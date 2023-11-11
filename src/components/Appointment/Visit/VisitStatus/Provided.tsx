@@ -1,4 +1,4 @@
-import { Button, Divider, Input, Rate, Result, Space, Typography, Form } from "antd";
+import { Button, Divider, Input, Rate, Result, Space, Typography, Form, Row, Col } from "antd";
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAppDispatch } from "../../../../hooks/useAppDispatch";
@@ -6,6 +6,8 @@ import { thunkRemoveAppointment } from "../../../../slices/appointmentSlice";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
 import axios from "../../../../config/axios";
 import { UseLocalStorage } from "../../../../hooks/useLocalStorage";
+
+import { SendOutlined } from "@ant-design/icons";
 
 export const Provided: React.FC = () => {
   const [rate, setRate] = useState<number>(5);
@@ -20,7 +22,7 @@ export const Provided: React.FC = () => {
     isSetReview(true);
   };
 
-  const onChangeReview = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChangeReview = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setReview(event.target.value);
   };
 
@@ -51,19 +53,23 @@ export const Provided: React.FC = () => {
           <Divider />
           {isReview ? (
             <>
-              <Typography.Paragraph strong>Что не понравилось вам больше всего?</Typography.Paragraph>
+              <Typography.Paragraph style={{ textAlign: "start" }} strong>
+                Что не понравилось вам больше всего?
+              </Typography.Paragraph>
               <Form initialValues={{ review: "" }}>
                 <Form.Item
                   hasFeedback
                   name={"review"}
-                  rules={[{ required: true, message: "Пожалуйста, заполните поле (до 100 символов)", min: 10, max: 100 }]}
+                  rules={[{ required: true, message: "Пожалуйста, заполните поле (до 100 символов)", min: 3, max: 100 }]}
                 >
-                  <Space.Compact>
-                    <Input onChange={onChangeReview} placeholder="Мне понравилось всё!" />
-                    <Button disabled={review.length < 10 || review.length > 100} onClick={onFetchData} type="primary">
-                      Отправить
-                    </Button>
-                  </Space.Compact>
+                  <Row justify={"space-between"}>
+                    <Col span={20}>
+                      <Input.TextArea rows={1} onChange={onChangeReview} placeholder="Мне понравилось всё!" />
+                    </Col>
+                    <Col style={{ marginTop: "5px" }} span={4}>
+                      {review.length >= 3 && <SendOutlined onClick={onFetchData} />}
+                    </Col>
+                  </Row>
                 </Form.Item>
               </Form>
             </>

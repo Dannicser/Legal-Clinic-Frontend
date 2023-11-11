@@ -8,6 +8,8 @@ import { AppointmentStatus } from "../../types/appointment";
 
 import { UseLocalStorage } from "../../hooks/useLocalStorage";
 
+import dayjs from "dayjs";
+
 import "./Map.scss";
 
 export const Map: React.FC = () => {
@@ -92,6 +94,8 @@ const ModalInfo: React.FC<IModalInfoProps> = ({ isOpenModal, isSetOpenModal, dat
     isSetOpenModal(false);
   };
 
+  const format_date = dayjs(date).locale("ru").format("D MMMM");
+
   return (
     <>
       <Modal
@@ -110,7 +114,7 @@ const ModalInfo: React.FC<IModalInfoProps> = ({ isOpenModal, isSetOpenModal, dat
             </Button>
           </>,
         ]}
-        title={`У вас запланиривано посещение юридической клиники ${date}`}
+        title={`У вас запланиривано посещение юридической клиники ${format_date}`}
         open={isOpenModal}
         onCancel={onCloseWithHelp}
       >
