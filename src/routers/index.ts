@@ -14,6 +14,7 @@ import { ProfilePage } from "../pages/ProfilePage";
 import { AdminPage } from "../pages/AdminPage";
 import { VisitEdit } from "../components/Appointment/Visit/VisitEdit/VisitEdit";
 import { AppointmentHistory } from "../components/Appointment/AppointmentHistory/AppointmentHistory";
+import { AppointmentCalendar } from "../components/Appointment/AppointmentCalendar/AppointmentCalendar";
 
 export interface iRouter {
   path: string;
@@ -38,6 +39,7 @@ export enum PrivetRoutesNames {
   PROFILE = "/profile",
   EDIT = "/profile/edit",
   FULLPOST = "/post/:id",
+  APPOINTMENT_CALENDAR = "/appointment/calendar",
 }
 
 export enum AdminRoutesNames {
@@ -56,6 +58,7 @@ export const privetRoutes: iRouter[] = [
   { path: PrivetRoutesNames.APPOINTMENT, component: AppointmentPage },
   { path: PrivetRoutesNames.APPOINTMENT_EDIT, component: VisitEdit },
   { path: PrivetRoutesNames.APPOINTMENT_HISTOTY, component: AppointmentHistory },
+  { path: PrivetRoutesNames.APPOINTMENT_CALENDAR, component: AppointmentCalendar },
 
   { path: PrivetRoutesNames.MAP, component: MapPage },
   { path: PrivetRoutesNames.PROFILE, component: ProfilePage },

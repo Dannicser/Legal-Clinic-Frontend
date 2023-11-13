@@ -56,8 +56,10 @@ const ModalHelp: React.FC<IModalHelpProps> = ({ setIsShown }) => {
       onCancel={onCloseModal}
     >
       <Typography.Text type="secondary">В этом разделе вы сможете отслеживать </Typography.Text>
-      <Typography.Text type="success">статус вашего обращения </Typography.Text>
-      <Typography.Text type="secondary">и получать необходимую информацию о нем</Typography.Text>
+      <Typography.Text strong type="success">
+        статус вашего обращения{" "}
+      </Typography.Text>
+      <Typography.Text type="secondary">и получать необходимую информацию о нем.</Typography.Text>
     </Modal>
   );
 };

@@ -98,7 +98,7 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
               title={
                 <Divider>
                   <Typography.Title level={5} style={{ color: "red" }}>
-                    Запись от {item.date} {onCutText(item.createdAt, 0, 4, false)}
+                    Запись от {item.date}
                   </Typography.Title>
                 </Divider>
               }
@@ -127,9 +127,7 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
               avatar={<Avatar style={{ backgroundColor: "#4a43ec" }} icon={index + 1} />}
               title={
                 <Divider>
-                  <Typography.Title level={5}>
-                    Запись от {item.date} {onCutText(item.createdAt, 0, 4, false)}
-                  </Typography.Title>
+                  <Typography.Title level={5}>Запись от {item.date}</Typography.Title>
                 </Divider>
               }
               description={
@@ -153,3 +151,5 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
 const Loader: React.FC = () => {
   return <Skeleton active avatar paragraph={{ rows: 4 }} />;
 };
+
+//{onCutText(item.createdAt, 0, 4, false)}

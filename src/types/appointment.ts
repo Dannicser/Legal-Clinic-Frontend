@@ -66,3 +66,7 @@ export interface IEditAppointmentData {
   date: string;
   phone: string;
 }
+export interface ICheckReservationResponse {
+  message: string;
+  data: string[];
+}

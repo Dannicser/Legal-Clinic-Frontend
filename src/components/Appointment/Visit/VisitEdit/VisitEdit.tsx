@@ -20,7 +20,6 @@ export const VisitEdit: React.FC = () => {
   const { problem, status, time, date, type, phone } = useAppSelector((state) => state.appointment.data);
   const [isLoadingEdit, setIsLoadingEdit] = useState<boolean>(false);
   const [isErrorEdit, setIsErrorEdit] = useState<boolean>(false);
-  const [isRedirect, isSetRedirect] = useState<boolean>(false);
   const [messageApi, contextHolder] = message.useMessage();
 
   const data = { problem, time, date, type, phone };
@@ -34,7 +33,6 @@ export const VisitEdit: React.FC = () => {
       setIsLoadingEdit(true);
       const response = await axios.patch<IChangeAppointmentResponse>("/appointment/change", data);
       onShowMessage();
-      onStartTimer();
     } catch (error) {
       setIsErrorEdit(true);
     } finally {
@@ -46,23 +44,9 @@ export const VisitEdit: React.FC = () => {
     messageApi.open({
       type: "success",
       content: "Заявление было изменено успешно",
+      duration: 2,
     });
   };
-
-  const onStartTimer = () => {
-    setTimeout(() => {
-      console.log("timer");
-      isSetRedirect(true);
-    }, 3000);
-  };
-
-  if (isRedirect) {
-    return (
-      <>
-        <Navigate to={PrivetRoutesNames.APPOINTMENT} />
-      </>
-    );
-  }
 
   return (
     <>

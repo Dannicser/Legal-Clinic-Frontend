@@ -81,10 +81,12 @@ export const Menu = () => {
                 <div className="title">Сообщения</div>
               </li>
             </NavLink>
-            <li className="menu__item">
-              <CalendarOutlined />
-              <div className="title">Календарь</div>
-            </li>{" "}
+            <NavLink to={PrivetRoutesNames.APPOINTMENT_CALENDAR}>
+              <li className="menu__item">
+                <CalendarOutlined />
+                <div className="title">Календарь записей</div>
+              </li>{" "}
+            </NavLink>
             <li className="menu__item">
               <QuestionCircleOutlined />
               <div className="title">Часто задаваемые вопросы</div>

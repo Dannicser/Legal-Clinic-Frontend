@@ -41,17 +41,10 @@ interface IVisitFormProps {
   isLoadingEdit?: boolean;
 }
 
-interface IEditValues {
-  date: Dayjs;
-  time: Dayjs;
-  phone: number;
-  problem: string;
-  type: string;
-}
-
 export const VisitForm: React.FC<IVisitFormProps> = (props) => {
   console.log("render");
   const { onGetState, edit, state, status, isErrorEdit, isLoadingEdit } = props;
+  const [changeMessage, setChangeMessage] = useState<string>("");
 
   const [form] = Form.useForm();
 
@@ -59,7 +52,6 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
   const dispatch = useAppDispatch();
 
   const onFormError = () => {
-    console.log("er");
     let isError = false;
     form.getFieldsError().map((el) => {
       if (el.errors.length) {
@@ -70,15 +62,21 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
     return isError;
   };
 
-  const onEditAppointment = (values: IEditValues) => {
-    const data = {
-      ...values,
-      phone: values.phone.toString(),
-      date: values.date.format("MM-DD-YYYY"),
-      time: values.time.format("H:mm"),
-    };
+  const onEditAppointment = () => {
+    if (!onFormError() && form.isFieldsTouched() && onGetState) {
+      const data: IEditAppointmentData = {
+        ...form.getFieldsValue(),
+        time: form.getFieldValue("time").format("H:mm"),
+        date: form.getFieldValue("date").format("DD-MM-YYYY"),
+      };
 
-    return edit && onGetState ? onGetState(data) : null;
+      setChangeMessage("");
+      console.log("edit");
+
+      return onGetState(data);
+    }
+
+    setChangeMessage("Вы не изменили данные в форме.");
   };
 
   const onCancelAppointment = () => {
@@ -90,8 +88,10 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
       const data = {
         ...form.getFieldsValue(),
         time: form.getFieldValue("time").format("H:mm"),
-        date: form.getFieldValue("date").format("MM-DD-YYYY"),
+        date: form.getFieldValue("date").format("DD-MM-YYYY"),
       };
+
+      console.log("resister");
 
       dispatch(thunkGetRegisterAppointment(data));
     }
@@ -103,16 +103,29 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
         phone: state?.phone,
         type: state?.type,
         time: dayjs(state?.time, "HH:mm"),
-        date: dayjs(state?.date, "MM-DD-YYYY"),
+        date: dayjs(state?.date, "DD-MM-YYYY"),
       }
     : {};
 
   const contentEdit = (
     <Space>
       <Col>
-        <Button loading={isLoadingEdit} htmlType="submit" type="primary">
-          <EditOutlined />
-        </Button>
+        <Popconfirm
+          title="Вы действительно хотите изменить ваше обращение?"
+          description={
+            <>
+              Пожалуйста, проверьте правильность введенных вами данных.
+              <br />
+            </>
+          }
+          okText="Да"
+          cancelText="Нет"
+          onConfirm={onEditAppointment}
+        >
+          <Button loading={isLoadingEdit} htmlType="submit" type="primary">
+            <EditOutlined />
+          </Button>
+        </Popconfirm>
       </Col>
       <Col>
         <Popconfirm
@@ -134,7 +147,14 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
     <Col>
       <Popconfirm
         title="Вы действительно хотите записаться на посещение Юридической Клиники?"
-        description="Необходимо, чтобы ваши данные были корректны, иначе нам придется вам отказать"
+        description={
+          <>
+            Проверьте правильность введенных вами данных, если они будут некорректны, нам придется <span> </span>
+            <Typography.Text type="warning" strong>
+              отказать вам в обращении.
+            </Typography.Text>
+          </>
+        }
         okText="Да"
         cancelText="Нет"
         onConfirm={onRegisterAppointment}
@@ -152,7 +172,7 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
 
   return (
     <div className="visit__wrapper">
-      <Form form={form} initialValues={initialValues} name="basic" onFinish={onEditAppointment} className="visit__form">
+      <Form form={form} initialValues={initialValues} name="basic" className="visit__form">
         <Row>
           <Col>
             <Typography.Text strong>Выберите дату и время посещения</Typography.Text>
@@ -286,15 +306,9 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
         <Form.Item>
           <Row justify={"center"}>{edit ? contentEdit : contentRegister}</Row>
         </Form.Item>
+        {changeMessage && <Alert className="alert" type="warning" banner showIcon message={changeMessage} />}
         {isError ||
-          (isErrorEdit && (
-            <Alert
-              type="error"
-              style={{ fontWeight: 600, fontFamily: "font-family: Montserrat, sans-serif" }}
-              showIcon
-              message={"Произошла непредвиденная ошибка, попробуйте еще раз"}
-            />
-          ))}
+          (isErrorEdit && <Alert type="error" className="alert" showIcon message={"Произошла непредвиденная ошибка, попробуйте еще раз"} />)}
       </Form>
     </div>
   );

@@ -54,7 +54,7 @@ export const Provided: React.FC = () => {
           {isReview ? (
             <>
               <Typography.Paragraph style={{ textAlign: "start" }} strong>
-                Что не понравилось вам больше всего?
+                Что не понравилось вам?
               </Typography.Paragraph>
               <Form initialValues={{ review: "" }}>
                 <Form.Item
