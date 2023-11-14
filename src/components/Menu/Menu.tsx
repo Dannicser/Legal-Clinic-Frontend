@@ -31,7 +31,7 @@ import { AppointmentStatus } from "../../types/appointment";
 export const Menu = () => {
   const dispatch = useAppDispatch();
   const { user, loading, error } = useAppSelector((state) => state.user);
-  const { date, time, status } = useAppSelector((state) => state.appointment.data);
+  const { formatDate, status } = useAppSelector((state) => state.appointment.data);
 
   useEffect(() => {
     dispatch(thunkGetUserInfo());
@@ -43,13 +43,7 @@ export const Menu = () => {
 
   const banner =
     status === AppointmentStatus.CONFIRMED ? (
-      <Alert
-        message={`Запланировано посещение юридической клиники ${dayjs(date).locale("ru").format("D MMMM")} в ${time}.`}
-        banner
-        showIcon
-        type="info"
-        className="alert_visit"
-      />
+      <Alert message={`Запланировано посещение юридической клиники ${formatDate}`} banner showIcon type="info" className="alert_visit" />
     ) : null;
 
   return (

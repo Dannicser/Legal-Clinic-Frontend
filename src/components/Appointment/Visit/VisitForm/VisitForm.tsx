@@ -1,35 +1,22 @@
-import "./VisitForm.scss";
-import {
-  DatePicker,
-  Select,
-  TimePicker,
-  Input,
-  Button,
-  Space,
-  Form,
-  Checkbox,
-  Typography,
-  Row,
-  InputNumber,
-  Tooltip,
-  Col,
-  Alert,
-  Popconfirm,
-} from "antd";
-
-import locale from "antd/es/date-picker/locale/ru_RU";
-import dayjs, { Dayjs } from "dayjs";
-
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { AppointmentStatus, IEditAppointmentData, Status } from "../../../../types/appointment";
-
+import { useState } from "react";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
 import { useAppDispatch } from "../../../../hooks/useAppDispatch";
 import { thunkGetRegisterAppointment, thunkRemoveAppointment } from "../../../../slices/appointmentSlice";
-import { Navigate } from "react-router-dom";
-import { PrivetRoutesNames } from "../../../../routers";
-import { useState } from "react";
 
+import axios from "../../../../config/axios";
+
+import { NavLink, Navigate } from "react-router-dom";
+import { PrivetRoutesNames } from "../../../../routers";
+
+import locale from "antd/es/date-picker/locale/ru_RU";
+import dayjs from "dayjs";
+
+import "./VisitForm.scss";
+
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DatePicker, Select, TimePicker, Input, Button, Space, Form, Typography, Row, Tooltip, Col, Alert, Popconfirm } from "antd";
+
+import { AppointmentStatus, ICheckReservationResponse, IEditAppointmentData, ITimeResponse, Status } from "../../../../types/appointment";
 const { TextArea } = Input;
 
 interface IVisitFormProps {
@@ -41,14 +28,19 @@ interface IVisitFormProps {
   isLoadingEdit?: boolean;
 }
 
+interface IStateReservation extends ITimeResponse {}
+
 export const VisitForm: React.FC<IVisitFormProps> = (props) => {
   console.log("render");
   const { onGetState, edit, state, status, isErrorEdit, isLoadingEdit } = props;
   const [changeMessage, setChangeMessage] = useState<string>("");
+  const [reservation, setReservation] = useState<IStateReservation[]>([]);
+  const [isLoadingReservation, setIsLoadingReservation] = useState<boolean>(false);
+  const [isErrorReservation, setIsErrorReservation] = useState<boolean>(false);
 
   const [form] = Form.useForm();
 
-  const { isLoading, isError } = useAppSelector((state) => state.appointment);
+  const { isLoading, isError, isReserved, data } = useAppSelector((state) => state.appointment);
   const dispatch = useAppDispatch();
 
   const onFormError = () => {
@@ -62,16 +54,29 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
     return isError;
   };
 
+  const onGetReservationList = async (date: dayjs.Dayjs) => {
+    try {
+      console.log("request");
+      setIsLoadingReservation(true);
+      const { data } = await axios.post<ICheckReservationResponse>("/appointment/check-reservation", { date: date.format("MM-DD-YYYY") });
+      form.resetFields(["time"]);
+      setReservation(data.data);
+    } catch (error) {
+      setIsErrorReservation(true);
+    } finally {
+      setIsLoadingReservation(false);
+    }
+  };
+
   const onEditAppointment = () => {
     if (!onFormError() && form.isFieldsTouched() && onGetState) {
       const data: IEditAppointmentData = {
         ...form.getFieldsValue(),
         time: form.getFieldValue("time").format("H:mm"),
-        date: form.getFieldValue("date").format("DD-MM-YYYY"),
+        date: form.getFieldValue("date").format("MM-DD-YYYY"),
       };
 
       setChangeMessage("");
-      console.log("edit");
 
       return onGetState(data);
     }
@@ -88,10 +93,8 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
       const data = {
         ...form.getFieldsValue(),
         time: form.getFieldValue("time").format("H:mm"),
-        date: form.getFieldValue("date").format("DD-MM-YYYY"),
+        date: form.getFieldValue("date").format("MM-DD-YYYY"),
       };
-
-      console.log("resister");
 
       dispatch(thunkGetRegisterAppointment(data));
     }
@@ -102,8 +105,6 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
         problem: state?.problem,
         phone: state?.phone,
         type: state?.type,
-        time: dayjs(state?.time, "HH:mm"),
-        date: dayjs(state?.date, "DD-MM-YYYY"),
       }
     : {};
 
@@ -147,6 +148,7 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
     <Col>
       <Popconfirm
         title="Вы действительно хотите записаться на посещение Юридической Клиники?"
+        placement="top"
         description={
           <>
             Проверьте правильность введенных вами данных, если они будут некорректны, нам придется <span> </span>
@@ -191,12 +193,15 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
           >
             <DatePicker
               inputReadOnly
+              disabled={isLoadingReservation}
+              onSelect={onGetReservationList}
               locale={locale}
               disabledDate={(date) => {
-                if (date.valueOf() < Date.now()) {
+                if (date.valueOf() <= Date.now() - 86400000 && date.format("dddd") === "Tuesday") {
                   return true;
                 }
-                if (date.format("dddd") !== "Tuesday" && date.valueOf() > Date.now()) {
+
+                if (date.format("dddd") !== "Tuesday") {
                   return true;
                 } else {
                   return false;
@@ -213,18 +218,45 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
               }}
             />
           </Form.Item>
+
           <Form.Item
             hasFeedback
             rules={[
-              {
-                required: true,
-                message: "Выберите время посещения",
-              },
+              () => ({
+                validator(_, value) {
+                  if (!value) {
+                    return Promise.reject(new Error("Выберете время"));
+                  }
+
+                  const arr = reservation.filter((el) => {
+                    if (el.time === value.format("H:mm") && value.format("H:mm") !== data.time) {
+                      return true;
+                    }
+
+                    return false;
+                  });
+
+                  if (arr.length) {
+                    return Promise.reject(new Error("Это время занято"));
+                  }
+
+                  if (isErrorReservation) {
+                    return Promise.reject(new Error("Ошибка"));
+                  }
+
+                  if (value.format("H:mm").slice(0, 2) < 16 || value.format("H:mm").slice(0, 2) > 18) {
+                    return Promise.reject(new Error("Мы работаем с 16:00-18:00"));
+                  }
+
+                  return Promise.resolve();
+                },
+              }),
             ]}
             name="time"
           >
             <TimePicker
               inputReadOnly
+              disabled={isLoadingReservation}
               placeholder="Выберите время"
               showNow={false}
               minuteStep={15}
@@ -250,6 +282,7 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
           name={"type"}
         >
           <Select
+            defaultValue={state?.type}
             placeholder="Выберите вид правовых отношений"
             options={[
               {
@@ -283,7 +316,7 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
           ]}
           name={"problem"}
         >
-          <TextArea rows={4} placeholder="Не более 1000 символов" maxLength={1001} />
+          <TextArea rows={4} defaultValue={data.problem} placeholder="Не более 1000 символов" maxLength={1001} />
         </Form.Item>
         <Row justify={"start"}>
           <Col style={{ textAlign: "start" }} span={24}>
@@ -300,13 +333,28 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
             name={"phone"}
             className="mt-1"
           >
-            <Input addonBefore="+7" placeholder={"9802343233"} />
+            <Input defaultValue={data.phone} addonBefore="+7" placeholder={"9802343233"} />
           </Form.Item>
         </Row>
         <Form.Item>
           <Row justify={"center"}>{edit ? contentEdit : contentRegister}</Row>
         </Form.Item>
+        {isReserved && (
+          <NavLink to={PrivetRoutesNames.APPOINTMENT_CALENDAR}>
+            <Alert
+              className="alert"
+              type="info"
+              banner
+              showIcon
+              message={"К сожалению, данное время недоступно для резерва, кликните сюда, чтобы посмотреть доступное время для посещения клиники"}
+            />
+          </NavLink>
+        )}
         {changeMessage && <Alert className="alert" type="warning" banner showIcon message={changeMessage} />}
+        {isError ||
+          (isErrorReservation && (
+            <Alert type="error" className="alert" showIcon message={"Неудалось получить информацию о свободном времени посещения."} />
+          ))}
         {isError ||
           (isErrorEdit && <Alert type="error" className="alert" showIcon message={"Произошла непредвиденная ошибка, попробуйте еще раз"} />)}
       </Form>

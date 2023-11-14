@@ -1,4 +1,5 @@
 import { Progress } from "antd";
+
 import { AppointmentStatus, Status } from "../../../types/appointment";
 
 interface IAppointmentProgress {

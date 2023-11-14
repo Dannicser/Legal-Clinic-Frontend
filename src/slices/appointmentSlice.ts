@@ -1,16 +1,17 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  IGetApointmentInfoResponse,
-  IRegisterApointmentData,
-  IRegisterApointmentDataResponse,
-  IRemoveAppointmentResponse,
-  Status,
-} from "../types/appointment";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { UseAppointmentService } from "../services/UseAppointmentService";
 
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
+
+import {
+  IGetApointmentInfoResponse,
+  IRegisterApointmentData,
+  IRegisterApointmentResponse,
+  IRemoveAppointmentResponse,
+  Status,
+} from "../types/appointment";
 
 export interface IStateData {
   problem: string;
@@ -19,6 +20,7 @@ export interface IStateData {
   id: string;
   time: string;
   date: string;
+  formatDate?: string;
   phone: string;
   createdAt: string;
 }
@@ -28,6 +30,7 @@ interface IState {
   message: string;
   isLoading: boolean;
   isError: boolean;
+  isReserved: boolean;
 }
 
 const initialState: IState = {
@@ -38,12 +41,14 @@ const initialState: IState = {
     phone: "",
     time: "",
     date: "",
+    formatDate: "",
     id: "",
     createdAt: "",
   },
   message: "",
   isLoading: false,
   isError: false,
+  isReserved: false,
 };
 
 export const thunkGetStatusAppointment = createAsyncThunk<IGetApointmentInfoResponse>(
@@ -53,7 +58,7 @@ export const thunkGetStatusAppointment = createAsyncThunk<IGetApointmentInfoResp
 
     const response = await onGetStatusAppointment();
 
-    if (response.status === "error") {
+    if (response.status >= 400) {
       return rejectWithValue(response);
     }
 
@@ -61,18 +66,18 @@ export const thunkGetStatusAppointment = createAsyncThunk<IGetApointmentInfoResp
   }
 );
 
-export const thunkGetRegisterAppointment = createAsyncThunk<IRegisterApointmentDataResponse, IRegisterApointmentData>(
+export const thunkGetRegisterAppointment = createAsyncThunk<IRegisterApointmentResponse, IRegisterApointmentData>(
   "thunkGetRegisterAppointment/post",
   async (data, { rejectWithValue }) => {
     const { onGetRegisterAppointment } = UseAppointmentService();
 
     const response = await onGetRegisterAppointment(data);
 
-    if (response.status === "error") {
+    if (response.status >= 400) {
       return rejectWithValue(response);
     }
 
-    return response as IRegisterApointmentDataResponse;
+    return response as IRegisterApointmentResponse;
   }
 );
 
@@ -81,7 +86,7 @@ export const thunkRemoveAppointment = createAsyncThunk<IRemoveAppointmentRespons
 
   const response = await onRemoveAppointment();
 
-  if (response.status === "error") {
+  if (response.status >= 400) {
     return rejectWithValue(response);
   }
 
@@ -100,6 +105,9 @@ const appointmentSlice = createSlice({
       })
       .addCase(thunkGetStatusAppointment.fulfilled, (state, action) => {
         state.data = action.payload.data;
+        if (action.payload.data.status !== "none") {
+          state.data.formatDate = `${dayjs(action.payload.data.date).locale("ru").format("D MMMM")} в ${action.payload.data.time}`;
+        }
         state.message = action.payload.message;
         state.isLoading = false;
       })
@@ -113,10 +121,22 @@ const appointmentSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(thunkGetRegisterAppointment.fulfilled, (state, action) => {
+        if (action.payload.data.isReserved) {
+          state.isReserved = true;
+        } else {
+          state.isReserved = false;
+          state.data.status = "accepted";
+        }
+        state.message = action.payload.message;
+        state.data.problem = action.payload.data.doc.problem;
+        state.data.phone = action.payload.data.doc.phone;
+        state.data.type = action.payload.data.doc.type;
+        //
+        state.data.time = action.payload.data.doc.time;
+        state.data.date = action.payload.data.doc.date;
         state.isLoading = false;
-        state.data.status = "accepted";
       })
-      .addCase(thunkGetRegisterAppointment.rejected, (state, action: any) => {
+      .addCase(thunkGetRegisterAppointment.rejected, (state) => {
         state.data.status = "error";
         state.message = "";
         state.isLoading = false;
@@ -128,8 +148,9 @@ const appointmentSlice = createSlice({
         state.data.status = "none";
       })
       .addCase(thunkRemoveAppointment.rejected, (state, action) => {
-        state.message = "Произошла непредвиденная ошибка";
+        state.message = "Произошла непредвиденная ошибка при удалении записи";
         state.data.status = "error";
+        state.isError = true;
       });
   },
 });

@@ -1,11 +1,12 @@
-import { Button, Result } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../../hooks/useAppSelector";
 import { thunkRemoveAppointment } from "../../../../slices/appointmentSlice";
 import { UseLocalStorage } from "../../../../hooks/useLocalStorage";
-import { useAppSelector } from "../../../../hooks/useAppSelector";
 
 import axios from "../../../../config/axios";
+
+import { Button, Result } from "antd";
 
 interface IRejectedProps {
   message?: string;

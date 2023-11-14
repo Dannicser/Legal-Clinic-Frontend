@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { UseLocalStorage } from "../../../../hooks/useLocalStorage";
 
-import { Button, Modal, Result } from "antd";
 import { NavLink } from "react-router-dom";
 import { PrivetRoutesNames } from "../../../../routers";
-import { UseLocalStorage } from "../../../../hooks/useLocalStorage";
+
+import { Button, Modal, Result } from "antd";
 import Typography from "antd/es/typography";
 
 export const Accepted: React.FC = () => {

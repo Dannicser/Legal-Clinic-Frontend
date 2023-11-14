@@ -4,16 +4,20 @@ import axios from "../../../config/axios";
 
 import { Layout } from "../../Layout/Layout";
 import { Header } from "../../UI/Header/Header";
-import { Avatar, Button, Col, Divider, Empty, List, Rate, Result, Row, Skeleton, Tooltip } from "antd";
-import { onCutText } from "../../../utils/helpers";
 
-import Typography from "antd/es/typography";
 import { NavLink } from "react-router-dom";
 import { PrivetRoutesNames } from "../../../routers";
+
+import { Avatar, Button, Divider, Empty, List, Rate, Result, Row, Skeleton, Tooltip } from "antd";
+import { Typography } from "antd/es";
+
+import { onCutText } from "../../../utils/helpers";
 
 interface IAppointmentHistoryResponse {
   data: IAppointmentHistoryData[];
   message: string;
+  error: null | string;
+  status: number;
 }
 
 interface IAppointmentHistoryData {

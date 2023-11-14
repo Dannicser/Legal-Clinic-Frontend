@@ -1,13 +1,13 @@
-import { VisitForm } from "../VisitForm/VisitForm";
-
 import { useAppSelector } from "../../../../hooks/useAppSelector";
-import { AppointmentStatus } from "../../../../types/appointment";
 
 import { Accepted } from "../VisitStatus/Accepted";
 import { Problem } from "../VisitStatus/Problem";
 import { Provided } from "../VisitStatus/Provided";
 import { Rejected } from "../VisitStatus/Rejected";
 import { Confirmed } from "../VisitStatus/Confirmed";
+import { VisitForm } from "../VisitForm/VisitForm";
+
+import { AppointmentStatus } from "../../../../types/appointment";
 
 export const VisitMain = () => {
   const { appointment } = useAppSelector((state) => state);

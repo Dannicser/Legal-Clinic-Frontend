@@ -1,12 +1,14 @@
-import { Button, Divider, Input, Rate, Result, Space, Typography, Form, Row, Col } from "antd";
-import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useState } from "react";
 import { useAppDispatch } from "../../../../hooks/useAppDispatch";
-import { thunkRemoveAppointment } from "../../../../slices/appointmentSlice";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
-import axios from "../../../../config/axios";
+import { thunkRemoveAppointment } from "../../../../slices/appointmentSlice";
 import { UseLocalStorage } from "../../../../hooks/useLocalStorage";
 
+import { Navigate } from "react-router-dom";
+
+import axios from "../../../../config/axios";
+
+import { Button, Divider, Input, Rate, Result, Typography, Form, Row, Col } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 
 export const Provided: React.FC = () => {
@@ -60,7 +62,7 @@ export const Provided: React.FC = () => {
                 <Form.Item
                   hasFeedback
                   name={"review"}
-                  rules={[{ required: true, message: "Пожалуйста, заполните поле (до 100 символов)", min: 3, max: 100 }]}
+                  rules={[{ required: true, message: "Пожалуйста, заполните поле (от 5 до 100 символов)", min: 5, max: 100 }]}
                 >
                   <Row justify={"space-between"}>
                     <Col span={20}>

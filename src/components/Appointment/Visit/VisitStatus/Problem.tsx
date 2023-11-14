@@ -1,5 +1,6 @@
-import { Button, Result } from "antd";
 import { NavLink } from "react-router-dom";
+
+import { Button, Result } from "antd";
 
 export const Problem: React.FC = () => {
   return (

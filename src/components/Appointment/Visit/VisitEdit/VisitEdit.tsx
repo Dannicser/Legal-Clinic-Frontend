@@ -1,19 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
-import { IEditAppointmentData } from "../../../../types/appointment";
+
+import axios from "../../../../config/axios";
 
 import { Layout } from "../../../Layout/Layout";
 import { Header } from "../../../UI/Header/Header";
 import { VisitForm } from "../VisitForm/VisitForm";
 
-import axios from "../../../../config/axios";
-import { redirect, Navigate } from "react-router-dom";
-import { PrivetRoutesNames } from "../../../../routers";
 import { message } from "antd";
 
-interface IChangeAppointmentResponse {
-  message: string;
-  data: null;
+import { IEditAppointmentData, IRegisterApointmentResponse } from "../../../../types/appointment";
+
+interface IChangeAppointmentResponse extends IRegisterApointmentResponse {}
+
+interface IMessageParams {
+  type: "success" | "error";
+  content: string;
 }
 
 export const VisitEdit: React.FC = () => {
@@ -31,20 +33,27 @@ export const VisitEdit: React.FC = () => {
   const onChangeAppointment = async (data: IEditAppointmentData) => {
     try {
       setIsLoadingEdit(true);
-      const response = await axios.patch<IChangeAppointmentResponse>("/appointment/change", data);
-      onShowMessage();
+      const res = await axios.patch<IChangeAppointmentResponse>("/appointment/change", data);
+
+      if (res.data.data?.isReserved) {
+        return onShowMessage({ type: "error", content: "Это время недоступно" });
+      }
+
+      onShowMessage({ type: "success", content: "Заявление было изменено успешно" });
     } catch (error) {
+      console.log(error);
+
       setIsErrorEdit(true);
     } finally {
       setIsLoadingEdit(false);
     }
   };
 
-  const onShowMessage = () => {
+  const onShowMessage = (params: IMessageParams) => {
     messageApi.open({
-      type: "success",
-      content: "Заявление было изменено успешно",
-      duration: 2,
+      type: params.type,
+      content: params.content,
+      duration: 3,
     });
   };
 

@@ -1,44 +1,36 @@
 import { useState } from "react";
-import { Header } from "../../UI/Header/Header";
-
-import { Calendar, Col, Radio, Row, Select, Typography } from "antd";
-
-import { Layout } from "../../Layout/Layout";
 
 import axios from "../../../config/axios";
-import { ICheckReservationResponse } from "../../../types/appointment";
 
-//
-import React from "react";
-import "dayjs/locale/zh-cn";
-import Dayjs from "dayjs";
-import dayLocaleData from "dayjs/plugin/localeData";
+import { Header } from "../../UI/Header/Header";
+import { Layout } from "../../Layout/Layout";
+import { Alert, Calendar, Divider, Spin, Typography, Row, Col, Tooltip } from "antd";
+import { SelectInfo } from "antd/es/calendar/generateCalendar";
 
+import dayjs from "dayjs";
 import locale from "antd/es/calendar/locale/ru_RU";
 
-import type { CalendarProps } from "antd";
+import { ITimeResponse } from "../../../types/appointment";
 
 interface IState {
-  time: string[];
+  time: ITimeResponse[];
   date: string;
 }
 
 export const AppointmentCalendar = () => {
-  const [date, setDate] = useState<IState>({
+  const [state, setstate] = useState<IState>({
     time: [],
     date: "",
   });
 
+  const schema = ["16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45"];
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const onChangeCalendar = (data: any, a: any) => {
-    const date = data.format("DD-MM-YYYY");
-
-    console.log(date, a);
-  };
-
-  const onPanelChange = () => {
-    console.log("panal");
+  const onChangeCalendar = (data: dayjs.Dayjs, info: SelectInfo) => {
+    if (info.source === "date") {
+      onChechReservationTime(data.format("MM-DD-YYYY"));
+    }
   };
 
   const onChechReservationTime = async (date: string) => {
@@ -46,16 +38,39 @@ export const AppointmentCalendar = () => {
       console.log(date);
       console.log("request");
       setIsLoading(true);
-      const { data } = await axios.post<ICheckReservationResponse>("/appointment/check-reservation", { date });
-
-      setDate({ date, time: data.data });
+      const { data } = await axios.post("/appointment/check-reservation", { date });
+      setstate({ date, time: data.data });
     } catch (error) {
     } finally {
       setIsLoading(false);
     }
   };
 
-  console.log(date);
+  const content = (
+    <Row className="appointment_calendar_wrapper" gutter={[16, 16]}>
+      {schema.map((time) => {
+        if (state.time.find((el) => el.time === time)) {
+          return (
+            <Col className="gutter-row" span={8}>
+              <Tooltip title="Зарезервировано" color={"#f50"}>
+                <Alert banner className="alert" message={time} type="error" />
+              </Tooltip>
+            </Col>
+          );
+        } else {
+          return (
+            <Col className="gutter-row" span={8}>
+              <Tooltip title="Свободно" color={"#87d068"}>
+                <Alert banner className="alert" message={time} type="success" />
+              </Tooltip>
+            </Col>
+          );
+        }
+      })}
+    </Row>
+  );
+
+  console.log(state);
 
   return (
     <>
@@ -63,10 +78,11 @@ export const AppointmentCalendar = () => {
       <Layout>
         <Calendar
           disabledDate={(date) => {
-            if (date.valueOf() < Date.now()) {
+            if (date.valueOf() <= Date.now() - 86400000 && date.format("dddd") === "Tuesday") {
               return true;
             }
-            if (date.format("dddd") !== "Tuesday" && date.valueOf() > Date.now()) {
+
+            if (date.format("dddd") !== "Tuesday") {
               return true;
             } else {
               return false;
@@ -75,58 +91,37 @@ export const AppointmentCalendar = () => {
           locale={locale}
           fullscreen={false}
           mode={"month"}
-          //   onSelect={(date, info) => console.log(source)}
-          //   headerRender={({ value, type, onChange, onTypeChange }) => {
-          //     const start = 0;
-          //     const end = 12;
-          //     const monthOptions = [];
-
-          //     let current = value.clone();
-          //     const localeData = value.localeData();
-          //     const months = [];
-          //     for (let i = 0; i < 12; i++) {
-          //       current = current.month(i);
-          //       months.push(localeData.monthsShort(current));
-          //     }
-
-          //     for (let i = start; i < end; i++) {
-          //       monthOptions.push(
-          //         <Select.Option key={i} value={i} className="month-item">
-          //           {months[i]}
-          //         </Select.Option>
-          //       );
-          //     }
-
-          //     const month = value.month();
-
-          //     return (
-          //       <div style={{ padding: 8 }}>
-          //         <Row gutter={8}>
-          //           <Col>
-          //             <Radio.Group size="small" onChange={(e) => onTypeChange(e.target.value)} value={type}>
-          //               <Radio.Button value="month">Месяц</Radio.Button>
-          //             </Radio.Group>
-          //           </Col>
-
-          //           <Col>
-          //             <Select
-          //               size="small"
-          //               dropdownMatchSelectWidth={false}
-          //               value={month}
-          //               onChange={(newMonth) => {
-          //                 const now = value.clone().month(newMonth);
-          //                 onChange(now);
-          //               }}
-          //             >
-          //               {monthOptions}
-          //             </Select>
-          //           </Col>
-          //         </Row>
-          //         <Typography.Title level={4}>{months[month]}</Typography.Title>
-          //       </div>
-          //     );
-          //   }}
+          onSelect={onChangeCalendar}
         />
+
+        <Alert
+          type="info"
+          banner
+          showIcon={false}
+          message={
+            <Typography.Text className="alert" strong>
+              Информация о резерве {state.date && `на ${dayjs(state.date).locale("ru").format("D MMMM")}`}
+            </Typography.Text>
+          }
+        />
+        <Divider />
+
+        {state.date && !isLoading && content}
+
+        {isLoading && <Spin />}
+
+        {!state.date && (
+          <Alert
+            banner
+            type="warning"
+            message={
+              <Typography.Text className="alert" strong>
+                Выберите конкретный день, чтобы получить информацию о свободных местах.
+              </Typography.Text>
+            }
+          />
+        )}
+        <Divider />
       </Layout>
     </>
   );

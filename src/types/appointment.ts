@@ -13,13 +13,22 @@ export interface IRegisterApointmentData {
   time: string;
   problem: string;
   type: string;
-  phone: number | string;
+  phone: string;
 }
 
-export interface IRegisterApointmentDataResponse {
-  message: string;
-  status?: Status;
+//
+interface IRegisterApointmentDataResponse {
+  isReserved: boolean;
+  doc: IRegisterApointmentData;
 }
+
+export interface IRegisterApointmentResponse {
+  data: IRegisterApointmentDataResponse;
+  message: string;
+  status: number;
+  error: string | null;
+}
+//
 
 export enum AppointmentStatus {
   NONE = "none",
@@ -32,6 +41,7 @@ export enum AppointmentStatus {
 
 export type Status = "none" | "error" | "accepted" | "confirmed" | "rejected" | "provided";
 
+//
 export interface AppointmentGetInfoResponseData {
   problem: string;
   type: string;
@@ -46,19 +56,11 @@ export interface AppointmentGetInfoResponseData {
 export interface IGetApointmentInfoResponse {
   message: string;
   data: AppointmentGetInfoResponseData;
-  status?: Status;
-}
-export interface IGetApointmentInfoResponseError {
-  message: string;
-  error: string;
-  status: string;
+  status: number;
+  error: string | null;
 }
 
-export interface IRemoveAppointmentResponse {
-  message: string;
-  status: string;
-}
-
+//
 export interface IEditAppointmentData {
   problem: string;
   type: string;
@@ -66,7 +68,21 @@ export interface IEditAppointmentData {
   date: string;
   phone: string;
 }
+
+export interface IRemoveAppointmentResponse {
+  message: string;
+  status: number;
+  error: string | null;
+  data: null;
+}
+//
+
+export interface ITimeResponse {
+  time: string;
+  _id: string;
+}
+
 export interface ICheckReservationResponse {
   message: string;
-  data: string[];
+  data: ITimeResponse[];
 }
