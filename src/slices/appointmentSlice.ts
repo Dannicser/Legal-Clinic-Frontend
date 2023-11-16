@@ -6,12 +6,15 @@ import dayjs from "dayjs";
 import "dayjs/locale/ru";
 
 import {
+  IChangeAppointmentResponse,
+  IEditAppointmentData,
   IGetApointmentInfoResponse,
   IRegisterApointmentData,
   IRegisterApointmentResponse,
   IRemoveAppointmentResponse,
   Status,
 } from "../types/appointment";
+import { onShowNotice } from "./notificationSlice";
 
 export interface IStateData {
   problem: string;
@@ -93,6 +96,34 @@ export const thunkRemoveAppointment = createAsyncThunk<IRemoveAppointmentRespons
   return response as IRemoveAppointmentResponse;
 });
 
+export const thunkEditAppointment = createAsyncThunk<IChangeAppointmentResponse, IEditAppointmentData>(
+  "thunkEditAppointment/get",
+  async (data, { rejectWithValue, dispatch }) => {
+    const { onEditAppointment } = UseAppointmentService();
+
+    const response = await onEditAppointment(data).then((data) => {
+      dispatch(
+        onShowNotice({
+          status: "show",
+          type: "info",
+          message: "Заявление было успешно изменено",
+          description: "",
+          duration: 2,
+          placement: "topRight",
+        })
+      );
+
+      return data;
+    });
+
+    if (response.status >= 400) {
+      return rejectWithValue(response);
+    }
+
+    return response as IChangeAppointmentResponse;
+  }
+);
+
 const appointmentSlice = createSlice({
   initialState,
   name: "appointment",
@@ -110,6 +141,7 @@ const appointmentSlice = createSlice({
         }
         state.message = action.payload.message;
         state.isLoading = false;
+        state.isError = false;
       })
       .addCase(thunkGetStatusAppointment.rejected, (state, action: any) => {
         state.data.status = "error";
@@ -119,6 +151,7 @@ const appointmentSlice = createSlice({
       //register
       .addCase(thunkGetRegisterAppointment.pending, (state) => {
         state.isLoading = true;
+        state.isError = false;
       })
       .addCase(thunkGetRegisterAppointment.fulfilled, (state, action) => {
         if (action.payload.data.isReserved) {
@@ -148,8 +181,25 @@ const appointmentSlice = createSlice({
         state.data.status = "none";
       })
       .addCase(thunkRemoveAppointment.rejected, (state, action) => {
-        state.message = "Произошла непредвиденная ошибка при удалении записи";
         state.data.status = "error";
+      })
+      //edit
+      .addCase(thunkEditAppointment.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
+      .addCase(thunkEditAppointment.fulfilled, (state, action) => {
+        if (action.payload.data.isReserved) {
+          state.isReserved = true;
+        } else {
+          state.isReserved = false;
+        }
+
+        state.data.time = action.payload.data.doc.time;
+        state.isLoading = false;
+      })
+      .addCase(thunkEditAppointment.rejected, (state, action) => {
+        state.isLoading = false;
         state.isError = true;
       });
   },

@@ -69,7 +69,7 @@ export const Provided: React.FC = () => {
                       <Input.TextArea rows={1} onChange={onChangeReview} placeholder="Мне понравилось всё!" />
                     </Col>
                     <Col style={{ marginTop: "5px" }} span={4}>
-                      {review.length >= 3 && <SendOutlined onClick={onFetchData} />}
+                      {review.length >= 5 && <SendOutlined onClick={onFetchData} />}
                     </Col>
                   </Row>
                 </Form.Item>

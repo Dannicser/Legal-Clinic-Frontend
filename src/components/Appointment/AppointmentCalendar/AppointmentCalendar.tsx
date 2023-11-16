@@ -10,7 +10,8 @@ import { SelectInfo } from "antd/es/calendar/generateCalendar";
 import dayjs from "dayjs";
 import locale from "antd/es/calendar/locale/ru_RU";
 
-import { ITimeResponse } from "../../../types/appointment";
+import { ICheckReservationResponse, ITimeResponse } from "../../../types/appointment";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 interface IState {
   time: ITimeResponse[];
@@ -22,6 +23,9 @@ export const AppointmentCalendar = () => {
     time: [],
     date: "",
   });
+
+  const myTime = useAppSelector((state) => state.appointment.data.time);
+  const myDate = useAppSelector((state) => state.appointment.data.date);
 
   const schema = ["16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45"];
 
@@ -35,11 +39,12 @@ export const AppointmentCalendar = () => {
 
   const onChechReservationTime = async (date: string) => {
     try {
-      console.log(date);
-      console.log("request");
-      setIsLoading(true);
-      const { data } = await axios.post("/appointment/check-reservation", { date });
-      setstate({ date, time: data.data });
+      if (date !== state.date) {
+        console.log("request");
+        setIsLoading(true);
+        const { data } = await axios.post<ICheckReservationResponse>("/appointment/check-reservation", { date });
+        setstate({ date, time: data.data });
+      }
     } catch (error) {
     } finally {
       setIsLoading(false);
@@ -52,16 +57,19 @@ export const AppointmentCalendar = () => {
         if (state.time.find((el) => el.time === time)) {
           return (
             <Col className="gutter-row" span={8}>
-              <Tooltip title="Зарезервировано" color={"#f50"}>
-                <Alert banner className="alert" message={time} type="error" />
+              <Tooltip title="Зарезервировано" color="#f50">
+                <Alert banner showIcon={true} className="alert" type="error" message={time} />
               </Tooltip>
             </Col>
           );
         } else {
           return (
             <Col className="gutter-row" span={8}>
-              <Tooltip title="Свободно" color={"#87d068"}>
-                <Alert banner className="alert" message={time} type="success" />
+              <Tooltip
+                title={time === myTime && state.date === myDate ? "Мое посещение" : "Cвободно"}
+                color={time === myTime && state.date === myDate ? "#2db7f5" : "#52c41a"}
+              >
+                <Alert banner className="alert" message={time} type={time === myTime && state.date === myDate ? "info" : "success"} />
               </Tooltip>
             </Col>
           );
@@ -69,8 +77,6 @@ export const AppointmentCalendar = () => {
       })}
     </Row>
   );
-
-  console.log(state);
 
   return (
     <>
@@ -110,13 +116,13 @@ export const AppointmentCalendar = () => {
 
         {isLoading && <Spin />}
 
-        {!state.date && (
+        {!state.date && !isLoading && (
           <Alert
             banner
             type="warning"
             message={
               <Typography.Text className="alert" strong>
-                Выберите конкретный день, чтобы получить информацию о свободных местах.
+                Выберите день, а затем кликните на время для получения полной информации о свободных местах.
               </Typography.Text>
             }
           />

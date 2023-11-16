@@ -25,7 +25,6 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { useEffect } from "react";
 import { thunkGetUserInfo } from "../../slices/userSlice";
 
-import dayjs from "dayjs";
 import { AppointmentStatus } from "../../types/appointment";
 
 export const Menu = () => {
@@ -79,12 +78,14 @@ export const Menu = () => {
               <li className="menu__item">
                 <CalendarOutlined />
                 <div className="title">Календарь записей</div>
-              </li>{" "}
+              </li>
             </NavLink>
-            <li className="menu__item">
-              <QuestionCircleOutlined />
-              <div className="title">Часто задаваемые вопросы</div>
-            </li>
+            <NavLink to={PrivetRoutesNames.FAQ}>
+              <li className="menu__item">
+                <QuestionCircleOutlined />
+                <div className="title">Часто задаваемые вопросы</div>
+              </li>
+            </NavLink>
             <li className="menu__item">
               <HeartOutlined />
               <div className="title">Избранное</div>
@@ -118,5 +119,3 @@ export const Menu = () => {
     </>
   );
 };
-
-// ${dayjs(date).locale("ru").format("D MMMM")} в ${time}

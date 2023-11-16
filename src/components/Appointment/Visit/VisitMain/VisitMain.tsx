@@ -1,4 +1,5 @@
 import { useAppSelector } from "../../../../hooks/useAppSelector";
+import { useEffect } from "react";
 
 import { Accepted } from "../VisitStatus/Accepted";
 import { Problem } from "../VisitStatus/Problem";
@@ -10,29 +11,30 @@ import { VisitForm } from "../VisitForm/VisitForm";
 import { AppointmentStatus } from "../../../../types/appointment";
 
 export const VisitMain = () => {
-  const { appointment } = useAppSelector((state) => state);
+  const status = useAppSelector((state) => state.appointment.data.status);
+  const message = useAppSelector((state) => state.appointment.message);
 
-  if (appointment.data.status === AppointmentStatus.NONE) {
+  if (status === AppointmentStatus.NONE) {
     return <VisitForm />;
   }
 
-  if (appointment.data.status === AppointmentStatus.ACCEPTED) {
+  if (status === AppointmentStatus.ACCEPTED) {
     return <Accepted />;
   }
 
-  if (appointment.data.status === AppointmentStatus.REJECTED) {
-    return <Rejected message={appointment.message} />;
+  if (status === AppointmentStatus.REJECTED) {
+    return <Rejected message={message} />;
   }
 
-  if (appointment.data.status === AppointmentStatus.CONFIRMED) {
+  if (status === AppointmentStatus.CONFIRMED) {
     return <Confirmed />;
   }
 
-  if (appointment.data.status === AppointmentStatus.ERROR) {
+  if (status === AppointmentStatus.ERROR) {
     return <Problem />;
   }
 
-  if (appointment.data.status === AppointmentStatus.PROVIDED) {
+  if (status === AppointmentStatus.PROVIDED) {
     return <Provided />;
   }
 

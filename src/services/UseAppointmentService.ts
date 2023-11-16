@@ -1,7 +1,14 @@
 import { AxiosError } from "axios";
 import axios from "../config/axios";
 
-import { IGetApointmentInfoResponse, IRegisterApointmentData, IRegisterApointmentResponse, IRemoveAppointmentResponse } from "../types/appointment";
+import {
+  IChangeAppointmentResponse,
+  IEditAppointmentData,
+  IGetApointmentInfoResponse,
+  IRegisterApointmentData,
+  IRegisterApointmentResponse,
+  IRemoveAppointmentResponse,
+} from "../types/appointment";
 
 export const UseAppointmentService = () => {
   const onGetStatusAppointment = async () => {
@@ -42,5 +49,16 @@ export const UseAppointmentService = () => {
     return response;
   };
 
-  return { onGetStatusAppointment, onGetRegisterAppointment, onRemoveAppointment };
+  const onEditAppointment = async (data: IEditAppointmentData) => {
+    const response = await axios
+      .patch<IChangeAppointmentResponse>("/appointment/change", data)
+      .then(({ data }) => data)
+      .catch((error: AxiosError<IChangeAppointmentResponse>) => {
+        return { message: error.response?.data.message || "", status: error.response?.data.status || 500 };
+      });
+
+    return response;
+  };
+
+  return { onGetStatusAppointment, onGetRegisterAppointment, onRemoveAppointment, onEditAppointment };
 };

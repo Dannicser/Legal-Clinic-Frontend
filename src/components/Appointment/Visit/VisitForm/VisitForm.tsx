@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
 import { useAppDispatch } from "../../../../hooks/useAppDispatch";
-import { thunkGetRegisterAppointment, thunkRemoveAppointment } from "../../../../slices/appointmentSlice";
+import { thunkEditAppointment, thunkGetRegisterAppointment, thunkRemoveAppointment } from "../../../../slices/appointmentSlice";
 
 import axios from "../../../../config/axios";
 
@@ -20,27 +20,31 @@ import { AppointmentStatus, ICheckReservationResponse, IEditAppointmentData, ITi
 const { TextArea } = Input;
 
 interface IVisitFormProps {
-  onGetState?: (state: IEditAppointmentData) => void;
   edit?: boolean;
-  state?: IEditAppointmentData;
-  status?: Status;
-  isErrorEdit?: boolean;
-  isLoadingEdit?: boolean;
 }
 
 interface IStateReservation extends ITimeResponse {}
 
-export const VisitForm: React.FC<IVisitFormProps> = (props) => {
+export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
   console.log("render");
-  const { onGetState, edit, state, status, isErrorEdit, isLoadingEdit } = props;
-  const [changeMessage, setChangeMessage] = useState<string>("");
+
   const [reservation, setReservation] = useState<IStateReservation[]>([]);
   const [isLoadingReservation, setIsLoadingReservation] = useState<boolean>(false);
   const [isErrorReservation, setIsErrorReservation] = useState<boolean>(false);
 
   const [form] = Form.useForm();
 
-  const { isLoading, isError, isReserved, data } = useAppSelector((state) => state.appointment);
+  const isLoading = useAppSelector((state) => state.appointment.isLoading);
+  const isError = useAppSelector((state) => state.appointment.isError);
+  const problem = useAppSelector((state) => state.appointment.data.problem);
+  const type = useAppSelector((state) => state.appointment.data.type);
+  const phone = useAppSelector((state) => state.appointment.data.phone);
+  const date = useAppSelector((state) => state.appointment.data.date);
+  const time = useAppSelector((state) => state.appointment.data.time);
+
+  const status = useAppSelector((state) => state.appointment.data.status);
+  const isReserved = useAppSelector((state) => state.appointment.isReserved);
+
   const dispatch = useAppDispatch();
 
   const onFormError = () => {
@@ -69,19 +73,15 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
   };
 
   const onEditAppointment = () => {
-    if (!onFormError() && form.isFieldsTouched() && onGetState) {
+    if (!onFormError() && form.isFieldsTouched()) {
       const data: IEditAppointmentData = {
         ...form.getFieldsValue(),
         time: form.getFieldValue("time").format("H:mm"),
         date: form.getFieldValue("date").format("MM-DD-YYYY"),
       };
 
-      setChangeMessage("");
-
-      return onGetState(data);
+      return dispatch(thunkEditAppointment(data));
     }
-
-    setChangeMessage("Вы не изменили данные в форме.");
   };
 
   const onCancelAppointment = () => {
@@ -102,11 +102,11 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
 
   const initialValues = edit
     ? {
-        problem: state?.problem,
-        phone: state?.phone,
-        type: state?.type,
+        problem,
+        phone,
+        type,
       }
-    : {};
+    : { problem, phone, type };
 
   const contentEdit = (
     <Space>
@@ -117,13 +117,17 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
             <>
               Пожалуйста, проверьте правильность введенных вами данных.
               <br />
+              Нажимая {""}
+              <Typography.Text type="warning" strong>
+                «да», вы подтверждаете обработку ваших персональных данных.
+              </Typography.Text>
             </>
           }
           okText="Да"
           cancelText="Нет"
           onConfirm={onEditAppointment}
         >
-          <Button loading={isLoadingEdit} htmlType="submit" type="primary">
+          <Button loading={isLoading} htmlType="submit" type="primary">
             <EditOutlined />
           </Button>
         </Popconfirm>
@@ -152,8 +156,13 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
         description={
           <>
             Проверьте правильность введенных вами данных, если они будут некорректны, нам придется <span> </span>
-            <Typography.Text type="warning" strong>
+            <Typography.Text type="danger" strong>
               отказать вам в обращении.
+            </Typography.Text>
+            <br />
+            Нажимая {""}
+            <Typography.Text type="warning" strong>
+              «да», вы подтверждаете обработку ваших персональных данных.
             </Typography.Text>
           </>
         }
@@ -172,6 +181,8 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
     return <Navigate to={PrivetRoutesNames.APPOINTMENT} />;
   }
 
+  console.log(reservation);
+
   return (
     <div className="visit__wrapper">
       <Form form={form} initialValues={initialValues} name="basic" className="visit__form">
@@ -186,7 +197,7 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
             rules={[
               {
                 required: true,
-                message: "Выберите дату посещения",
+                message: "Выберите дату",
               },
             ]}
             name="date"
@@ -207,7 +218,7 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
                   return false;
                 }
               }}
-              placeholder="Выберите дату"
+              placeholder={date || "Выберите дату"}
               showToday={false}
               renderExtraFooter={() => {
                 return (
@@ -225,11 +236,11 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
               () => ({
                 validator(_, value) {
                   if (!value) {
-                    return Promise.reject(new Error("Выберете время"));
+                    return Promise.reject(new Error("Выберите время"));
                   }
 
                   const arr = reservation.filter((el) => {
-                    if (el.time === value.format("H:mm") && value.format("H:mm") !== data.time) {
+                    if (el.time === value.format("H:mm")) {
                       return true;
                     }
 
@@ -257,7 +268,7 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
             <TimePicker
               inputReadOnly
               disabled={isLoadingReservation}
-              placeholder="Выберите время"
+              placeholder={time || "Выберите время"}
               showNow={false}
               minuteStep={15}
               disabledHours={() => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23, 24]}
@@ -282,7 +293,6 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
           name={"type"}
         >
           <Select
-            defaultValue={state?.type}
             placeholder="Выберите вид правовых отношений"
             options={[
               {
@@ -316,7 +326,7 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
           ]}
           name={"problem"}
         >
-          <TextArea rows={4} defaultValue={data.problem} placeholder="Не более 1000 символов" maxLength={1001} />
+          <TextArea rows={4} placeholder="Не более 1000 символов" maxLength={1001} />
         </Form.Item>
         <Row justify={"start"}>
           <Col style={{ textAlign: "start" }} span={24}>
@@ -333,11 +343,14 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
             name={"phone"}
             className="mt-1"
           >
-            <Input defaultValue={data.phone} addonBefore="+7" placeholder={"9802343233"} />
+            <Input addonBefore="+7" placeholder={"9802343233"} />
           </Form.Item>
         </Row>
+
         <Form.Item>
-          <Row justify={"center"}>{edit ? contentEdit : contentRegister}</Row>
+          <Row className="mt-1" justify={"center"}>
+            {edit ? contentEdit : contentRegister}
+          </Row>
         </Form.Item>
         {isReserved && (
           <NavLink to={PrivetRoutesNames.APPOINTMENT_CALENDAR}>
@@ -350,14 +363,37 @@ export const VisitForm: React.FC<IVisitFormProps> = (props) => {
             />
           </NavLink>
         )}
-        {changeMessage && <Alert className="alert" type="warning" banner showIcon message={changeMessage} />}
-        {isError ||
-          (isErrorReservation && (
-            <Alert type="error" className="alert" showIcon message={"Неудалось получить информацию о свободном времени посещения."} />
-          ))}
-        {isError ||
-          (isErrorEdit && <Alert type="error" className="alert" showIcon message={"Произошла непредвиденная ошибка, попробуйте еще раз"} />)}
+
+        {isErrorReservation && (
+          <Alert type="error" className="alert" showIcon message={"Неудалось получить информацию о свободном времени посещения."} />
+        )}
+        {isError && <Alert type="error" className="alert" showIcon message={"Произошла непредвиденная ошибка, попробуйте еще раз."} />}
       </Form>
     </div>
   );
 };
+
+// <Form.Item
+// rules={[
+//   () => ({
+//     validator(_, checked) {
+//       console.log(checked);
+//       if (!checked) {
+//         return Promise.reject(new Error("Требуется согласие"));
+//       }
+
+//       return Promise.resolve();
+//     },
+//   }),
+// ]}
+// name={"agreement"}
+// hasFeedback
+// valuePropName="checked"
+// >
+// <Row justify={"start"}>
+//   <Col span={12}>
+//     <Typography.Text strong>Согласие на обработку персональных данных </Typography.Text>
+//   </Col>
+// </Row>
+// <Checkbox defaultChecked={true}></Checkbox>
+// </Form.Item>

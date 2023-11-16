@@ -54,6 +54,7 @@ export const thunkLogoutWithEmail = createAsyncThunk("thunkLogoutWithEmail/logou
   return onLogoutWithEmail()
     .then(() => {
       UseLocalStorage({ key: "accessToken", action: "remove" });
+      dispatch({ type: "REVERT_ALL" });
     })
     .catch(() => {
       dispatch(
