@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom";
+
 import back from "./img/back.png";
+
+import { Typography } from "antd";
+
 import "./Header.scss";
-import { useLocation, useNavigate } from "react-router-dom";
 
 interface IIprops {
   title?: string;
@@ -13,7 +17,7 @@ export const Header: React.FC<IIprops> = ({ title }) => {
   return (
     <div className="back__ui">
       <img onClick={stepBack} src={back} alt="" />
-      {title && <div className="title__ui">{title}</div>}
+      <div className="title__ui">{<Typography.Title level={5}>{title}</Typography.Title>}</div>
     </div>
   );
 };

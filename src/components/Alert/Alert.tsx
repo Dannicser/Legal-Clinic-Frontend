@@ -1,21 +1,21 @@
 import { notification } from "antd";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useEffect } from "react";
-import { NotificationType } from "../../types/notification";
+import { NotificationType } from "../../types/alert";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { onHideNotice } from "../../slices/notificationSlice";
+import { onHideAlert } from "../../slices/alertSlice";
 
-export const Notification: React.FC = () => {
+export const Alert: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
 
-  const state = useAppSelector((state) => state.notification);
+  const state = useAppSelector((state) => state.alert);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (state.status === "show") {
       openNotificationWithIcon(state.type);
-      dispatch(onHideNotice());
+      dispatch(onHideAlert());
     }
   }, [state.status]);
 

@@ -84,11 +84,11 @@ export const AppointmentCalendar = () => {
       <Layout>
         <Calendar
           disabledDate={(date) => {
-            if (date.valueOf() <= Date.now() - 86400000 && date.format("dddd") === "Tuesday") {
+            if (date.valueOf() <= Date.now() - 86400000 && date.format("dddd") === "вторник") {
               return true;
             }
 
-            if (date.format("dddd") !== "Tuesday") {
+            if (date.format("dddd") !== "вторник") {
               return true;
             } else {
               return false;

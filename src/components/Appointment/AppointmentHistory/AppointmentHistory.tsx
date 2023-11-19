@@ -8,7 +8,7 @@ import { Header } from "../../UI/Header/Header";
 import { NavLink } from "react-router-dom";
 import { PrivetRoutesNames } from "../../../routers";
 
-import { Avatar, Button, Divider, Empty, List, Rate, Result, Row, Skeleton, Tooltip } from "antd";
+import { Avatar, Button, Divider, Empty, List, Rate, Result, Row, Skeleton, Space, Tooltip } from "antd";
 import { Typography } from "antd/es";
 
 import { onCutText } from "../../../utils/helpers";
@@ -136,10 +136,10 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
               }
               description={
                 <>
-                  <Tooltip title={item.problem} color={"#4a43ec"}>
+                  <Tooltip title={onCutText(item.problem, 0, 300, true)} color={"#4a43ec"}>
                     {onCutText(item.problem, 0, 150, true)}
                     <br />
-                    <Rate disabled value={Number(item.rate)} />
+                    <Rate className="mt-1" disabled value={Number(item.rate)} />
                   </Tooltip>
                 </>
               }
@@ -155,5 +155,3 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
 const Loader: React.FC = () => {
   return <Skeleton active avatar paragraph={{ rows: 4 }} />;
 };
-
-//{onCutText(item.createdAt, 0, 4, false)}

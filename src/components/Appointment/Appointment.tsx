@@ -6,7 +6,7 @@ import { thunkGetStatusAppointment } from "../../slices/appointmentSlice";
 import { VisitForm } from "./Visit/VisitForm/VisitForm";
 import { VisitMain } from "./Visit/VisitMain/VisitMain";
 
-import { Segmented } from "antd";
+import { Result, Segmented } from "antd";
 import { Spinner } from "../UI/Spinner/Spinner";
 
 import { AppointmentProgress } from "./AppointmentProgress/AppointmentProgress";

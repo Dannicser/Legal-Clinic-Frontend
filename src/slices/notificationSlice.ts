@@ -1,37 +1,90 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { IState } from "../types/notification";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { UseNotificationService } from "../services/UseNotificationService";
+import { INotificationGetAllResponse, INotificationItem, INotificationReadResponse } from "../types/notification";
+
+interface IState {
+  user: INotificationItem[];
+  all: INotificationItem[];
+  unread: number;
+  isLoading: boolean;
+  isError: boolean;
+  message: string;
+}
 
 const initialState: IState = {
-  status: "none",
-  type: "info",
+  user: [],
+  all: [],
+  unread: 0,
+  isLoading: false,
+  isError: false,
   message: "",
-  description: "",
-  duration: 0,
-  placement: "topRight",
 };
+
+export const thunkGetAllNotifications = createAsyncThunk<INotificationGetAllResponse>(
+  "thunkGetAllNotifications/get",
+  async (_, { rejectWithValue, dispatch }) => {
+    const { onGetAllNotification } = UseNotificationService();
+
+    const response = await onGetAllNotification();
+
+    if (response.status > 400) {
+      return rejectWithValue(response);
+    }
+
+    return response as INotificationGetAllResponse;
+  }
+);
+
+export const thunkReadNotifications = createAsyncThunk<INotificationReadResponse>("thunkReadNotifications/get", async (_, { rejectWithValue }) => {
+  const { onReadNotifications } = UseNotificationService();
+
+  const response = await onReadNotifications();
+
+  if (response.status > 400) {
+    return rejectWithValue(response);
+  }
+
+  return response as INotificationReadResponse;
+});
 
 const notificationSlice = createSlice({
   initialState,
   name: "notification",
   reducers: {
-    onShowNotice: (state, { payload }) => {
-      state.message = payload.message;
-      state.description = payload.description;
-      state.status = payload.status;
-      state.duration = payload.duration;
-      state.type = payload.type;
-      state.placement = payload.placement;
+    onReadNotifications: (state) => {
+      state.user = state.user.map((el) => {
+        return {
+          ...el,
+          is_read: true,
+        };
+      });
+      state.unread = 0;
     },
-    onHideNotice: (state) => {
-      state.status = "none";
-      state.message = "";
-      state.description = "";
-      state.duration = 0;
-      state.type = "info";
-      state.placement = "topRight";
+    onAddNotification: (state, action: PayloadAction<INotificationItem>) => {
+      state.user = [...state.user, action.payload];
+      state.unread = state.unread + 1;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      //get
+      .addCase(thunkGetAllNotifications.pending, (state) => {})
+      .addCase(thunkGetAllNotifications.fulfilled, (state, action) => {
+        state.user = action.payload.data.filter((el) => !el.is_everyone);
+        state.all = action.payload.data.filter((el) => el.is_everyone);
+        state.unread = state.user.filter((el) => !el.is_read).length;
+      })
+      .addCase(thunkGetAllNotifications.rejected, (state) => {
+        state.isError = true;
+      })
+      //read
+      .addCase(thunkReadNotifications.pending, (state) => {})
+      .addCase(thunkReadNotifications.fulfilled, (state, action) => {})
+      .addCase(thunkReadNotifications.rejected, (state) => {
+        state.isError = true;
+      });
   },
 });
 
 export default notificationSlice.reducer;
-export const { onShowNotice, onHideNotice } = notificationSlice.actions;
+export const { onReadNotifications, onAddNotification } = notificationSlice.actions;

@@ -1,4 +1,4 @@
-import { Button, Empty } from "antd";
+import { Button, Empty, Typography } from "antd";
 import "./NotFound.scss";
 
 interface IProps {

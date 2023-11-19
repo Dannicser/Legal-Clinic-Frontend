@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UseAuthService } from "../services/UseAuthService";
 import { IAuthValues, IRegisterValues, IUserResponseRegisterWithEmail } from "../types/auth";
-import { onShowNotice } from "./notificationSlice";
+import { onShowAlert } from "./alertSlice";
 import { UseLocalStorage } from "../hooks/useLocalStorage";
 import { onFetchUser } from "./userSlice";
 
@@ -26,7 +26,7 @@ export const thunkAuthWithEmail = createAsyncThunk("onGetAuth/get", async (data:
 
   return onGetAuthWithEmail(data).then((data) => {
     dispatch(
-      onShowNotice({
+      onShowAlert({
         status: "show",
         type: "info",
         message: `Доброго времени суток, ${data.user.first_name}!`,
@@ -58,7 +58,7 @@ export const thunkLogoutWithEmail = createAsyncThunk("thunkLogoutWithEmail/logou
     })
     .catch(() => {
       dispatch(
-        onShowNotice({
+        onShowAlert({
           status: "show",
           type: "error",
           message: `Произошла ошибка при закрытии сессии`,

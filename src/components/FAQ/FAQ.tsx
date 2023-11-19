@@ -35,7 +35,7 @@ export const FAQ = () => {
               },
               {
                 key: "1",
-                label: "Наш график работы",
+                label: "Какой у нас график работы?",
                 children: (
                   <p className="faq_text">
                     Мы оказываем юридические услуги каждый вторник <Typography.Text strong> c 16:00 - 18:00</Typography.Text>

@@ -1,13 +1,16 @@
 import "./App.scss";
 
 import { AppRouter } from "../routers/AppRouter";
-import { Notification } from "../components/Notification/Notification";
+import { Alert } from "../components/Alert/Alert";
+
+import dayjs from "dayjs";
+dayjs.locale("ru");
 
 function App() {
   return (
     <div className="App">
       <AppRouter />
-      <Notification />
+      <Alert />
     </div>
   );
 }

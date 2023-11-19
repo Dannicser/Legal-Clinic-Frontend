@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { UseUserService } from "../services/UseUserService";
 import { IEditProfileState, IUserProfile } from "../types/user";
-import { onShowNotice } from "./notificationSlice";
+import { onShowAlert } from "./alertSlice";
 import { IUserResponseRegisterWithEmail } from "../types/auth";
 
 interface IState {
@@ -44,7 +44,7 @@ export const thunkUpdateUserInfo = createAsyncThunk("onUpdateUserInfo/get", asyn
   return response
     .then(() => {
       dispatch(
-        onShowNotice({
+        onShowAlert({
           status: "show",
           type: "success",
           message: "Данные были успешно обновлены",
@@ -55,7 +55,7 @@ export const thunkUpdateUserInfo = createAsyncThunk("onUpdateUserInfo/get", asyn
     })
     .catch((error) => {
       dispatch(
-        onShowNotice({
+        onShowAlert({
           status: "show",
           type: "error",
           message: "Ошибка, данные пользователя не были обновлены",

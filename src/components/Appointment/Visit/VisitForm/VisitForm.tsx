@@ -135,7 +135,7 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
       <Col>
         <Popconfirm
           title="Вы действительно хотите отменить ваше обращение?"
-          description="В случае отмены, мы не сможем вам помочь :("
+          description="В случае отмены, мы не сможем вам помочь:("
           okText="Да"
           cancelText="Нет"
           onConfirm={onCancelAppointment}
@@ -208,11 +208,11 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
               onSelect={onGetReservationList}
               locale={locale}
               disabledDate={(date) => {
-                if (date.valueOf() <= Date.now() - 86400000 && date.format("dddd") === "Tuesday") {
+                if (date.valueOf() <= Date.now() - 86400000 && date.format("dddd") === "вторник") {
                   return true;
                 }
 
-                if (date.format("dddd") !== "Tuesday") {
+                if (date.format("dddd") !== "вторник") {
                   return true;
                 } else {
                   return false;
@@ -221,11 +221,7 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
               placeholder={date || "Выберите дату"}
               showToday={false}
               renderExtraFooter={() => {
-                return (
-                  <>
-                    <p style={{ paddingLeft: 20, color: "grey" }}>Режим работы: вторник, 16:00 - 18:00</p>
-                  </>
-                );
+                return <Typography.Text type="secondary">Режим работы: вторник, 16:00-18:00</Typography.Text>;
               }}
             />
           </Form.Item>

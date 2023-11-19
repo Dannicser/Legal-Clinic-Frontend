@@ -1,10 +1,44 @@
-export interface IState {
-  type: NotificationType;
+export interface INotificationItem {
+  title: string;
   message: string;
-  description: string;
-  duration: number;
-  status: "none" | "show";
-  placement: "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
+  user?: string;
+  is_read: boolean;
+  is_everyone: boolean;
+  createdAt: string;
+  _id: string;
 }
 
-export type NotificationType = "success" | "info" | "warning" | "error";
+export interface INotificationGetAllResponse {
+  data: INotificationItem[] | [];
+  error: string | null;
+  message: string;
+  status: number;
+}
+
+//
+
+export interface INotificationDeleteAllResponse {
+  data: INotificationDeleteAllResponseData;
+  error: string | null;
+  message: string;
+  status: number;
+}
+
+interface INotificationDeleteAllResponseData {
+  count: number;
+}
+
+//
+
+interface INotificationReadResponseData {
+  modifiedCount: number;
+}
+
+export interface INotificationReadResponse {
+  data: INotificationReadResponseData;
+  error: string | null;
+  message: string;
+  status: number;
+}
+
+//

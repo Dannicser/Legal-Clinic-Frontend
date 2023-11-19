@@ -29,8 +29,11 @@ import { AppointmentStatus } from "../../types/appointment";
 
 export const Menu = () => {
   const dispatch = useAppDispatch();
-  const { user, loading, error } = useAppSelector((state) => state.user);
-  const { formatDate, status } = useAppSelector((state) => state.appointment.data);
+  const user = useAppSelector((state) => state.user.user);
+  const loading = useAppSelector((state) => state.user.loading);
+  const error = useAppSelector((state) => state.user.error);
+  const status = useAppSelector((state) => state.appointment.data.status);
+  const formatDate = useAppSelector((state) => state.appointment.data.formatDate);
 
   useEffect(() => {
     dispatch(thunkGetUserInfo());
@@ -42,7 +45,7 @@ export const Menu = () => {
 
   const banner =
     status === AppointmentStatus.CONFIRMED ? (
-      <Alert message={`Запланировано посещение юридической клиники ${formatDate}`} banner showIcon type="info" className="alert_visit" />
+      <Alert message={`Запланировано посещение юридической клиники ${formatDate}`} banner showIcon type="info" />
     ) : null;
 
   return (

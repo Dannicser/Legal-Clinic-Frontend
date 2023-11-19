@@ -16,6 +16,7 @@ import { VisitEdit } from "../components/Appointment/Visit/VisitEdit/VisitEdit";
 import { AppointmentHistory } from "../components/Appointment/AppointmentHistory/AppointmentHistory";
 import { AppointmentCalendar } from "../components/Appointment/AppointmentCalendar/AppointmentCalendar";
 import { FAQ } from "../components/FAQ/FAQ";
+import { NotificationList } from "../components/Notification/NotificationList/NotificationList";
 
 export interface iRouter {
   path: string;
@@ -42,6 +43,7 @@ export enum PrivetRoutesNames {
   EDIT = "/profile/edit",
   FULLPOST = "/post/:id",
   FAQ = "/faq",
+  NOTIFICATIONS = "/notifications",
 }
 
 export enum AdminRoutesNames {
@@ -71,6 +73,7 @@ export const privetRoutes: iRouter[] = [
   { path: PrivetRoutesNames.FULLPOST, component: FullPost },
 
   { path: PrivetRoutesNames.FAQ, component: FAQ },
+  { path: PrivetRoutesNames.NOTIFICATIONS, component: NotificationList },
 ];
 
 export const adminRoutes: iRouter[] = [{ path: AdminRoutesNames.HOME, component: AdminPage }];

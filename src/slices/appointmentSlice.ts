@@ -14,7 +14,7 @@ import {
   IRemoveAppointmentResponse,
   Status,
 } from "../types/appointment";
-import { onShowNotice } from "./notificationSlice";
+import { onShowAlert } from "./alertSlice";
 
 export interface IStateData {
   problem: string;
@@ -103,7 +103,7 @@ export const thunkEditAppointment = createAsyncThunk<IChangeAppointmentResponse,
 
     const response = await onEditAppointment(data).then((data) => {
       dispatch(
-        onShowNotice({
+        onShowAlert({
           status: "show",
           type: "info",
           message: "Заявление было успешно изменено",
