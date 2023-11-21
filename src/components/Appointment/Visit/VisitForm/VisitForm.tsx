@@ -251,8 +251,11 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
                     return Promise.reject(new Error("Ошибка"));
                   }
 
-                  if (value.format("H:mm").slice(0, 2) < 16 || value.format("H:mm").slice(0, 2) > 18) {
-                    return Promise.reject(new Error("Мы работаем с 16:00-18:00"));
+                  const time = ["16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45"];
+                  const isWorkTime = time.find((el) => el === value.format("H:mm"));
+
+                  if (!isWorkTime) {
+                    return Promise.reject(new Error("Недоступное время"));
                   }
 
                   return Promise.resolve();
@@ -368,28 +371,3 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
     </div>
   );
 };
-
-// <Form.Item
-// rules={[
-//   () => ({
-//     validator(_, checked) {
-//       console.log(checked);
-//       if (!checked) {
-//         return Promise.reject(new Error("Требуется согласие"));
-//       }
-
-//       return Promise.resolve();
-//     },
-//   }),
-// ]}
-// name={"agreement"}
-// hasFeedback
-// valuePropName="checked"
-// >
-// <Row justify={"start"}>
-//   <Col span={12}>
-//     <Typography.Text strong>Согласие на обработку персональных данных </Typography.Text>
-//   </Col>
-// </Row>
-// <Checkbox defaultChecked={true}></Checkbox>
-// </Form.Item>

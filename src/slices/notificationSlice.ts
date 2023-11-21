@@ -1,10 +1,11 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UseNotificationService } from "../services/UseNotificationService";
 import { INotificationGetAllResponse, INotificationItem, INotificationReadResponse } from "../types/notification";
+import { UseLocalStorage } from "../hooks/useLocalStorage";
 
 interface IState {
   user: INotificationItem[];
-  all: INotificationItem[];
+  common: INotificationItem[];
   unread: number;
   isLoading: boolean;
   isError: boolean;
@@ -13,7 +14,7 @@ interface IState {
 
 const initialState: IState = {
   user: [],
-  all: [],
+  common: [],
   unread: 0,
   isLoading: false,
   isError: false,
@@ -58,11 +59,17 @@ const notificationSlice = createSlice({
           is_read: true,
         };
       });
+
       state.unread = 0;
     },
     onAddNotification: (state, action: PayloadAction<INotificationItem>) => {
-      state.user = [...state.user, action.payload];
-      state.unread = state.unread + 1;
+      if (action.payload.is_everyone) {
+        state.common = [...state.common, action.payload];
+        state.unread = state.unread + 1;
+      } else {
+        state.user = [...state.user, action.payload];
+        state.unread = state.unread + 1;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -71,7 +78,7 @@ const notificationSlice = createSlice({
       .addCase(thunkGetAllNotifications.pending, (state) => {})
       .addCase(thunkGetAllNotifications.fulfilled, (state, action) => {
         state.user = action.payload.data.filter((el) => !el.is_everyone);
-        state.all = action.payload.data.filter((el) => el.is_everyone);
+        state.common = action.payload.data.filter((el) => el.is_everyone);
         state.unread = state.user.filter((el) => !el.is_read).length;
       })
       .addCase(thunkGetAllNotifications.rejected, (state) => {

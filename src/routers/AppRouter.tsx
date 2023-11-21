@@ -27,11 +27,13 @@ export const AppRouter: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (UseLocalStorage({ action: "get", key: "accessToken" }) || window.sessionStorage.getItem("accessToken")) {
       dispatch(thunkCheckAuth());
     }
+  }, []);
 
+  useEffect(() => {
     if (isAuth && location.pathname !== PrivetRoutesNames.APPOINTMENT) {
       dispatch(thunkGetStatusAppointment());
     }
@@ -44,13 +46,21 @@ export const AppRouter: React.FC = () => {
   }, [isAuth]);
 
   useEffect(() => {
-    if (isAuth) {
+    if (isAuth && user_id) {
       subscribe();
+    }
+  }, [isAuth, user_id]);
+
+  useEffect(() => {
+    if (isAuth && location.pathname !== PrivetRoutesNames.APPOINTMENT) {
+      dispatch(thunkGetStatusAppointment());
     }
   }, [isAuth]);
 
   const subscribe = () => {
-    const eventSource = new EventSource(`http://localhost:5000/api/notification/connect/?user_id=${user_id}`, { withCredentials: true });
+    const eventSource = new EventSource(`http://localhost:5000/api/notification/connect/?user_id=${user_id}`, {
+      withCredentials: true,
+    });
 
     eventSource.onmessage = (event) => {
       dispatch(onAddNotification(JSON.parse(event.data)));
@@ -58,6 +68,9 @@ export const AppRouter: React.FC = () => {
     };
     eventSource.onerror = (error) => {
       console.log(error);
+    };
+
+    return () => {
       eventSource.close();
     };
   };

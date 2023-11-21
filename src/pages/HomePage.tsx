@@ -18,7 +18,8 @@ import { Categories } from "../types/post";
 export const HomePage: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { civil, criminal } = useAppSelector((state) => state.post);
+  const civil = useAppSelector((state) => state.post.civil);
+  const criminal = useAppSelector((state) => state.post.criminal);
 
   useEffect(() => {
     dispatch(onGetAllPostsByType(Categories.CIVIL));

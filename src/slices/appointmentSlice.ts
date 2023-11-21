@@ -143,7 +143,7 @@ const appointmentSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
       })
-      .addCase(thunkGetStatusAppointment.rejected, (state, action: any) => {
+      .addCase(thunkGetStatusAppointment.rejected, (state) => {
         state.data.status = "error";
         state.message = "";
         state.isLoading = false;
@@ -196,6 +196,7 @@ const appointmentSlice = createSlice({
         }
 
         state.data.time = action.payload.data.doc.time;
+        state.data.date = action.payload.data.doc.date;
         state.isLoading = false;
       })
       .addCase(thunkEditAppointment.rejected, (state, action) => {

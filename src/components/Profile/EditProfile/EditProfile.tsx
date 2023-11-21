@@ -3,22 +3,36 @@ import { Header } from "../../UI/Header/Header";
 
 import login from "../../Auth/assets/icons/login.svg";
 
-import { Form, Input, Row, Col, Typography, Button, Tooltip } from "antd";
+import { Form, Input, Row, Col, Typography, Button, Tooltip, Popconfirm } from "antd";
 import { UserOutlined, BulbOutlined } from "@ant-design/icons";
 
-import { IEditProfileState } from "../../../types/user";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { Navigate } from "react-router-dom";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { thunkUpdateUserInfo } from "../../../slices/userSlice";
 
 export const EditProfile: React.FC = () => {
-  const { user, loading } = useAppSelector((state) => state.user);
+  const isLoading = useAppSelector((state) => state.user.isLoading);
+  const user = useAppSelector((state) => state.user.user);
+
+  const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
-  const onFinish = (values: IEditProfileState) => {
-    console.log(values);
-    dispatch(thunkUpdateUserInfo(values));
+  const onChangeData = () => {
+    if (!onFormErrorValidation() && form.isFieldsTouched()) {
+      dispatch(thunkUpdateUserInfo(form.getFieldsValue()));
+    }
+  };
+
+  const onFormErrorValidation = () => {
+    let isError = false;
+    form.getFieldsError().map((el) => {
+      if (el.errors.length) {
+        isError = true;
+      }
+    });
+
+    return isError;
   };
 
   if (!user.first_name) {
@@ -29,12 +43,7 @@ export const EditProfile: React.FC = () => {
     <>
       <Header title="Редактирование" />
       <Layout>
-        <Form
-          onFinish={onFinish}
-          initialValues={{ about: user.about, first_name: user.first_name, last_name: user.last_name }}
-          name="basic"
-          className="visit__form"
-        >
+        <Form form={form} initialValues={{ about: user.about, first_name: user.first_name, last_name: user.last_name }} name="basic">
           <Row>
             <Col>
               <Tooltip
@@ -45,7 +54,7 @@ export const EditProfile: React.FC = () => {
               </Tooltip>
             </Col>
           </Row>
-          <Form.Item className="mt-1" hasFeedback rules={[{ max: 20, message: "Не более 20 символов" }]} name={"first_name"}>
+          <Form.Item className="mt-1" hasFeedback rules={[{ required: true, min: 2, max: 20, message: "2 - 20 символов" }]} name={"first_name"}>
             <Input size="large" value={user.first_name} prefix={<UserOutlined />} />
           </Form.Item>
           <Row>
@@ -58,7 +67,7 @@ export const EditProfile: React.FC = () => {
               </Tooltip>
             </Col>
           </Row>
-          <Form.Item className="mt-1" hasFeedback rules={[{ max: 20, message: "Не более 20 символов" }]} name={"last_name"}>
+          <Form.Item className="mt-1" hasFeedback rules={[{ required: true, min: 2, max: 20, message: "2 - 20 символов" }]} name={"last_name"}>
             <Input size="large" value={user.last_name} prefix={<UserOutlined />} />
           </Form.Item>
           <Row>
@@ -84,7 +93,7 @@ export const EditProfile: React.FC = () => {
             rules={[
               {
                 max: 50,
-                message: "Не более 50 символов",
+                message: "Не 50 более символов",
               },
             ]}
             name="about"
@@ -92,9 +101,17 @@ export const EditProfile: React.FC = () => {
             <Input size="large" placeholder={user.about.length ? user.about : "Напишите пару слов о себе..."} prefix={<BulbOutlined />} />
           </Form.Item>
           <Form.Item>
-            <Button htmlType="submit" loading={loading} type="primary">
-              Сохранить
-            </Button>
+            <Popconfirm
+              title="Вы действительно хотите изменить данные?"
+              description="Если вы укажите некорректные данные, мы будем вынуждены отказать вам в обращении."
+              okText="Да"
+              cancelText="Нет"
+              onConfirm={onChangeData}
+            >
+              <Button htmlType="submit" loading={isLoading} type="primary">
+                Сохранить
+              </Button>
+            </Popconfirm>
           </Form.Item>
         </Form>
       </Layout>

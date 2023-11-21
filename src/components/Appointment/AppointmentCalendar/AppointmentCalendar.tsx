@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 import axios from "../../../config/axios";
 
@@ -11,7 +12,6 @@ import dayjs from "dayjs";
 import locale from "antd/es/calendar/locale/ru_RU";
 
 import { ICheckReservationResponse, ITimeResponse } from "../../../types/appointment";
-import { useAppSelector } from "../../../hooks/useAppSelector";
 
 interface IState {
   time: ITimeResponse[];
@@ -30,6 +30,7 @@ export const AppointmentCalendar = () => {
   const schema = ["16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45"];
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
 
   const onChangeCalendar = (data: dayjs.Dayjs, info: SelectInfo) => {
     if (info.source === "date") {
@@ -46,6 +47,9 @@ export const AppointmentCalendar = () => {
         setstate({ date, time: data.data });
       }
     } catch (error) {
+      console.log(error);
+
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -116,7 +120,7 @@ export const AppointmentCalendar = () => {
 
         {isLoading && <Spin />}
 
-        {!state.date && !isLoading && (
+        {!state.date && !isLoading && !isError && (
           <Alert
             banner
             type="warning"
@@ -127,7 +131,17 @@ export const AppointmentCalendar = () => {
             }
           />
         )}
+
         <Divider />
+
+        {isError && (
+          <Alert
+            showIcon
+            banner
+            type="error"
+            message={"Произошла ошибка при получении зарезервированного времени, обновите страницу или попробуйте позже."}
+          />
+        )}
       </Layout>
     </>
   );

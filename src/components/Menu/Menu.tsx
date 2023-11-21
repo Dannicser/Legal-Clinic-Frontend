@@ -30,8 +30,8 @@ import { AppointmentStatus } from "../../types/appointment";
 export const Menu = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
-  const loading = useAppSelector((state) => state.user.loading);
-  const error = useAppSelector((state) => state.user.error);
+  const isLoading = useAppSelector((state) => state.user.isLoading);
+  const isError = useAppSelector((state) => state.user.isError);
   const status = useAppSelector((state) => state.appointment.data.status);
   const formatDate = useAppSelector((state) => state.appointment.data.formatDate);
 
@@ -54,7 +54,7 @@ export const Menu = () => {
       <Layout>
         <div className="menu__wrapper">
           <div className="user__info">
-            {loading ? (
+            {isLoading ? (
               <Spin />
             ) : (
               <>
@@ -66,7 +66,7 @@ export const Menu = () => {
                 </div>
               </>
             )}
-            {error && <Alert message="Ошибка, попробуйте обновить страницу" type="error" showIcon />}
+            {isError && <Alert message="Ошибка, попробуйте обновить страницу" type="error" showIcon />}
           </div>
           <ul className="menu__list">
             <NavLink to={PrivetRoutesNames.CONVERSATION}>

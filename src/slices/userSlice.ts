@@ -1,14 +1,14 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { UseUserService } from "../services/UseUserService";
-import { IEditProfileState, IUserProfile } from "../types/user";
+import { IEditProfileState, IResponseGetUser, IResponseUpdateUser, IUserProfile } from "../types/user";
 import { onShowAlert } from "./alertSlice";
 import { IUserResponseRegisterWithEmail } from "../types/auth";
 
 interface IState {
   user: IUserProfile;
-  loading: boolean;
-  error: boolean;
+  isLoading: boolean;
+  isError: boolean;
   message: string;
 }
 
@@ -23,26 +23,43 @@ const initialState: IState = {
     is_admin: false,
     _id: "",
   },
-  loading: false,
-  error: false,
+  isLoading: false,
+  isError: false,
   message: "",
 };
 
-export const thunkGetUserInfo = createAsyncThunk("onGetUserInfo/get", async () => {
+export const thunkGetUserInfo = createAsyncThunk<IResponseGetUser>("onGetUserInfo/get", async (_, { rejectWithValue }) => {
   const { onGetUser } = UseUserService();
 
-  const response = onGetUser();
+  const response = await onGetUser();
 
-  return response;
+  if (response.status >= 400) {
+    return rejectWithValue(response);
+  }
+
+  return response as IResponseGetUser;
 });
 
-export const thunkUpdateUserInfo = createAsyncThunk("onUpdateUserInfo/get", async (data: IEditProfileState, { dispatch }) => {
-  const { onUpdateUser } = UseUserService();
+export const thunkUpdateUserInfo = createAsyncThunk<IResponseUpdateUser, IEditProfileState>(
+  "onUpdateUserInfo/get",
+  async (data, { dispatch, rejectWithValue }) => {
+    const { onUpdateUser } = UseUserService();
 
-  const response = onUpdateUser(data);
+    const response = await onUpdateUser(data).then((data) => {
+      if (data.status >= 400) {
+        dispatch(
+          onShowAlert({
+            status: "show",
+            type: "error",
+            message: `Ошибка, данные пользователя не были обновлены. ${data.message}. Код ошибки: ${data.status}`,
+            duration: 5,
+            placement: "topRight",
+          })
+        );
 
-  return response
-    .then(() => {
+        return rejectWithValue(data);
+      }
+
       dispatch(
         onShowAlert({
           status: "show",
@@ -52,19 +69,13 @@ export const thunkUpdateUserInfo = createAsyncThunk("onUpdateUserInfo/get", asyn
           placement: "topRight",
         })
       );
-    })
-    .catch((error) => {
-      dispatch(
-        onShowAlert({
-          status: "show",
-          type: "error",
-          message: "Ошибка, данные пользователя не были обновлены",
-          duration: 3,
-          placement: "topRight",
-        })
-      );
+
+      return data as IResponseUpdateUser;
     });
-});
+
+    return response;
+  }
+);
 
 const userSlice = createSlice({
   initialState,
@@ -78,25 +89,27 @@ const userSlice = createSlice({
     builder
       //get
       .addCase(thunkGetUserInfo.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
-      .addCase(thunkGetUserInfo.fulfilled, (state, action: PayloadAction<IUserProfile>) => {
-        state.user = action.payload;
-        state.loading = false;
+      .addCase(thunkGetUserInfo.fulfilled, (state, action) => {
+        state.user = action.payload.data;
+        state.isLoading = false;
       })
       .addCase(thunkGetUserInfo.rejected, (state) => {
-        state.error = true;
-        state.loading = false;
+        state.isError = true;
+        state.isLoading = false;
       })
       //update
       .addCase(thunkUpdateUserInfo.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
-      .addCase(thunkUpdateUserInfo.fulfilled, (state) => {
-        state.loading = false;
+      .addCase(thunkUpdateUserInfo.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user.first_name = action.payload.data.first_name;
+        state.user.last_name = action.payload.data.last_name;
       })
       .addCase(thunkUpdateUserInfo.rejected, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       });
   },
 });

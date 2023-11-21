@@ -9,6 +9,7 @@ export interface IUserProfile {
   createdAt: string;
 }
 
+//
 export interface IEditProfileState {
   first_name: string;
   last_name: string;
@@ -17,5 +18,16 @@ export interface IEditProfileState {
 }
 
 export interface IResponseUpdateUser {
+  data: IEditProfileState;
+  error: null | string;
+  status: number;
+  message: string;
+}
+//
+
+export interface IResponseGetUser {
+  data: IUserProfile;
+  error: null | string;
+  status: number;
   message: string;
 }

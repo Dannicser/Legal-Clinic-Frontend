@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Alert, Col, Divider, Empty, Row, Segmented, Skeleton, Typography } from "antd";
 import { Header } from "../../UI/Header/Header";
 import { useAppSelector } from "../../../hooks/useAppSelector";
@@ -22,11 +22,14 @@ dayjs.extend(relative);
 export const NotificationList = () => {
   const dispatch = useAppDispatch();
 
-  const notifications = useAppSelector((state) => state.notification.user);
+  const [isToggle, setIsToggle] = useState<boolean>(false);
+
+  const userNotifications = useAppSelector((state) => state.notification.user);
+  const commonNotifications = useAppSelector((state) => state.notification.common);
   const isError = useAppSelector((state) => state.notification.isError);
 
   useEffect(() => {
-    const isRead = notifications.filter((el) => !el.is_read);
+    const isRead = userNotifications.filter((el) => !el.is_read);
 
     if (isRead.length) {
       console.log("read");
@@ -38,13 +41,17 @@ export const NotificationList = () => {
     };
   }, []);
 
-  const onSaveNotifications = (notification?: INotificationItem) => {};
+  const onToggleType = () => {
+    setIsToggle(!isToggle);
+  };
+
+  const notifications = isToggle ? commonNotifications : userNotifications;
 
   const content = [...notifications].reverse().map((el) => {
     return el.is_read ? (
       <Alert
+        key={el._id}
         showIcon={true}
-        icon={<CheckOutlined />}
         className="mt-1 notification_item"
         message={
           <>
@@ -64,12 +71,11 @@ export const NotificationList = () => {
       />
     ) : (
       <Alert
+        key={el._id}
         showIcon={true}
-        icon={<ExclamationOutlined />}
         className="mt-1 notification_item"
         message={
           <>
-            {" "}
             <Row justify={"end"}>
               <Typography.Text strong>{el.title}</Typography.Text>
             </Row>
@@ -87,11 +93,13 @@ export const NotificationList = () => {
     );
   });
 
+  console.log(notifications);
+
   return (
     <>
       <Header title="Уведомления" />
       <Layout internal={{ paddingTop: 60 }} external={{ paddingTop: 0 }}>
-        <Segmented style={{ fontWeight: 500 }} block options={["Пользовательские", "Общие"]} />
+        <Segmented onChange={onToggleType} style={{ fontWeight: 500 }} block options={["Пользовательские", "Общие"]} />
         <Divider />
         {!notifications.length ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"Уведомлений пока нет"} /> : content}
       </Layout>
