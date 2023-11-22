@@ -1,32 +1,46 @@
-import { NavLink, Navigate } from "react-router-dom";
+import { NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { PublicRoutesNames } from "../../../routers";
-import { Col, Row, Typography, Form, Input, Space, Switch, Button, Alert } from "antd";
+import { Col, Row, Typography, Form, Input, Space, Switch, Button, Alert, Modal, Tooltip, Popconfirm, Divider } from "antd";
+
+import { UserOutlined } from "@ant-design/icons";
+
 import logo from "../assets/img/logo.png";
 import login from "../assets/icons/login.svg";
 import password from "../assets/icons/password.svg";
-import google from "../assets/icons/google.svg";
-import { IAuthValues } from "../../../types/auth";
+import yandex from "../assets/icons/yandex.png";
+import { IAuthValues, IPreAuthWithYandex } from "../../../types/auth";
 import { onValidateEmail } from "../../../utils/validators/auth";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-import { thunkAuthWithEmail, onResetErrors } from "../../../slices/authSlice";
+import { thunkAuthWithEmail, onResetErrors, thunkAuthWithYandex, thunkRegisterWithEmail, onCloseConfirmingModal } from "../../../slices/authSlice";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useEffect } from "react";
 
 import "./Auth.scss";
+import { client_id } from "../../../config/oauth";
 
 export const Auth = () => {
-  const state = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
+  const isConfirming = useAppSelector((state) => state.auth.isConfirming);
+  const isError = useAppSelector((state) => state.auth.isError);
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
+  const message = useAppSelector((state) => state.auth.message);
 
-  // useEffect(() => {
-  //   dispatch(onResetErrors());
-  // }, []);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const locate = useLocation();
 
   const authWithEmail = (values: IAuthValues) => {
     dispatch(thunkAuthWithEmail(values));
   };
 
-  const authWithGoogle = () => {};
+  useEffect(() => {
+    const code = locate.search.split("=")[1];
+
+    if (code) {
+      dispatch(thunkAuthWithYandex(code));
+
+      return navigate("/");
+    }
+  }, []);
 
   if (!localStorage.getItem("intro")) {
     return <Navigate to={"/intro"} />;
@@ -34,6 +48,7 @@ export const Auth = () => {
 
   return (
     <div className="auth__wrapper">
+      {isConfirming && <ConfirmModelAuth />}
       <Form initialValues={{ remember: true }} name="basic" onFinish={authWithEmail}>
         <Row justify={"space-between"}>
           <Col span={24}>
@@ -91,19 +106,21 @@ export const Auth = () => {
           </Col>
           <Col span={24}>
             <Form.Item>
-              <Button loading={state.isLoading} htmlType="submit" size="large" type="primary" block>
+              <Button loading={isLoading} htmlType="submit" size="large" type="primary" block>
                 Войти
               </Button>
-              {state.isError && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />}
+              {isError && <Alert type="error" showIcon className="error__message" message={message} banner closable />}
             </Form.Item>
           </Col>
           <Col span={24}>
             <div className="auth__or">или</div>
           </Col>
           <Col span={24}>
-            <Space onClick={authWithGoogle} className="auth__google" size={14}>
-              <img src={google} alt="" />
-              <Typography.Text strong>Войти с помощью Google</Typography.Text>
+            <Space className="auth__google" size={14}>
+              <img src={yandex} alt="" />
+              <Typography.Text strong>
+                <a href={`https://oauth.yandex.ru/authorize?response_type=code&client_id=${client_id}`}>Войти с Yandex</a>
+              </Typography.Text>
             </Space>
           </Col>
           <Col span={24}>
@@ -118,5 +135,113 @@ export const Auth = () => {
       </Form>
       <div className="auth__background"></div>
     </div>
+  );
+};
+
+const ConfirmModelAuth: React.FC = () => {
+  const email = useAppSelector((state) => state.user.user.email);
+  const first_name = useAppSelector((state) => state.user.user.first_name);
+  const last_name = useAppSelector((state) => state.user.user.last_name);
+
+  const psuid = useAppSelector((state) => state.auth.psuid);
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
+  const isError = useAppSelector((state) => state.auth.isError);
+
+  const dispatch = useAppDispatch();
+
+  const onRegister = (values: IPreAuthWithYandex) => {
+    console.log(psuid);
+    dispatch(thunkRegisterWithEmail({ ...values, password: psuid }));
+  };
+
+  const onCancelModal = () => {
+    dispatch(onCloseConfirmingModal());
+  };
+
+  const error =
+    isError && email.length ? (
+      <Alert type="error" showIcon={false} message={"Произошла ошибка при регистрации. Попробуйте позже или авторизируйтесь по email."} />
+    ) : (
+      <Alert type="error" showIcon={false} message={"К сожалению, мы не смогли получить ваш email. Воспользуйтесь регистрацией по почте."} />
+    );
+
+  const content = (
+    <Alert
+      type="warning"
+      banner
+      showIcon={false}
+      message={"Пожалуйста, убедитесь, что предоставленные данные верны. При необходимости вы можете их изменить."}
+    />
+  );
+
+  return (
+    <Modal title="Подтвердите данные" okText={"Войти"} cancelText={"Отменить"} onCancel={onCancelModal} footer={false} open={true}>
+      <Form className="mt-1" onFinish={onRegister} initialValues={{ first_name, last_name, email }} name="preauth">
+        <Row>
+          <Col>
+            <Tooltip
+              title="Необходимо указать ваше настоящее имя, в противном случае, мы будем вынуждены отказать вам в оказании услуг"
+              color={"red"}
+            >
+              <Typography.Text strong>Ваше имя</Typography.Text>{" "}
+            </Tooltip>
+          </Col>
+        </Row>
+        <Form.Item className="mt-1" hasFeedback rules={[{ required: true, min: 2, max: 20, message: "2 - 20 символов" }]} name={"first_name"}>
+          <Input size="large" value={first_name} prefix={<UserOutlined />} />
+        </Form.Item>
+        <Row>
+          <Col>
+            <Tooltip
+              title="Необходимо указать ваше настоящее отчество, в противном случае, мы будем вынуждены отказать вам в оказании услуг"
+              color={"red"}
+            >
+              <Typography.Text strong>Ваше отчество</Typography.Text>{" "}
+            </Tooltip>
+          </Col>
+        </Row>
+        <Form.Item className="mt-1" hasFeedback rules={[{ required: true, min: 2, max: 20, message: "2 - 20 символов" }]} name={"last_name"}>
+          <Input size="large" value={last_name} prefix={<UserOutlined />} />
+        </Form.Item>
+        <Row>
+          <Col>
+            <Tooltip title="Вы не можете изменить почту." color={"red"}>
+              <Typography.Text strong>Ваша электронная почта</Typography.Text>
+            </Tooltip>
+          </Col>
+        </Row>
+        <Form.Item hasFeedback rules={[{ required: true }]} name={"email"} className="mt-1">
+          <Input disabled size="large" placeholder={"Email отсутствует"} prefix={<img src={login} />} />
+        </Form.Item>
+
+        {/* {!email.length && !isError && (
+          <Alert type="error" showIcon={false} message={"К сожалению, мы не смогли получить ваш email. Воспользуйтесь регистрацией по почте."} />
+        )} */}
+
+        {!isError && email.length ? content : error}
+
+        {/* {!isError && email.length && (
+          <Alert
+            type="warning"
+            banner
+            showIcon={false}
+            message={"Пожалуйста, убедитесь что предоставленные данные верны. При необходимости вы можете их изменить."}
+          />
+        )} */}
+
+        {/* {isError && email.length && (
+          <Alert type="error" showIcon={false} message={"Произошла ошибка при регистрации. Попробуйте позже или авторизируйтесь по email."} />
+        )} */}
+
+        <Divider />
+        <Form.Item>
+          <Row justify={"center"}>
+            <Button disabled={email.length ? false : true} htmlType="submit" loading={isLoading} type="primary">
+              Подтвердить
+            </Button>
+          </Row>
+        </Form.Item>
+      </Form>
+    </Modal>
   );
 };

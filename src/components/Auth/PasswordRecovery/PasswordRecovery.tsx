@@ -33,12 +33,8 @@ export const PasswordRecovery = () => {
             </Form.Item>
             <Form.Item>
               <Button loading={state.isLoading} htmlType="submit" size="large" type="primary" block>
-                SEND
+                Отправить
               </Button>
-              {/* {state.status === "successful" && (
-                <Alert message="На указанный вами адрес отправленно письмо со сбросом пароля" className="mt-1" closable type="info" showIcon />
-              )}
-              {state.status === "error" && <Alert type="error" showIcon className="error__message" message={state.message} banner closable />} */}
             </Form.Item>
           </Form>
         </div>

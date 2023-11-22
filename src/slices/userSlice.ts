@@ -3,7 +3,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UseUserService } from "../services/UseUserService";
 import { IEditProfileState, IResponseGetUser, IResponseUpdateUser, IUserProfile } from "../types/user";
 import { onShowAlert } from "./alertSlice";
-import { IUserResponseRegisterWithEmail } from "../types/auth";
+import { IPreAuthWithYandex, IUserResponseRegisterWithEmail } from "../types/auth";
 
 interface IState {
   user: IUserProfile;
@@ -84,6 +84,11 @@ const userSlice = createSlice({
     onFetchUser: (state, action: PayloadAction<IUserResponseRegisterWithEmail>) => {
       state.user = action.payload;
     },
+    onPreAuthWithYandex: (state, action: PayloadAction<IPreAuthWithYandex>) => {
+      state.user.email = action.payload.email || "";
+      state.user.first_name = action.payload.first_name;
+      state.user.last_name = action.payload.last_name;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -114,6 +119,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { onFetchUser } = userSlice.actions;
+export const { onFetchUser, onPreAuthWithYandex } = userSlice.actions;
 
 export default userSlice.reducer;

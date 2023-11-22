@@ -1,7 +1,10 @@
 import axios from "../config/axios";
-import defaultAxios from "axios";
+import defaultAxios, { AxiosError } from "axios";
 
 import { UseLocalStorage } from "../hooks/useLocalStorage";
+
+import { url_get_token, client_id, client_secret, url_get_data } from "../config/oauth";
+
 import {
   IAuthValues,
   IRegisterValues,
@@ -9,6 +12,10 @@ import {
   IResponseAuthWithEmail,
   IResponseLogoutAuth,
   IResponseRegisterWithEmail,
+  IResponseAuthWithYandexGetToken,
+  IResponseAuthWithYandexGetData,
+  IGetUserRegisterStatus,
+  IGetUserRegisterStatusParams,
 } from "../types/auth";
 
 export const UseAuthService = () => {
@@ -46,5 +53,87 @@ export const UseAuthService = () => {
     return response.data;
   };
 
-  return { onGetAuthWithEmail, onGetRegisterWithEmail, onLogoutWithEmail, onCheckAuth };
+  const onGetTokenWithYandex = async (code: string) => {
+    const response = await defaultAxios
+      .post<IResponseAuthWithYandexGetToken>(
+        url_get_token,
+        {
+          grant_type: "authorization_code",
+          client_id,
+          client_secret,
+          code,
+        },
+        {
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded",
+          },
+        }
+      )
+      .then(({ data }) => {
+        return {
+          access_token: data.access_token,
+          error: null,
+          error_discription: null,
+          message: "",
+        };
+      })
+      .catch((error: AxiosError<IResponseAuthWithYandexGetToken>) => {
+        return {
+          access_token: null,
+          error: error.response?.data.error || "unexpected error",
+          error_description: error.response?.data.error_description || "",
+          message: "Ошибка получения access токена",
+        };
+      });
+
+    return response;
+  };
+
+  const onGetDataFromYandex = async (access_token: string) => {
+    const response = await defaultAxios
+      .get<IResponseAuthWithYandexGetData>(url_get_data, {
+        headers: { Authorization: `OAuth ${access_token}` },
+      })
+      .then(({ data }) => {
+        return { default_email: data.default_email, first_name: data.first_name, last_name: data.last_name, error: null, psuid: data.psuid };
+      })
+      .catch((error: AxiosError) => {
+        return {
+          error: "error",
+          message: "Ошибка получения данных из yandex",
+          default_email: "",
+          first_name: "",
+          last_name: "",
+        };
+      });
+
+    return response;
+  };
+
+  const onGetUserRegisterStatus = async (data: IGetUserRegisterStatusParams) => {
+    const response = await axios
+      .post<IGetUserRegisterStatus>("/auth/register/status", data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((error: AxiosError) => {
+        return {
+          error: "error",
+          message: "Ошибка получения данных из yandex",
+          data: null,
+        };
+      });
+
+    return response;
+  };
+
+  return {
+    onGetAuthWithEmail,
+    onGetRegisterWithEmail,
+    onLogoutWithEmail,
+    onCheckAuth,
+    onGetTokenWithYandex,
+    onGetDataFromYandex,
+    onGetUserRegisterStatus,
+  };
 };

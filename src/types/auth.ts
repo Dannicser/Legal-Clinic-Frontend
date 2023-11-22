@@ -1,13 +1,14 @@
 export interface IAuthValues {
   email: string;
   password: string;
-  remember: boolean;
+  remember?: boolean;
 }
 export interface IRegisterValues {
   first_name: string;
   last_name: string;
   email: string;
   password: string;
+  is_yandex?: boolean;
 }
 
 export interface IUserResponseRegisterWithEmail {
@@ -18,7 +19,6 @@ export interface IUserResponseRegisterWithEmail {
   photo: string;
   _id: string;
   is_admin: boolean;
-  is_appointment: boolean;
   createdAt: string;
 }
 
@@ -38,4 +38,40 @@ export interface IResponseCheckAuth extends IResponseRegisterWithEmail {}
 
 export interface IResponseLogoutAuth {
   message: string;
+}
+
+export interface IResponseAuthWithYandexGetToken {
+  access_token: string | null;
+  error: string | null;
+  error_description: string | null;
+  message: string;
+}
+
+export interface IResponseAuthWithYandexGetData {
+  first_name: string;
+  last_name: string;
+  default_email: string;
+  error?: string | null;
+  message: string;
+  psuid: string;
+  status: boolean;
+}
+
+export interface IPreAuthWithYandex {
+  email: string;
+  first_name: string;
+  last_name: string;
+}
+
+//
+
+export interface IGetUserRegisterStatus {
+  data: null | boolean;
+  message: string;
+  error: string | null;
+  status: number;
+}
+
+export interface IGetUserRegisterStatusParams {
+  email: string;
 }

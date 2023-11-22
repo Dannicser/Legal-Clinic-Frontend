@@ -3,7 +3,7 @@ import { Col, Row, Typography, Form, Input, Space, Button, Alert } from "antd";
 import { NavLink, Navigate } from "react-router-dom";
 import login from "../assets/icons/login.svg";
 import password from "../assets/icons/password.svg";
-import google from "../assets/icons/google.svg";
+import yandex from "../assets/icons/yandex.png";
 import name from "../assets/icons/name.svg";
 import { Header } from "../../UI/Header/Header";
 import { PublicRoutesNames } from "../../../routers";
@@ -15,6 +15,7 @@ import { IRegisterValues } from "../../../types/auth";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { useEffect } from "react";
 import { UseLocalStorage } from "../../../hooks/useLocalStorage";
+import { client_id } from "../../../config/oauth";
 
 export const Register = () => {
   const dispatch = useAppDispatch();
@@ -31,8 +32,6 @@ export const Register = () => {
   if (state.isAuth) {
     return <Navigate to={"/"} />;
   }
-
-  console.log(state);
 
   return (
     <>
@@ -115,8 +114,10 @@ export const Register = () => {
           </Col>
           <Col span={24}>
             <Space className="auth__google" size={14}>
-              <img src={google} alt="" />
-              <Typography.Text strong>Войти с помощью Google</Typography.Text>
+              <img src={yandex} alt="" />
+              <Typography.Text strong>
+                <a href={`https://oauth.yandex.ru/authorize?response_type=code&client_id=${client_id}`}>Войти с Yandex</a>
+              </Typography.Text>
             </Space>
           </Col>
           <Col span={24}>
