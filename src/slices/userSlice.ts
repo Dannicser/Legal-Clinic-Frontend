@@ -112,6 +112,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.user.first_name = action.payload.data.first_name;
         state.user.last_name = action.payload.data.last_name;
+        state.user.about = action.payload.data.about;
       })
       .addCase(thunkUpdateUserInfo.rejected, (state) => {
         state.isLoading = false;

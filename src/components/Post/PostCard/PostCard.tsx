@@ -6,6 +6,8 @@ import { EyeOutlined } from "@ant-design/icons";
 
 import { NavLink } from "react-router-dom";
 
+import dayjs from "dayjs";
+
 import "./PostCard.scss";
 
 interface IProps {
@@ -16,6 +18,7 @@ export const PostCard: React.FC<IProps> = ({ data }) => {
   const title = data.title.length > 27 ? data.title.slice(0, 25) + "..." : data.title;
   const tags = data.tags.join(" ").length > 22 ? data.tags.join("#").slice(0, 17) + "..." : data.tags.join("#");
   const views = data.views.toString().length > 3 ? data.views.toString().slice(0, data.views.toString().length - 3) + "К" : data.views;
+  const month = dayjs(data.createdAt).format("MMMM")[0].toUpperCase() + dayjs(data.createdAt).format("MMMM").slice(1);
 
   return (
     <NavLink to={`post/${data._id}`}>
@@ -24,8 +27,7 @@ export const PostCard: React.FC<IProps> = ({ data }) => {
           <img src={data.img} alt="" />
         </div>
         <div className="post__date">
-          <div className="number">10</div>
-          <div className="month">Июня</div>
+          <div className="month">{month}</div>
         </div>
         <div className="post__favorite">
           <img src={favorive} alt="" />

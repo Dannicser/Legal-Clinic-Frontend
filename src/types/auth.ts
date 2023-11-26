@@ -30,14 +30,29 @@ interface ITokensResponseRegisterWithEmail {
 export interface IResponseRegisterWithEmail {
   tokens: ITokensResponseRegisterWithEmail;
   user: IUserResponseRegisterWithEmail;
+  status: number;
+  message: string;
+}
+
+export interface IResponseRegisterWithEmailError {
+  error: string | null;
+  message: string;
+  status: number;
 }
 
 export interface IResponseAuthWithEmail extends IResponseRegisterWithEmail {}
+export interface IResponseAuthWithEmailError {
+  error: string | null;
+  message: string;
+  status: number;
+}
 
 export interface IResponseCheckAuth extends IResponseRegisterWithEmail {}
 
 export interface IResponseLogoutAuth {
   message: string;
+  status: number;
+  data: null;
 }
 
 export interface IResponseAuthWithYandexGetToken {

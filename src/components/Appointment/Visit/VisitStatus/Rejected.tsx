@@ -16,19 +16,23 @@ export const Rejected: React.FC<IRejectedProps> = ({ message }) => {
   const problem = useAppSelector((state) => state.appointment.data.problem);
   const type = useAppSelector((state) => state.appointment.data.type);
   const date = useAppSelector((state) => state.appointment.data.date);
+
   const isError = useAppSelector((state) => state.appointment.isError);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [isErrorHistory, setIsErrorHistory] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
 
   const onAddAppointmentHistory = async () => {
-    await axios.post("./appointment/history", { review: " ", rate: 0, problem, type, date, rejected: true });
+    await axios.post("./appointment/history", { review: "", reason: message, rate: 0, problem, type, date, rejected: true });
   };
 
   const onFinish = async () => {
     try {
+      setIsLoading(true);
       UseLocalStorage({ key: "roadhelp", action: "remove" });
+      UseLocalStorage({ key: "statushelp", action: "remove" });
       await onAddAppointmentHistory();
       console.log("delete");
       dispatch(thunkRemoveAppointment());
@@ -36,6 +40,8 @@ export const Rejected: React.FC<IRejectedProps> = ({ message }) => {
       console.log(error);
 
       setIsErrorHistory(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -45,7 +51,7 @@ export const Rejected: React.FC<IRejectedProps> = ({ message }) => {
       title={"В оказании услуги было отказано"}
       subTitle={`Причина отказа: ${message}`}
       extra={[
-        <Button onClick={onFinish} type="primary" danger key="console">
+        <Button loading={isLoading} onClick={onFinish} type="primary" danger key="console">
           Попробовать снова
         </Button>,
 

@@ -69,7 +69,17 @@ export interface IEditAppointmentData {
   phone: string;
 }
 
-export interface IChangeAppointmentResponse extends IRegisterApointmentResponse {}
+export interface IChangeAppointmentResponse {
+  data: IRegisterApointmentDataResponse;
+  message: string;
+  status: number;
+  error: string | null;
+}
+
+export interface IChangeStatusAppointment {
+  message: string;
+  status: "confirmed" | "rejected" | "provided";
+}
 
 //
 export interface IRemoveAppointmentResponse {

@@ -8,76 +8,158 @@ import { Navigate } from "react-router-dom";
 
 import axios from "../../../../config/axios";
 
-import { Button, Divider, Input, Rate, Result, Typography, Form, Row, Col } from "antd";
-import { SendOutlined } from "@ant-design/icons";
+import { Button, Divider, Input, Rate, Result, Typography, Form, Row, Col, Modal, Space, Alert } from "antd";
+
+import { PrivetRoutesNames } from "../../../../routers";
 
 export const Provided: React.FC = () => {
-  const [rate, setRate] = useState<number>(5);
-  const [isReview, isSetReview] = useState<boolean>(false);
+  const [rate, setRate] = useState<number>(0);
   const [review, setReview] = useState<string>("");
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [isModal, setIsModal] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
-  const { problem, type, date } = useAppSelector((state) => state.appointment.data);
+  const problem = useAppSelector((state) => state.appointment.data.problem);
+  const date = useAppSelector((state) => state.appointment.data.date);
+  const type = useAppSelector((state) => state.appointment.data.type);
 
-  const onOpenReview = () => {
-    isSetReview(true);
+  const onRateService = () => {
+    if (rate !== 5) {
+      setIsModal(true);
+    } else {
+      onFetchData();
+    }
   };
 
-  const onChangeReview = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    setReview(event.target.value);
+  const onCloseModal = () => {
+    setIsModal(false);
+  };
+
+  const onGetReview = (review: string) => {
+    setReview(review);
   };
 
   const onFetchData = async () => {
-    await axios.post("./appointment/history", { review, rate, problem, type, date });
-    dispatch(thunkRemoveAppointment());
-    setIsFinished(true);
-    UseLocalStorage({ key: "roadhelp", action: "remove" });
-    console.log("delete");
+    try {
+      setIsLoading(true);
+      await axios.post("./appointment/history", { review, reason: "", rate, problem, type, date });
+      dispatch(thunkRemoveAppointment()); //weak place
+
+      UseLocalStorage({ key: "statushelp", action: "remove" });
+      UseLocalStorage({ key: "roadhelp", action: "remove" });
+      console.log("delete");
+      setIsFinished(true);
+      return;
+    } catch (error) {
+      console.log(error);
+
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isFinished) {
-    return <Navigate to="/main" />;
+    return <Navigate to={PrivetRoutesNames.HOME} />;
   }
 
   return (
-    <Result
-      status={"success"}
-      title="Услуга была оказана"
-      subTitle={"Спасибо за ваше доверие! Просим вас оценить нашу работу"}
-      extra={
-        <>
-          <Rate onChange={setRate} defaultValue={rate} />
-          <Divider />
-          <Button onClick={onOpenReview} type="primary">
-            Оценить
-          </Button>
-          <Divider />
-          {isReview ? (
-            <>
-              <Typography.Paragraph style={{ textAlign: "start" }} strong>
-                Что не понравилось вам?
-              </Typography.Paragraph>
-              <Form initialValues={{ review: "" }}>
-                <Form.Item
-                  hasFeedback
-                  name={"review"}
-                  rules={[{ required: true, message: "Пожалуйста, заполните поле (от 5 до 100 символов)", min: 5, max: 100 }]}
-                >
-                  <Row justify={"space-between"}>
-                    <Col span={20}>
-                      <Input.TextArea rows={1} onChange={onChangeReview} placeholder="Мне понравилось всё!" />
-                    </Col>
-                    <Col style={{ marginTop: "5px" }} span={4}>
-                      {review.length >= 5 && <SendOutlined onClick={onFetchData} />}
-                    </Col>
-                  </Row>
-                </Form.Item>
-              </Form>
-            </>
-          ) : null}
-        </>
-      }
-    />
+    <>
+      <ModelReview
+        isLoading={isLoading}
+        isError={isError}
+        onFetchData={onFetchData}
+        onCloseModal={onCloseModal}
+        onGetReview={(review) => onGetReview(review)}
+        isModal={isModal}
+        rate={rate}
+      />
+      <Result
+        status={"success"}
+        title="Услуга была оказана"
+        subTitle={"Спасибо за ваше доверие! Просим вас оценить нашу работу"}
+        extra={
+          <>
+            <Rate onChange={setRate} defaultValue={rate} />
+            <Divider />
+            <Button loading={isLoading} disabled={!rate} onClick={onRateService} type="primary">
+              Оценить
+            </Button>
+            <Divider />
+            {isError && <Alert type="error" message={"Произошла непредвиденная ошибка добавлении записи в историю. Попробуйте позже."} />}
+          </>
+        }
+      />
+    </>
+  );
+};
+
+interface IModelReviewProps {
+  isModal: boolean;
+  isError: boolean;
+  isLoading: boolean;
+  rate: number;
+  onCloseModal: (param: boolean) => void;
+  onFetchData: () => void;
+  onGetReview: (review: string) => void;
+}
+
+const ModelReview: React.FC<IModelReviewProps> = ({ isModal, isError, isLoading, rate, onCloseModal, onFetchData, onGetReview }) => {
+  const onChangeReview = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    onGetReview(event.target.value);
+  };
+
+  const onSendData = () => {
+    onFetchData();
+  };
+
+  const text =
+    rate > 3 ? (
+      <Typography.Text strong type="warning">
+        {rate}
+      </Typography.Text>
+    ) : (
+      <Typography.Text strong type="danger">
+        {rate}
+      </Typography.Text>
+    );
+
+  return (
+    <Modal onCancel={() => onCloseModal(true)} cancelText={"Отмена"} title={<>Почему вы поставили нам {text} ?</>} open={isModal} footer={true}>
+      <Typography.Text> Пожалуйста, расскажите, что вам не понравилось, </Typography.Text>{" "}
+      <Typography.Text strong type="warning">
+        мы обязательно исправим это в следующий раз.
+      </Typography.Text>
+      <Divider />
+      <Form onFinish={onSendData} initialValues={{ review: "" }}>
+        <Form.Item
+          hasFeedback
+          name={"review"}
+          rules={[{ required: true, message: "Пожалуйста, заполните поле (от 5 до 200 символов)", min: 5, max: 100 }]}
+        >
+          <Input.TextArea rows={2} onChange={onChangeReview} placeholder="Мне понравилось всё!" />
+        </Form.Item>
+
+        <Form.Item>
+          <Row justify={"end"}>
+            <Space>
+              <Col>
+                <Button onClick={() => onCloseModal(false)} style={{ background: "#52c41a" }} type="primary">
+                  Все хорошо
+                </Button>
+              </Col>
+              <Col>
+                <Button loading={isLoading} htmlType="submit" type="primary">
+                  Отправить
+                </Button>
+              </Col>
+            </Space>
+          </Row>
+        </Form.Item>
+      </Form>
+      {isError && <Alert type="error" message={"Произошла непредвиденная ошибка, попробуйте позже."} />}
+    </Modal>
   );
 };

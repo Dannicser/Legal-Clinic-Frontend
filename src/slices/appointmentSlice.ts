@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { UseAppointmentService } from "../services/UseAppointmentService";
 
@@ -7,6 +7,7 @@ import "dayjs/locale/ru";
 
 import {
   IChangeAppointmentResponse,
+  IChangeStatusAppointment,
   IEditAppointmentData,
   IGetApointmentInfoResponse,
   IRegisterApointmentData,
@@ -101,7 +102,13 @@ export const thunkEditAppointment = createAsyncThunk<IChangeAppointmentResponse,
   async (data, { rejectWithValue, dispatch }) => {
     const { onEditAppointment } = UseAppointmentService();
 
-    const response = await onEditAppointment(data).then((data) => {
+    const response = (await onEditAppointment(data)) as IChangeAppointmentResponse;
+
+    if (response.status >= 400) {
+      return rejectWithValue(response);
+    }
+
+    if (!response.data.isReserved) {
       dispatch(
         onShowAlert({
           status: "show",
@@ -112,12 +119,6 @@ export const thunkEditAppointment = createAsyncThunk<IChangeAppointmentResponse,
           placement: "topRight",
         })
       );
-
-      return data;
-    });
-
-    if (response.status >= 400) {
-      return rejectWithValue(response);
     }
 
     return response as IChangeAppointmentResponse;
@@ -127,12 +128,18 @@ export const thunkEditAppointment = createAsyncThunk<IChangeAppointmentResponse,
 const appointmentSlice = createSlice({
   initialState,
   name: "appointment",
-  reducers: {},
+  reducers: {
+    onChangeStatusAppointment: (state, action: PayloadAction<IChangeStatusAppointment>) => {
+      state.data.status = action.payload.status;
+      state.message = action.payload.message;
+    },
+  },
   extraReducers(builder) {
     builder
       //get status
       .addCase(thunkGetStatusAppointment.pending, (state) => {
         state.isLoading = true;
+        state.isReserved = false;
       })
       .addCase(thunkGetStatusAppointment.fulfilled, (state, action) => {
         state.data = action.payload.data;
@@ -159,6 +166,7 @@ const appointmentSlice = createSlice({
         } else {
           state.isReserved = false;
           state.data.status = "accepted";
+          state.data.formatDate = `${dayjs(action.payload.data.doc.date).locale("ru").format("D MMMM")} в ${action.payload.data.doc.time}`;
         }
         state.message = action.payload.message;
         state.data.problem = action.payload.data.doc.problem;
@@ -207,4 +215,4 @@ const appointmentSlice = createSlice({
 });
 
 export default appointmentSlice.reducer;
-export const {} = appointmentSlice.actions;
+export const { onChangeStatusAppointment } = appointmentSlice.actions;

@@ -3,8 +3,12 @@ import { UseAuthService } from "../services/UseAuthService";
 import {
   IAuthValues,
   IRegisterValues,
+  IResponseAuthWithEmail,
+  IResponseAuthWithEmailError,
   IResponseAuthWithYandexGetData,
   IResponseAuthWithYandexGetToken,
+  IResponseLogoutAuth,
+  IResponseRegisterWithEmail,
   IUserResponseRegisterWithEmail,
 } from "../types/auth";
 import { onShowAlert } from "./alertSlice";
@@ -31,55 +35,59 @@ const initialState: IState = {
   message: "",
 };
 
-export const thunkAuthWithEmail = createAsyncThunk("onGetAuth/get", async (data: IAuthValues, { dispatch }) => {
-  const { onGetAuthWithEmail } = UseAuthService();
+export const thunkAuthWithEmail = createAsyncThunk<IResponseAuthWithEmail, IAuthValues>(
+  "onGetAuth/get",
+  async (data, { dispatch, rejectWithValue }) => {
+    const { onGetAuthWithEmail } = UseAuthService();
 
-  return onGetAuthWithEmail(data).then((data) => {
+    const response = await onGetAuthWithEmail(data);
+
+    if (response.status >= 400) {
+      return rejectWithValue(response);
+    }
+
     dispatch(
       onShowAlert({
         status: "show",
         type: "info",
-        message: `Доброго времени суток, ${data.user.first_name}!`,
+        message: `Доброго времени суток!`,
         description: "",
         duration: 3,
         placement: "topRight",
       })
     );
 
-    return data;
-  });
-});
+    return response as IResponseAuthWithEmail;
+  }
+);
 
-export const thunkRegisterWithEmail = createAsyncThunk("thunkRegisterWithEmail/register", async (userdata: IRegisterValues, { dispatch }) => {
-  const { onGetRegisterWithEmail } = UseAuthService();
+export const thunkRegisterWithEmail = createAsyncThunk<IResponseRegisterWithEmail, IRegisterValues>(
+  "thunkRegisterWithEmail/register",
+  async (userdata, { dispatch, rejectWithValue }) => {
+    const { onGetRegisterWithEmail } = UseAuthService();
 
-  const response = await onGetRegisterWithEmail(userdata);
+    const response = await onGetRegisterWithEmail(userdata);
 
-  return response;
-});
+    console.log(response);
 
-export const thunkLogoutWithEmail = createAsyncThunk("thunkLogoutWithEmail/logout", async (_, { dispatch }) => {
+    if (response.status >= 400) {
+      return rejectWithValue(response);
+    }
+
+    return response as IResponseRegisterWithEmail;
+  }
+);
+
+export const thunkLogoutWithEmail = createAsyncThunk<IResponseLogoutAuth>("thunkLogoutWithEmail/logout", async (_, { dispatch, rejectWithValue }) => {
   const { onLogoutWithEmail } = UseAuthService();
 
-  return onLogoutWithEmail()
-    .then(() => {
-      UseLocalStorage({ key: "accessToken", action: "remove" });
-      sessionStorage.removeItem("accessToken");
+  const response = await onLogoutWithEmail();
 
-      dispatch({ type: "REVERT_ALL" });
-    })
-    .catch(() => {
-      dispatch(
-        onShowAlert({
-          status: "show",
-          type: "error",
-          message: `Произошла ошибка при закрытии сессии`,
-          description: "Попробуйте позже",
-          duration: 5,
-          placement: "topRight",
-        })
-      );
-    });
+  if (response.status >= 400) {
+    return rejectWithValue(response);
+  }
+
+  return response as IResponseLogoutAuth;
 });
 
 export const thunkCheckAuth = createAsyncThunk("onCheckAuth/get", async (_, { dispatch }) => {
@@ -99,14 +107,14 @@ export const thunkAuthWithYandex = createAsyncThunk<IResponseAuthWithYandexGetDa
   async (code, { rejectWithValue, dispatch }) => {
     const { onGetTokenWithYandex, onGetDataFromYandex, onGetUserRegisterStatus } = UseAuthService();
 
-    const response = await onGetTokenWithYandex(code);
+    const tokens = await onGetTokenWithYandex(code);
 
-    if (response.error) {
+    if (tokens.error) {
       return rejectWithValue({ message: "Не удалось получить токен из Yandex" });
     }
 
     const { default_email, error, psuid, last_name, first_name } = (await onGetDataFromYandex(
-      response.access_token || ""
+      tokens.access_token || ""
     )) as IResponseAuthWithYandexGetData;
 
     if (error) {
@@ -120,7 +128,7 @@ export const thunkAuthWithYandex = createAsyncThunk<IResponseAuthWithYandexGetDa
 
       return { first_name, last_name, status: status.data, psuid } as IResponseAuthWithYandexGetData;
     } else {
-      dispatch(thunkAuthWithEmail({ email: default_email, password: psuid }));
+      dispatch(thunkAuthWithEmail({ email: default_email, password: psuid, remember: true }));
 
       return { first_name, last_name, status: status.data } as IResponseAuthWithYandexGetData;
     }
@@ -133,6 +141,7 @@ export const authSlice = createSlice({
   reducers: {
     onResetErrors: (state) => {
       state.message = "";
+      state.isError = false;
     },
     onCloseConfirmingModal: (state) => {
       state.isConfirming = false;
@@ -143,6 +152,7 @@ export const authSlice = createSlice({
       //AUTH WITH EMAIL
       .addCase(thunkAuthWithEmail.pending, (state) => {
         state.isLoading = true;
+        state.isError = false;
         state.message = "";
       })
       .addCase(thunkAuthWithEmail.fulfilled, (state) => {
@@ -150,14 +160,15 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.message = "";
       })
-      .addCase(thunkAuthWithEmail.rejected, (state, payload) => {
+      .addCase(thunkAuthWithEmail.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = "Непредвиденная ошибка";
+        state.message = action.payload.message;
       })
       //REGISTER WITH EMAIL
       .addCase(thunkRegisterWithEmail.pending, (state) => {
         state.isLoading = true;
+        state.isError = false;
         state.message = "";
       })
       .addCase(thunkRegisterWithEmail.fulfilled, (state) => {
@@ -165,9 +176,10 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.message = "";
       })
-      .addCase(thunkRegisterWithEmail.rejected, (state) => {
+      .addCase(thunkRegisterWithEmail.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.isError = true;
+        state.message = action.payload.message;
       })
       //REGISTER WITH YANDEX
       .addCase(thunkAuthWithYandex.pending, (state) => {
@@ -179,6 +191,7 @@ export const authSlice = createSlice({
           state.psuid = action.payload.psuid;
         }
         state.isLoading = false;
+        console.log(action);
       })
       .addCase(thunkAuthWithYandex.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -200,9 +213,18 @@ export const authSlice = createSlice({
         state.isAuth = false;
       })
       //LOGOUT
+      .addCase(thunkLogoutWithEmail.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(thunkLogoutWithEmail.fulfilled, (state) => {
         state.isAuth = false;
         state.isConfirming = false;
+        state.isLoading = false;
+      })
+      .addCase(thunkLogoutWithEmail.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = "Произошла непредвиденная ошибка при закрытии сессии. Попробуйте позже.";
       });
   },
 });

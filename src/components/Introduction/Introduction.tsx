@@ -15,7 +15,10 @@ export const Introduction: React.FC = () => {
     setPosition(currentSlide);
   };
 
-  useEffect(() => UseLocalStorage({ key: "intro", action: "set", data: "true" }), []);
+  useEffect(() => {
+    UseLocalStorage({ key: "intro", action: "set", data: "true" });
+    UseLocalStorage({ key: "sound", action: "set", data: "true" });
+  }, []);
 
   if (position > 2) {
     return <Navigate to={"/"} />;

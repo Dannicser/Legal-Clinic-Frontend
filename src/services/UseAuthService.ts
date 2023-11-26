@@ -16,35 +16,64 @@ import {
   IResponseAuthWithYandexGetData,
   IGetUserRegisterStatus,
   IGetUserRegisterStatusParams,
+  IResponseAuthWithEmailError,
+  IResponseRegisterWithEmailError,
 } from "../types/auth";
 
 export const UseAuthService = () => {
   const onGetAuthWithEmail = async (user: IAuthValues) => {
-    const response = await axios.post<IResponseAuthWithEmail>("/auth/login/email", user);
+    const response = await axios
+      .post<IResponseAuthWithEmail>("/auth/login/email", user)
+      .then(({ data }) => {
+        user.remember
+          ? UseLocalStorage({ key: "accessToken", data: data.tokens.accessToken, action: "set" })
+          : window.sessionStorage.setItem("accessToken", data.tokens.accessToken);
 
-    if (response.data) {
-      user.remember
-        ? UseLocalStorage({ key: "accessToken", data: response.data.tokens.accessToken, action: "set" })
-        : window.sessionStorage.setItem("accessToken", response.data.tokens.accessToken);
-    }
+        return data;
+      })
+      .catch((error: AxiosError<IResponseAuthWithEmailError>) => {
+        return {
+          message: error.response?.data.message || "Непредвиденная ошибка",
+          status: error.response?.data.status || 500,
+        };
+      });
 
-    return response.data;
+    return response;
   };
 
   const onGetRegisterWithEmail = async (user: IRegisterValues) => {
-    const response = await axios.post<IResponseRegisterWithEmail>("/auth/register/email", user);
+    const response = await axios
+      .post<IResponseRegisterWithEmail>("/auth/register/email", user)
+      .then(({ data }) => {
+        UseLocalStorage({ key: "accessToken", data: data.tokens.accessToken, action: "set" });
 
-    if (response.data) {
-      UseLocalStorage({ key: "accessToken", data: response.data.tokens.accessToken, action: "set" });
-    }
+        return data;
+      })
+      .catch((error: AxiosError<IResponseRegisterWithEmailError>) => {
+        return { message: error.response?.data.message || "Непредвиденная ошибка", status: error.response?.data.status || 500 };
+      });
 
-    return response.data;
+    return response;
   };
 
   const onLogoutWithEmail = async () => {
-    const response = await axios.post<IResponseLogoutAuth>("/auth/logout/email");
+    const response = await axios
+      .post<IResponseLogoutAuth>("/auth/logout/email")
+      .then((data) => {
+        UseLocalStorage({ key: "accessToken", action: "remove" });
+        sessionStorage.removeItem("accessToken");
 
-    return response.data;
+        return data;
+      })
+      .catch((error: AxiosError<IResponseLogoutAuth>) => {
+        return {
+          data: null,
+          status: error.response?.data.status || 500,
+          message: error.response?.data.message || "Непредвиденная ошибка",
+        };
+      });
+
+    return response;
   };
 
   const onCheckAuth = async () => {

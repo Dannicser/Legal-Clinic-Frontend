@@ -23,11 +23,9 @@ export const Appointment = () => {
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(thunkGetStatusAppointment());
-
-    console.log("effect status");
-  }, []);
+  // useEffect(() => {
+  //   dispatch(thunkGetStatusAppointment());
+  // }, []);
 
   if (isLoading) {
     return (

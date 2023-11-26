@@ -11,6 +11,8 @@ import { PrivetRoutesNames } from "../../../routers";
 import { Avatar, Button, Divider, Empty, List, Rate, Result, Row, Skeleton, Space, Tooltip } from "antd";
 import { Typography } from "antd/es";
 
+import dayjs from "dayjs";
+
 import { onCutText } from "../../../utils/helpers";
 
 interface IAppointmentHistoryResponse {
@@ -28,7 +30,7 @@ interface IAppointmentHistoryData {
   rate: string;
   review: string;
   rejected: boolean;
-  message: string;
+  reason: string;
 }
 
 export const AppointmentHistory = () => {
@@ -102,19 +104,21 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
               title={
                 <Divider>
                   <Typography.Title level={5} style={{ color: "red" }}>
-                    Запись от {item.date}
+                    Запись от {dayjs(item.date).format("DD MMMM YYYY")}
                   </Typography.Title>
                 </Divider>
               }
               description={
                 <>
-                  {onCutText(item.problem, 0, 150, true)} <br />
+                  <Tooltip title={onCutText(item.problem, 0, 300, true)} color={"red"}>
+                    {onCutText(item.problem, 0, 150, true)} <br />
+                  </Tooltip>
                   <Typography.Text strong style={{ color: "red" }}>
                     Отказано
                   </Typography.Text>
                   <br />
                   <Row justify={"end"}>
-                    <Tooltip title={item.message} color={"red"}>
+                    <Tooltip title={item.reason} color={"red"}>
                       <Button danger type="primary">
                         Причина
                       </Button>
@@ -131,7 +135,7 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
               avatar={<Avatar style={{ backgroundColor: "#4a43ec" }} icon={index + 1} />}
               title={
                 <Divider>
-                  <Typography.Title level={5}>Запись от {item.date}</Typography.Title>
+                  <Typography.Title level={5}>Запись от {dayjs(item.date).format("DD MMMM YYYY")}</Typography.Title>
                 </Divider>
               }
               description={
@@ -139,8 +143,15 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
                   <Tooltip title={onCutText(item.problem, 0, 300, true)} color={"#4a43ec"}>
                     {onCutText(item.problem, 0, 150, true)}
                     <br />
+                  </Tooltip>
+                  <Tooltip title={`Ваша оценка -  ${item.rate}`} color={"#4a43ec"}>
                     <Rate className="mt-1" disabled value={Number(item.rate)} />
                   </Tooltip>
+                  <Row justify={"end"}>
+                    <Tooltip title={item.review} color={"#4a43ec"}>
+                      <Button type="primary">Отзыв</Button>
+                    </Tooltip>
+                  </Row>
                 </>
               }
               style={{ textAlign: "start" }}

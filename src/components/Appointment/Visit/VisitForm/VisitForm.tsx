@@ -354,19 +354,15 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
         {isReserved && (
           <NavLink to={PrivetRoutesNames.APPOINTMENT_CALENDAR}>
             <Alert
-              className="alert"
               type="info"
               banner
-              showIcon
               message={"К сожалению, данное время недоступно для резерва, кликните сюда, чтобы посмотреть доступное время для посещения клиники"}
             />
           </NavLink>
         )}
 
-        {isErrorReservation && (
-          <Alert type="error" className="alert" showIcon message={"Неудалось получить информацию о свободном времени посещения."} />
-        )}
-        {isError && <Alert type="error" className="alert" showIcon message={"Произошла непредвиденная ошибка, попробуйте еще раз."} />}
+        {isErrorReservation && <Alert type="error" showIcon message={"Неудалось получить информацию о свободном времени посещения."} />}
+        {isError && <Alert type="error" showIcon message={"Произошла непредвиденная ошибка, попробуйте еще раз."} />}
       </Form>
     </div>
   );

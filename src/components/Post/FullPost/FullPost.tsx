@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Header } from "../../UI/Header/Header";
-import { Divider, Typography, Button, Result, Skeleton, Row, Col, Space } from "antd";
+import { Divider, Typography, Button, Result, Skeleton, Row, Col, Space, Alert } from "antd";
 import { Layout } from "../../Layout/Layout";
 
 import calendar from "./assets/icons/calendar.svg";
@@ -15,8 +15,6 @@ import axios from "../../../config/axios";
 import ReactMarkdown from "react-markdown";
 
 import dayjs from "dayjs";
-
-import { onGetMonth, onGetWeek } from "../../../utils/date/date";
 
 import "./FullPost.scss";
 
@@ -73,17 +71,17 @@ export const FullPost: React.FC = () => {
 const Event = ({ data }: IProps) => {
   const tags = data.tags.map((el, i) => {
     return (
-      <Button key={i} type="primary" size="small" style={{ margin: 4 }} danger={i % 2 === 0}>
-        # {el}
+      <Button key={i} type="primary" shape="round" style={{ margin: 4 }} danger={i % 2 === 0}>
+        #{el}
       </Button>
     );
   });
 
   console.log(data);
+  console.log(data.text);
   return (
     <>
       <img src={data.img} alt="" />
-
       <Divider />
       <div className="full__post_container">
         <div className="full__post_event">
@@ -93,8 +91,9 @@ const Event = ({ data }: IProps) => {
             </div>
           </div>
           <div className="full__post_date">
-            <div className="date">{dayjs(data.createdAt).format(`D ${onGetMonth(data.createdAt)} YYYY`)}г</div>
-            <div className="day">{onGetWeek(data.createdAt)}</div>
+            <div className="date">
+              <span>{dayjs(data.createdAt).format("D MMMM YYYY")} года</span>
+            </div>
           </div>
         </div>
         <div className="full__post_event">
@@ -104,20 +103,33 @@ const Event = ({ data }: IProps) => {
             </div>
           </div>
           <div className="full__post_place">
-            <div className="city">{data.сity || "Москва"}</div>
-            <div className="initiator">{data.initiator || "Государственная Дума"}</div>
+            <div className="place">
+              <span>{data.сity || "Москва"}</span> <br /> {data.initiator || "Государственная Дума"}
+            </div>
           </div>
         </div>
-      </div>
-
+      </div>{" "}
+      <Divider />
       {tags}
+      <Divider />
       <Typography.Title className="mt-1" level={3}>
         {data.title}
       </Typography.Title>
       <Typography.Title level={4}>О событии</Typography.Title>
-
-      <ReactMarkdown children={""} />
+      <MarkDown text={data.text} />
     </>
+  );
+};
+
+interface IMarkDownProp {
+  text: string;
+}
+
+const MarkDown: React.FC<IMarkDownProp> = ({ text }) => {
+  return (
+    <div className="mark_down_wrapper">
+      <ReactMarkdown className="markdown">{text}</ReactMarkdown>
+    </div>
   );
 };
 

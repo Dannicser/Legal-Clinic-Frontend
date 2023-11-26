@@ -1,10 +1,13 @@
 import "../Authorization/Auth.scss";
 import { Col, Row, Typography, Form, Input, Space, Button, Alert } from "antd";
 import { NavLink, Navigate } from "react-router-dom";
-import login from "../assets/icons/login.svg";
-import password from "../assets/icons/password.svg";
-import yandex from "../assets/icons/yandex.png";
-import name from "../assets/icons/name.svg";
+
+import login from "../assets/icons/png/login.png";
+import password from "../assets/icons/png/password.png";
+import yandex from "../assets/icons/png/yandex.png";
+
+import person from "../assets/icons/png/person.png";
+
 import { Header } from "../../UI/Header/Header";
 import { PublicRoutesNames } from "../../../routers";
 import { FormUI } from "../../UI/FormUI/FormUI";
@@ -54,7 +57,13 @@ export const Register = () => {
                 ]}
                 name={"first_name"}
               >
-                <Input autoComplete="off" placeholder={"Ваше имя"} className="auth__input" prefix={<img src={name} />} size="large" />
+                <Input
+                  autoComplete="off"
+                  placeholder={"Ваше имя"}
+                  className="auth__input"
+                  prefix={<img className="inp_icon" src={person} />}
+                  size="large"
+                />
               </Form.Item>
               <Form.Item
                 hasFeedback
@@ -65,13 +74,31 @@ export const Register = () => {
                 ]}
                 name={"last_name"}
               >
-                <Input autoComplete="off" placeholder={"Ваше отчество"} className="auth__input" prefix={<img src={name} />} size="large" />
+                <Input
+                  autoComplete="off"
+                  placeholder={"Ваше отчество"}
+                  className="auth__input"
+                  prefix={<img className="inp_icon" src={person} />}
+                  size="large"
+                />
               </Form.Item>
               <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name={"email"}>
-                <Input autoComplete="on" placeholder={"abc@email.com"} className="auth__input" prefix={<img src={login} />} size="large" />
+                <Input
+                  autoComplete="on"
+                  placeholder={"abc@email.com"}
+                  className="auth__input"
+                  prefix={<img className="inp_icon" src={login} />}
+                  size="large"
+                />
               </Form.Item>
               <Form.Item hasFeedback rules={[{ validator: onValidatePassword }]} name={"password"}>
-                <Input.Password autoComplete="off" placeholder={"Пароль"} className="auth__input" prefix={<img src={password} />} size="large" />
+                <Input.Password
+                  autoComplete="off"
+                  placeholder={"Пароль"}
+                  className="auth__input"
+                  prefix={<img className="inp_icon" src={password} />}
+                  size="large"
+                />
               </Form.Item>
               <Form.Item
                 hasFeedback
@@ -95,7 +122,7 @@ export const Register = () => {
                   autoComplete="off"
                   placeholder={"Повторите пароль"}
                   className="auth__input"
-                  prefix={<img src={password} />}
+                  prefix={<img className="inp_icon" src={password} />}
                   size="large"
                 />
               </Form.Item>
@@ -104,7 +131,7 @@ export const Register = () => {
                   <Button loading={state.isLoading} htmlType="submit" size="large" type="primary" block>
                     Создать аккаунт
                   </Button>
-                  {state.isError && <Alert type="error" showIcon className="error__message" message={"Произошла ошибка"} banner closable />}
+                  {state.isError && <Alert type="error" showIcon className="mt-1 error__message" message={state.message} banner closable />}
                 </Form.Item>
               </Col>
             </FormUI>

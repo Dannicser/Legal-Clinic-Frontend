@@ -22,7 +22,9 @@ export const Profile = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(thunkGetUserInfo());
+    if (!user._id) {
+      dispatch(thunkGetUserInfo());
+    }
   }, []);
 
   const loader = !isError && isLoading && <Loader />;

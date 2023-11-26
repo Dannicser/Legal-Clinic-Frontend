@@ -3,6 +3,11 @@
 .menu__wrapper {
   .user__info {
     text-align: start;
+    height: 80px;
+
+    .user_info_spin {
+      padding-top: 15px;
+    }
     .person {
       width: 30px;
       height: 30px;

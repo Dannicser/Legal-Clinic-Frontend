@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
-import { Alert, Col, Divider, Empty, Row, Segmented, Skeleton, Typography } from "antd";
-import { Header } from "../../UI/Header/Header";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-
-import { UseLocalStorage } from "../../../hooks/useLocalStorage";
-
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
-import { INotificationItem } from "../../../types/notification";
 import { onReadNotifications, thunkReadNotifications } from "../../../slices/notificationSlice";
+
+import { Alert, Col, Divider, Empty, Row, Segmented, Typography } from "antd";
+import { FieldTimeOutlined } from "@ant-design/icons";
+import { Header } from "../../UI/Header/Header";
 import { Layout } from "../../Layout/Layout";
 
 import "./NotificationList.scss";
-
-import { CheckOutlined, ExclamationOutlined } from "@ant-design/icons";
 
 import dayjs from "dayjs";
 import relative from "dayjs/plugin/relativeTime";
@@ -58,10 +54,12 @@ export const NotificationList = () => {
             <Row justify={"end"}>
               <Typography.Text strong>{el.title}</Typography.Text>
             </Row>
-            <div className="message_item">{el.message}</div>
+            <div>{el.message}</div>
             <Row justify={"end"}>
               <Col>
-                <div className="time_item">{dayjs(el.createdAt).fromNow(true)} назад</div>
+                <div className="time_item">
+                  {dayjs(el.createdAt).fromNow(true)} назад <FieldTimeOutlined />
+                </div>
               </Col>
             </Row>
           </>
@@ -71,7 +69,7 @@ export const NotificationList = () => {
       />
     ) : (
       <Alert
-        key={el._id}
+        key={el.user_id}
         showIcon={true}
         className="mt-1 notification_item"
         message={
@@ -93,8 +91,6 @@ export const NotificationList = () => {
     );
   });
 
-  console.log(notifications);
-
   return (
     <>
       <Header title="Уведомления" />
@@ -106,7 +102,3 @@ export const NotificationList = () => {
     </>
   );
 };
-
-// const prevData = JSON.parse(UseLocalStorage({ key: "notifications", action: "get" }));
-//     const newData = notifications;
-//    UseLocalStorage({ key: "notifications", data: JSON.stringify([...newData, ...prevData]), action: "set" });

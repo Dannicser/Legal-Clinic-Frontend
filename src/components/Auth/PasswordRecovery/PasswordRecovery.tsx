@@ -1,13 +1,13 @@
-import "./PasswordRecovery.scss";
+import { useEffect } from "react";
 import { Alert, Typography, Input, Button, Form } from "antd";
 import { Header } from "../../UI/Header/Header";
-import login from "../assets/icons/login.svg";
+import login from "../assets/icons/png/login.png";
 import { onValidateEmail } from "../../../utils/validators/auth";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { onResetErrors } from "../../../slices/authSlice";
-import { useEffect } from "react";
 
+import "./PasswordRecovery.scss";
 export const PasswordRecovery = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state.auth);
@@ -29,7 +29,13 @@ export const PasswordRecovery = () => {
           </Typography.Text>
           <Form>
             <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name={"email"}>
-              <Input autoComplete="on" placeholder={"abc@email.com"} className="auth__input" prefix={<img src={login} />} size="large" />
+              <Input
+                autoComplete="on"
+                placeholder={"abc@email.com"}
+                className="auth__input"
+                prefix={<img style={{ width: 30 }} src={login} />}
+                size="large"
+              />
             </Form.Item>
             <Form.Item>
               <Button loading={state.isLoading} htmlType="submit" size="large" type="primary" block>

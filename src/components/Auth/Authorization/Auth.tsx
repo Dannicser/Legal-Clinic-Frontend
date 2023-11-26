@@ -5,9 +5,10 @@ import { Col, Row, Typography, Form, Input, Space, Switch, Button, Alert, Modal,
 import { UserOutlined } from "@ant-design/icons";
 
 import logo from "../assets/img/logo.png";
-import login from "../assets/icons/login.svg";
-import password from "../assets/icons/password.svg";
-import yandex from "../assets/icons/yandex.png";
+import login from "../assets/icons/png/login.png";
+import password from "../assets/icons/png/password.png";
+import yandex from "../assets/icons/png/yandex.png";
+
 import { IAuthValues, IPreAuthWithYandex } from "../../../types/auth";
 import { onValidateEmail } from "../../../utils/validators/auth";
 import { useAppSelector } from "../../../hooks/useAppSelector";
@@ -42,6 +43,10 @@ export const Auth = () => {
     }
   }, []);
 
+  useEffect(() => {
+    dispatch(onResetErrors());
+  }, []);
+
   if (!localStorage.getItem("intro")) {
     return <Navigate to={"/intro"} />;
   }
@@ -68,7 +73,14 @@ export const Auth = () => {
           </Col>
           <Col span={24}>
             <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name="email">
-              <Input max={8} autoComplete="on" placeholder="abc@email.com" className="auth__input" prefix={<img src={login} />} size="large" />
+              <Input
+                max={8}
+                autoComplete="on"
+                placeholder="abc@email.com"
+                className="auth__input"
+                prefix={<img className="inp_icon" src={login} />}
+                size="large"
+              />
             </Form.Item>
             <Form.Item
               hasFeedback
@@ -80,7 +92,13 @@ export const Auth = () => {
               ]}
               name="password"
             >
-              <Input.Password autoComplete="of" placeholder={"Ваш пароль"} className="auth__input" prefix={<img src={password} />} size="large" />
+              <Input.Password
+                autoComplete="of"
+                placeholder={"Ваш пароль"}
+                className="auth__input"
+                prefix={<img className="inp_icon" src={password} />}
+                size="large"
+              />
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -150,7 +168,6 @@ const ConfirmModelAuth: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const onRegister = (values: IPreAuthWithYandex) => {
-    console.log(psuid);
     dispatch(thunkRegisterWithEmail({ ...values, password: psuid }));
   };
 
@@ -183,7 +200,7 @@ const ConfirmModelAuth: React.FC = () => {
               title="Необходимо указать ваше настоящее имя, в противном случае, мы будем вынуждены отказать вам в оказании услуг"
               color={"red"}
             >
-              <Typography.Text strong>Ваше имя</Typography.Text>{" "}
+              <Typography.Text strong>Ваше имя</Typography.Text>
             </Tooltip>
           </Col>
         </Row>
@@ -196,7 +213,7 @@ const ConfirmModelAuth: React.FC = () => {
               title="Необходимо указать ваше настоящее отчество, в противном случае, мы будем вынуждены отказать вам в оказании услуг"
               color={"red"}
             >
-              <Typography.Text strong>Ваше отчество</Typography.Text>{" "}
+              <Typography.Text strong>Ваше отчество</Typography.Text>
             </Tooltip>
           </Col>
         </Row>
@@ -211,27 +228,10 @@ const ConfirmModelAuth: React.FC = () => {
           </Col>
         </Row>
         <Form.Item hasFeedback rules={[{ required: true }]} name={"email"} className="mt-1">
-          <Input disabled size="large" placeholder={"Email отсутствует"} prefix={<img src={login} />} />
+          <Input disabled size="large" placeholder={"Email отсутствует"} prefix={<img style={{ width: 20 }} src={login} />} />
         </Form.Item>
 
-        {/* {!email.length && !isError && (
-          <Alert type="error" showIcon={false} message={"К сожалению, мы не смогли получить ваш email. Воспользуйтесь регистрацией по почте."} />
-        )} */}
-
         {!isError && email.length ? content : error}
-
-        {/* {!isError && email.length && (
-          <Alert
-            type="warning"
-            banner
-            showIcon={false}
-            message={"Пожалуйста, убедитесь что предоставленные данные верны. При необходимости вы можете их изменить."}
-          />
-        )} */}
-
-        {/* {isError && email.length && (
-          <Alert type="error" showIcon={false} message={"Произошла ошибка при регистрации. Попробуйте позже или авторизируйтесь по email."} />
-        )} */}
 
         <Divider />
         <Form.Item>

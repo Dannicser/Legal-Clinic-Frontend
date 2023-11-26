@@ -1,11 +1,12 @@
 export interface INotificationItem {
   title: string;
   message: string;
-  user?: string;
+  user_id: string;
+  _id: string;
   is_read: boolean;
   is_everyone: boolean;
+  event: string;
   createdAt: string;
-  _id: string;
 }
 
 export interface INotificationGetAllResponse {

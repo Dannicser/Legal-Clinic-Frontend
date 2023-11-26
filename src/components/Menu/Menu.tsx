@@ -1,7 +1,7 @@
 import "./Menu.scss";
 import { Header } from "../UI/Header/Header";
 
-import { Badge, Avatar, Spin, Alert, Typography, Result, Popconfirm, Tooltip, Button } from "antd";
+import { Badge, Avatar, Spin, Alert, Typography, Result, Popconfirm, Tooltip, Button, Divider, Space, Modal, message } from "antd";
 
 import {
   FrownOutlined,
@@ -22,7 +22,7 @@ import { NavLink } from "react-router-dom";
 import { PrivetRoutesNames } from "../../routers";
 import { Layout } from "../Layout/Layout";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { thunkGetUserInfo } from "../../slices/userSlice";
 
 import { AppointmentStatus } from "../../types/appointment";
@@ -30,17 +30,29 @@ import { AppointmentStatus } from "../../types/appointment";
 export const Menu = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
-  const isLoading = useAppSelector((state) => state.user.isLoading);
-  const isError = useAppSelector((state) => state.user.isError);
+  const isLoadingUser = useAppSelector((state) => state.user.isLoading);
+  const isErrorUser = useAppSelector((state) => state.user.isError);
   const status = useAppSelector((state) => state.appointment.data.status);
   const formatDate = useAppSelector((state) => state.appointment.data.formatDate);
 
+  const isLoadingAuth = useAppSelector((state) => state.auth.isLoading);
+  const isErrorAuth = useAppSelector((state) => state.auth.isError);
+  const message = useAppSelector((state) => state.auth.message);
+
+  const [isOpenModel, setIsOpenModel] = useState<boolean>(false);
+
   useEffect(() => {
-    dispatch(thunkGetUserInfo());
+    if (!user._id) {
+      dispatch(thunkGetUserInfo());
+    }
   }, []);
 
   const signOut = () => {
     dispatch(thunkLogoutWithEmail());
+  };
+
+  const onOpenModel = () => {
+    setIsOpenModel(true);
   };
 
   const banner =
@@ -52,31 +64,59 @@ export const Menu = () => {
     <>
       <Header title="Меню" />
       <Layout>
+        <Modal
+          title="Выход"
+          okText={"Да"}
+          confirmLoading={isLoadingAuth}
+          cancelText={"Не хочу"}
+          open={isOpenModel}
+          onOk={signOut}
+          onCancel={() => setIsOpenModel(false)}
+        >
+          <Typography.Text type="warning" strong>
+            Вы действительно хотите выйти из профиля?
+          </Typography.Text>{" "}
+          {isErrorAuth && (
+            <>
+              <Divider />
+              <Alert type="error" message={message} />
+            </>
+          )}
+        </Modal>
         <div className="menu__wrapper">
           <div className="user__info">
-            {isLoading ? (
-              <Spin />
+            {isLoadingUser ? (
+              <div className="user_info_spin">
+                <Spin size="large" />
+              </div>
             ) : (
               <>
                 <Avatar size="large">{user.first_name[0] || <FrownOutlined />}</Avatar>
                 <div className="name">
                   <Typography.Title level={4}>
-                    {user.first_name} {user.last_name}
+                    {user.first_name} {user.last_name}{" "}
+                    {user.is_admin && (
+                      <Button shape={"round"} size="small" type="primary" danger>
+                        admin
+                      </Button>
+                    )}
                   </Typography.Title>
                 </div>
               </>
             )}
-            {isError && <Alert message="Ошибка, попробуйте обновить страницу" type="error" showIcon />}
-          </div>
+          </div>{" "}
+          {isErrorUser && <Alert message="Ошибка, попробуйте обновить страницу" type="error" showIcon />}
           <ul className="menu__list">
-            <NavLink to={PrivetRoutesNames.CONVERSATION}>
+            {/* <NavLink to={PrivetRoutesNames.CONVERSATION}> */}
+            <Tooltip color="#f50" title={"Извините, чат с сотрудником юридической клиники находится в разработке и скоро будет добавлен."}>
               <li className="menu__item">
                 <Badge size="small" count={1}>
                   <MessageOutlined />
                 </Badge>
                 <div className="title">Сообщения</div>
               </li>
-            </NavLink>
+            </Tooltip>
+            {/* </NavLink> */}
             <NavLink to={PrivetRoutesNames.APPOINTMENT_CALENDAR}>
               <li className="menu__item">
                 <CalendarOutlined />
@@ -89,31 +129,27 @@ export const Menu = () => {
                 <div className="title">Часто задаваемые вопросы</div>
               </li>
             </NavLink>
-            <li className="menu__item">
-              <HeartOutlined />
-              <div className="title">Избранное</div>
-            </li>
+            <Tooltip color="#f50" title={"Извините, раздел «Избранное» находится в разработке и скоро будет добавлен."}>
+              <li className="menu__item">
+                <HeartOutlined />
+                <div className="title">Избранное</div>
+              </li>
+            </Tooltip>
             <NavLink to={PrivetRoutesNames.APPOINTMENT_HISTOTY}>
               <li className="menu__item">
                 <HistoryOutlined />
                 <div className="title">История обращений</div>
               </li>
             </NavLink>
-            <li className="menu__item">
-              <SettingOutlined />
-              <div className="title">Настройки</div>
-            </li>
-            <li className="menu__item">
+            <NavLink to={PrivetRoutesNames.SETTINGS}>
+              <li className="menu__item">
+                <SettingOutlined />
+                <div className="title">Настройки</div>
+              </li>
+            </NavLink>
+            <li onClick={onOpenModel} className="menu__item">
               <LogoutOutlined />
-              <Popconfirm
-                placement="bottom"
-                title={<Typography.Title level={5}>Вы действительно хотите выйти из профиля?</Typography.Title>}
-                onConfirm={signOut}
-                okText="Да"
-                cancelText="Нет"
-              >
-                <div className="title">Выход</div>
-              </Popconfirm>
+              <div className="title">Выход</div>
             </li>
             <li>{banner}</li>
           </ul>

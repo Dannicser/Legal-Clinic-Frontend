@@ -60,7 +60,10 @@ const ModalHelp: React.FC<IModalHelpProps> = ({ setIsShown }) => {
       <Typography.Text strong type="success">
         статус вашего обращения{" "}
       </Typography.Text>
-      <Typography.Text type="secondary">и получать необходимую информацию о нем.</Typography.Text>
+      <Typography.Text type="secondary">и получать необходимую информацию о нем. </Typography.Text>
+      <Typography.Text strong type="success">
+        Заходите сюда чаще!
+      </Typography.Text>
     </Modal>
   );
 };

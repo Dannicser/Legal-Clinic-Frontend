@@ -1,10 +1,10 @@
 import { Layout } from "../../Layout/Layout";
 import { Header } from "../../UI/Header/Header";
 
-import login from "../../Auth/assets/icons/login.svg";
+import login from "../../Auth/assets/icons/png/login.png";
 
 import { Form, Input, Row, Col, Typography, Button, Tooltip, Popconfirm } from "antd";
-import { UserOutlined, BulbOutlined } from "@ant-design/icons";
+import { UserOutlined, BulbOutlined, LockOutlined } from "@ant-design/icons";
 
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { Navigate } from "react-router-dom";
@@ -78,7 +78,7 @@ export const EditProfile: React.FC = () => {
             </Col>
           </Row>
           <Form.Item className="mt-1">
-            <Input size="large" disabled placeholder={user.email} prefix={<img src={login} />} />
+            <Input size="large" disabled placeholder={user.email} prefix={<img style={{ width: 20 }} src={login} />} />
           </Form.Item>
           <Row>
             <Col>
@@ -100,6 +100,19 @@ export const EditProfile: React.FC = () => {
           >
             <Input size="large" placeholder={user.about.length ? user.about : "Напишите пару слов о себе..."} prefix={<BulbOutlined />} />
           </Form.Item>
+          <Row>
+            <Col>
+              <Tooltip title="Извините, функция по смене электронной почты находится в разработке." color={"green"}>
+                <Typography.Text copyable={{ text: user._id, tooltips: false }} strong>
+                  Ваш уникальный ID
+                </Typography.Text>
+              </Tooltip>
+            </Col>
+          </Row>
+          <Form.Item className="mt-1">
+            <Input size="large" disabled placeholder={user._id} prefix={<LockOutlined />} />
+          </Form.Item>
+
           <Form.Item>
             <Popconfirm
               title="Вы действительно хотите изменить данные?"
