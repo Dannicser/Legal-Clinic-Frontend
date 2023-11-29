@@ -11,7 +11,7 @@
 # production
 /build
 
-oauth.ts
+
 
 # misc
 .DS_Store
