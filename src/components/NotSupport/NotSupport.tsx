@@ -1,4 +1,4 @@
-import { Col, QRCode, Result, Row, Typography, Divider } from "antd";
+import { Col, QRCode, Result, Row, Typography } from "antd";
 import { Layout } from "../Layout/Layout";
 import { FRONTEND_URL } from "../../http/vars";
 

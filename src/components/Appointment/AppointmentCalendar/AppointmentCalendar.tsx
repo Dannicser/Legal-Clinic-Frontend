@@ -55,6 +55,15 @@ export const AppointmentCalendar = () => {
     }
   };
 
+  //function for safari support
+  const onIsValidDate = () => {
+    if (dayjs(state.date).locale("ru").format("D MMMM") === "Invalid Date") {
+      return dayjs(state.date).locale("ru").format("YYYY-MM-DD");
+    } else {
+      return dayjs(state.date).locale("ru").format("D MMMM");
+    }
+  };
+
   const content = (
     <Row className="appointment_calendar_wrapper" gutter={[16, 16]}>
       {schema.map((time) => {
@@ -110,7 +119,7 @@ export const AppointmentCalendar = () => {
           showIcon={false}
           message={
             <Typography.Text className="alert" strong>
-              Информация о резерве {state.date && `на ${dayjs(state.date).locale("ru").format("D MMMM")}`}
+              Информация о резерве {state.date && `на ${onIsValidDate()} `}
             </Typography.Text>
           }
         />

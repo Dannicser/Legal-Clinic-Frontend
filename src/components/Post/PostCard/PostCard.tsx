@@ -15,7 +15,7 @@ interface IProps {
 }
 
 export const PostCard: React.FC<IProps> = ({ data }) => {
-  const title = data.title.length > 27 ? data.title.slice(0, 25) + "..." : data.title;
+  const title = data.title.length > 23 ? data.title.slice(0, 23) + "..." : data.title;
   const tags = data.tags.join(" ").length > 22 ? data.tags.join("#").slice(0, 17) + "..." : data.tags.join("#");
   const views = data.views.toString().length > 3 ? data.views.toString().slice(0, data.views.toString().length - 3) + "К" : data.views;
   const month = dayjs(data.createdAt).format("MMMM")[0].toUpperCase() + dayjs(data.createdAt).format("MMMM").slice(1);

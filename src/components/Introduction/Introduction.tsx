@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import calendar from "./assets/img/picture_calendar.png";
 import map from "./assets/img/picture_map.png";
 import phone from "./assets/img/picture_phone.png";
+import test from "./assets/img/111.png";
 import { UseLocalStorage } from "../../hooks/useLocalStorage";
 
 export const Introduction: React.FC = () => {

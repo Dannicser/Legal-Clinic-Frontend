@@ -1,4 +1,4 @@
-import { Col, Divider, Row, Space, Switch, SwitchProps, Typography } from "antd";
+import { Col, Divider, Row, Switch, Typography } from "antd";
 import { Layout } from "../Layout/Layout";
 import { Header } from "../UI/Header/Header";
 import { UseLocalStorage } from "../../hooks/useLocalStorage";
