@@ -14,7 +14,7 @@ export const Connection = () => {
   console.log("connect");
 
   useEffect(() => {
-    const eventSource = new EventSource(`http://localhost:5000/api/notification/connect/notification/?user_id=${user_id}`, {
+    const eventSource = new EventSource(`${BACKEND_URL}/api/notification/connect/notification/?user_id=${user_id}`, {
       withCredentials: true,
     });
 

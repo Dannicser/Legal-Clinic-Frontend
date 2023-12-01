@@ -3,7 +3,7 @@ import { UseLocalStorage } from "../hooks/useLocalStorage";
 import { IResponseRegisterWithEmail } from "../types/auth";
 
 const instanse = axios.create({
-  baseURL: "http://45.12.236.129:5000/api",
+  baseURL: `${BACKEND_URL}/api`,
   //отправлять куки автоматически с запросом
   withCredentials: true,
 });
@@ -25,7 +25,7 @@ instanse.interceptors.response.use(
       try {
         originalRequest._isRetry = true; //чтобы не зациклить, если опять прилетел 401
 
-        const res = await axios.get<IResponseRegisterWithEmail>("http://45.12.236.129:5000/api/auth/refresh/email", { withCredentials: true });
+        const res = await axios.get<IResponseRegisterWithEmail>(`${BACKEND_URL}/api/auth/refresh/email`, { withCredentials: true });
 
         UseLocalStorage({ key: "accessToken", data: res.data.tokens.accessToken, action: "set" });
 
