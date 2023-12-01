@@ -6,6 +6,7 @@ import { onAddNotification } from "../../../slices/notificationSlice";
 import { onSoundEffect } from "../audio";
 import { onChangeStatusAppointment } from "../../../slices/appointmentSlice";
 import { UseLocalStorage } from "../../../hooks/useLocalStorage";
+
 import { BACKEND_URL } from "../../../http/vars";
 
 export const Connection = () => {

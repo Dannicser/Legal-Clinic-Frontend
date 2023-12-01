@@ -1,6 +1,6 @@
 import { useAppSelector } from "../hooks/useAppSelector";
 import { UseLocalStorage } from "../hooks/useLocalStorage";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 
 import { Navigation } from "../components/Navigation/Navigation";
@@ -11,13 +11,10 @@ import AppPrivetRoutes from "./AppPrivetRoutes";
 
 import { thunkCheckAuth } from "../slices/authSlice";
 import { thunkGetStatusAppointment } from "../slices/appointmentSlice";
-import { useLocation } from "react-router-dom";
-import { PrivetRoutesNames } from ".";
-import { onAddNotification, thunkGetAllNotifications } from "../slices/notificationSlice";
-
-import { onSoundEffect } from "../components/Notification/audio";
-import { Connection } from "../components/Notification/Connection/Connection";
+import { thunkGetAllNotifications } from "../slices/notificationSlice";
 import { thunkGetUserInfo } from "../slices/userSlice";
+
+import { Connection } from "../components/Notification/Connection/Connection";
 
 export const AppRouter: React.FC = () => {
   const isAuth = useAppSelector((state) => state.auth.isAuth);
