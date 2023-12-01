@@ -77,7 +77,7 @@ export const UseAuthService = () => {
   };
 
   const onCheckAuth = async () => {
-    const response = await defaultAxios.get<IResponseCheckAuth>("http://localhost:5000/api/auth/refresh/email", { withCredentials: true });
+    const response = await defaultAxios.get<IResponseCheckAuth>("http://45.12.236.129:5000/api/auth/refresh/email", { withCredentials: true });
 
     return response.data;
   };
