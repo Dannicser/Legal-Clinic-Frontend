@@ -19,6 +19,7 @@ import {
   IResponseAuthWithEmailError,
   IResponseRegisterWithEmailError,
 } from "../types/auth";
+import { BACKEND_URL } from "../http/vars";
 
 export const UseAuthService = () => {
   const onGetAuthWithEmail = async (user: IAuthValues) => {

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { UseLocalStorage } from "../hooks/useLocalStorage";
 import { IResponseRegisterWithEmail } from "../types/auth";
+import { BACKEND_URL } from "../http/vars";
 
 const instanse = axios.create({
   baseURL: `${BACKEND_URL}/api`,
