@@ -3,10 +3,12 @@ import { Carousel, Spin } from "antd";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useEffect } from "react";
-import calendar from "./assets/img/picture_calendar.png";
-import map from "./assets/img/picture_map.png";
-import phone from "./assets/img/picture_phone.png";
-import test from "./assets/img/111.png";
+
+import calendar from "./assets/img/calendar.png";
+import status from "./assets/img/status.png";
+import news from "./assets/img/news.png";
+import appointment from "./assets/img/appointment.png";
+
 import { UseLocalStorage } from "../../hooks/useLocalStorage";
 
 export const Introduction: React.FC = () => {
@@ -21,7 +23,7 @@ export const Introduction: React.FC = () => {
     UseLocalStorage({ key: "sound", action: "set", data: "true" });
   }, []);
 
-  if (position > 2) {
+  if (position > 3) {
     return <Navigate to={"/"} />;
   }
 
@@ -30,22 +32,38 @@ export const Introduction: React.FC = () => {
       <div className="intro__container">
         <Carousel afterChange={onChange}>
           <div>
-            <h2 className="aunt__intro">
-              <img src={phone} alt="" />
-              <div className="info">Получи бесплатную юридическую помощь от ведущих специалистов юридической клиники</div>
-            </h2>
-          </div>
-          <div>
             <div className="aunt__intro">
               <img src={calendar} alt="" />
-              <div className="info">Запишитесь на очное посещение клиники в удобное для вас время </div>
+              <div className="info">
+                <div className="title">Календарь посещений</div>
+                <div className="descr">Просматривайте свободное и подходящее для вас время посещения Юридической Клиники.</div>
+              </div>
             </div>
           </div>
           <div>
             <div className="aunt__intro">
-              <img src={map} alt="" />
+              <img src={appointment} alt="" />
               <div className="info">
-                Приезжай к нам в ЕГУ им. И.А Бунина. <br /> Мы ждем тебя!
+                <div className="title">Запись на посещение</div>
+                <div className="descr">Заполните форму и специалисты рассмотрят ваше обращение в кратчайшие сроки.</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="aunt__intro">
+              <img src={status} alt="" />
+              <div className="info">
+                <div className="title">Отслеживайте статус обращения</div>
+                <div className="descr">В режиме реального времени вы можете отслежить стадии рассмотрения вашего заявления.</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="aunt__intro">
+              <img src={news} alt="" />
+              <div className="info">
+                <div className="title">Новостные сводки</div>
+                <div className="descr">Читайте самые свежие новости из мира права.</div>
               </div>
             </div>
           </div>

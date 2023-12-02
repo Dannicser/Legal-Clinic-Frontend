@@ -17,11 +17,19 @@
         font-family: "Montserrat", sans-serif;
         background-color: #5669ff;
         border-radius: 35px 35px 0px 0px;
-        height: 120px;
+        height: 150px;
         padding: 30px 5px 20px 5px;
-        font-size: 13.5px;
         color: #fff;
-        font-weight: 400;
+
+        .title {
+          font-size: 17px;
+          font-weight: 500;
+          margin-bottom: 10px;
+        }
+        .descr {
+          font-size: 12.5px;
+          font-weight: 300;
+        }
       }
 
       img {
@@ -51,7 +59,7 @@
   .intro__wrapper {
     .intro__container {
       img {
-        width: 50%;
+        width: 40%;
       }
     }
   }

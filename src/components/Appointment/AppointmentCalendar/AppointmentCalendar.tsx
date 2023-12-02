@@ -58,7 +58,7 @@ export const AppointmentCalendar = () => {
   //function for safari support
   const onIsValidDate = () => {
     if (dayjs(state.date).locale("ru").format("D MMMM") === "Invalid Date") {
-      return dayjs(state.date).locale("ru").format("YYYY-MM-DD");
+      return dayjs(state.date).format("YYYY-MM-DD");
     } else {
       return dayjs(state.date).locale("ru").format("D MMMM");
     }
