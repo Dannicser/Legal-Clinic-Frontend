@@ -54,7 +54,7 @@ export const Introduction: React.FC = () => {
               <img src={status} alt="" />
               <div className="info">
                 <div className="title">Отслеживайте статус обращения</div>
-                <div className="descr">В режиме реального времени вы можете отслежить стадии рассмотрения вашего заявления.</div>
+                <div className="descr">В режиме реального времени вы можете отслеживать стадии рассмотрения вашего заявления.</div>
               </div>
             </div>
           </div>
