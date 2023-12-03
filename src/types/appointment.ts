@@ -9,6 +9,8 @@ export interface IApointmentState {
 }
 
 export interface IRegisterApointmentData {
+  first_name: string;
+  last_name: string;
   date: string;
   time: string;
   problem: string;

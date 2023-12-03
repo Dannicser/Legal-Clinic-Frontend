@@ -21,12 +21,6 @@ export const Appointment = () => {
   const isLoading = useAppSelector((state) => state.appointment.isLoading);
   const status = useAppSelector((state) => state.appointment.data.status);
 
-  const dispatch = useAppDispatch();
-
-  // useEffect(() => {
-  //   dispatch(thunkGetStatusAppointment());
-  // }, []);
-
   if (isLoading) {
     return (
       <>

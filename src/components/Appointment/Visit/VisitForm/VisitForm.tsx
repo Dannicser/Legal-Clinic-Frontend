@@ -41,6 +41,8 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
   const phone = useAppSelector((state) => state.appointment.data.phone);
   const date = useAppSelector((state) => state.appointment.data.date);
   const time = useAppSelector((state) => state.appointment.data.time);
+  const first_name = useAppSelector((state) => state.user.user.first_name);
+  const last_name = useAppSelector((state) => state.user.user.last_name);
 
   const status = useAppSelector((state) => state.appointment.data.status);
   const isReserved = useAppSelector((state) => state.appointment.isReserved);
@@ -94,6 +96,8 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
         ...form.getFieldsValue(),
         time: form.getFieldValue("time").format("H:mm"),
         date: form.getFieldValue("date").format("MM-DD-YYYY"),
+        first_name,
+        last_name,
       };
 
       dispatch(thunkGetRegisterAppointment(data));
