@@ -102,7 +102,7 @@ export const EditProfile: React.FC = () => {
           </Form.Item>
           <Row>
             <Col>
-              <Tooltip title="Извините, функция по смене электронной почты находится в разработке." color={"green"}>
+              <Tooltip color={"green"}>
                 <Typography.Text copyable={{ text: user._id, tooltips: false }} strong>
                   Ваш уникальный ID
                 </Typography.Text>
