@@ -17,18 +17,16 @@ export const onValidateEmail = (rule: any, value: string) => {
 };
 
 export const onValidateName = (rule: any, value: string) => {
-  const regex = /^[A-я]{2,20} [A-я]{2,20}$/g;
+  const regex = /^[А-я]/g;
 
   return new Promise((resolve, reject) => {
-    if (value && value.length > 45) {
-      reject("Слишком длинное имя");
-    }
-    if ((value && value[0] === " ") || (value && value[value.length - 1] === " ")) {
+    if (value.includes(" ")) {
       reject("Удалите лишние пробелы");
-    } else if (regex.test(value)) {
-      resolve("");
+    }
+    if (!regex.test(value)) {
+      reject("Только русские символы");
     } else {
-      reject("Введите корректное имя и отчество");
+      resolve("");
     }
   });
 };
@@ -37,7 +35,7 @@ export const onValidatePassword = (rule: any, value: string) => {
   const regex = /(?=.*[0-9])(?=.*[a-z])[0-9a-zA-Z!@#$%^&*]{6,}/g;
   return new Promise((resolve, reject) => {
     if (value && value.includes(" ")) {
-      reject("Запрещено использование пробелов");
+      reject("Удалите лишние пробелы");
     }
     if (value && value.length < 6) {
       reject("Слишком короткий пароль");

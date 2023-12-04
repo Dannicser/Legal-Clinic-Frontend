@@ -11,7 +11,7 @@ import person from "../assets/icons/png/person.png";
 import { Header } from "../../UI/Header/Header";
 import { PublicRoutesNames } from "../../../routers";
 import { FormUI } from "../../UI/FormUI/FormUI";
-import { onValidatePassword, onValidateName, onValidateEmail } from "../../../utils/validators/auth";
+import { onValidatePassword, onValidateName } from "../../../utils/validators/auth";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { thunkRegisterWithEmail, onResetErrors } from "../../../slices/authSlice";
 import { IRegisterValues } from "../../../types/auth";
@@ -53,6 +53,7 @@ export const Register = () => {
                 rules={[
                   { min: 2, message: "Имя должно быть длиннее 2 символов", required: true },
                   { max: 20, message: "Имя не может быть длиннее 20 символов" },
+                  { validator: onValidateName },
                   { transform: (value) => value.trim() },
                 ]}
                 name={"first_name"}
@@ -70,6 +71,7 @@ export const Register = () => {
                 rules={[
                   { min: 2, message: "Отчество должно быть длиннее 2 символов", required: true },
                   { max: 20, message: "Отчество не может быть длиннее 20 символов" },
+                  { validator: onValidateName },
                   { transform: (value) => value.trim() },
                 ]}
                 name={"last_name"}
@@ -82,7 +84,17 @@ export const Register = () => {
                   size="large"
                 />
               </Form.Item>
-              <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name={"email"}>
+              <Form.Item
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    type: "email",
+                    message: "Неверный формат email",
+                  },
+                ]}
+                name={"email"}
+              >
                 <Input
                   autoComplete="on"
                   placeholder={"abc@email.com"}

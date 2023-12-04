@@ -16,8 +16,8 @@ import { thunkAuthWithEmail, onResetErrors, thunkAuthWithYandex, thunkRegisterWi
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useEffect } from "react";
 
-import "./Auth.scss";
 import { client_id } from "../../../config/oauth";
+import "./Auth.scss";
 
 export const Auth = () => {
   const isConfirming = useAppSelector((state) => state.auth.isConfirming);
