@@ -13,7 +13,7 @@ import { Typography } from "antd/es";
 
 import dayjs from "dayjs";
 
-import { onCutText } from "../../../utils/helpers";
+import { onCutText, onIsValidDate } from "../../../utils/helpers";
 
 interface IAppointmentHistoryResponse {
   data: IAppointmentHistoryData[];
@@ -104,7 +104,7 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
               title={
                 <Divider>
                   <Typography.Title level={5} style={{ color: "red" }}>
-                    Запись от {dayjs(item.date).format("DD MMMM YYYY")}
+                    Запись от {onIsValidDate(item.date)}
                   </Typography.Title>
                 </Divider>
               }
@@ -135,7 +135,7 @@ const Cards: React.FC<ICardProps> = ({ data }) => {
               avatar={<Avatar style={{ backgroundColor: "#4a43ec" }} icon={index + 1} />}
               title={
                 <Divider>
-                  <Typography.Title level={5}>Запись от {dayjs(item.date).format("DD MMMM YYYY")}</Typography.Title>
+                  <Typography.Title level={5}>Запись от {onIsValidDate(item.date)}</Typography.Title>
                 </Divider>
               }
               description={

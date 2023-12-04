@@ -16,6 +16,7 @@ import {
   Status,
 } from "../types/appointment";
 import { onShowAlert } from "./alertSlice";
+import { onIsValidDate } from "../utils/helpers";
 
 export interface IStateData {
   problem: string;
@@ -144,7 +145,7 @@ const appointmentSlice = createSlice({
       .addCase(thunkGetStatusAppointment.fulfilled, (state, action) => {
         state.data = action.payload.data;
         if (action.payload.data.status !== "none") {
-          state.data.formatDate = `${dayjs(action.payload.data.date).locale("ru").format("D MMMM")} в ${action.payload.data.time}`;
+          state.data.formatDate = `${onIsValidDate(action.payload.data.date)} в ${action.payload.data.time}`;
         }
         state.message = action.payload.message;
         state.isLoading = false;
@@ -166,7 +167,7 @@ const appointmentSlice = createSlice({
         } else {
           state.isReserved = false;
           state.data.status = "accepted";
-          state.data.formatDate = `${dayjs(action.payload.data.doc.date).locale("ru").format("D MMMM")} в ${action.payload.data.doc.time}`;
+          state.data.formatDate = `${onIsValidDate(action.payload.data.doc.date)} в ${action.payload.data.doc.time}`;
         }
         state.message = action.payload.message;
         state.data.problem = action.payload.data.doc.problem;

@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import locale from "antd/es/calendar/locale/ru_RU";
 
 import { ICheckReservationResponse, ITimeResponse } from "../../../types/appointment";
+import { onIsValidDate } from "../../../utils/helpers";
 
 interface IState {
   time: ITimeResponse[];
@@ -52,15 +53,6 @@ export const AppointmentCalendar = () => {
       setIsError(true);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  //function for safari support
-  const onIsValidDate = () => {
-    if (dayjs(state.date).locale("ru").format("D MMMM") === "Invalid Date") {
-      return state.date;
-    } else {
-      return dayjs(state.date).locale("ru").format("D MMMM");
     }
   };
 
@@ -119,7 +111,7 @@ export const AppointmentCalendar = () => {
           showIcon={false}
           message={
             <Typography.Text className="alert" strong>
-              Информация о резерве {state.date && `на ${onIsValidDate()} `}
+              Информация о резерве {state.date && `на ${onIsValidDate(state.date)} `}
             </Typography.Text>
           }
         />
