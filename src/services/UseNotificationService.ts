@@ -3,7 +3,7 @@ import axios from "../config/axios";
 import { INotificationGetAllResponse, INotificationReadResponse } from "../types/notification";
 
 export const UseNotificationService = () => {
-  const onGetAllNotification = async () => {
+  const onGetAllNotifications = async () => {
     const response = await axios
       .get<INotificationGetAllResponse>("/notification/get-all")
       .then(({ data }) => {
@@ -39,5 +39,5 @@ export const UseNotificationService = () => {
     return response;
   };
 
-  return { onGetAllNotification, onReadNotifications };
+  return { onGetAllNotifications, onReadNotifications };
 };

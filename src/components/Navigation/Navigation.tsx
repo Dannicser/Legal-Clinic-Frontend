@@ -1,17 +1,17 @@
 import { NavLink } from "react-router-dom";
-import "./Navigation.scss";
-import { map, main, events, profile } from "./icons/index";
-
-import { EnvironmentOutlined, UserOutlined, HomeOutlined, CalendarOutlined } from "@ant-design/icons";
 import { PrivetRoutesNames } from "../../routers";
 
-export const Navigation = () => {
+import { EnvironmentOutlined, UserOutlined, HomeOutlined, CalendarOutlined } from "@ant-design/icons";
+
+import "./Navigation.scss";
+
+export const Navigation: React.FC = () => {
   return (
     <nav>
       <div className="nav__container">
         <ul className="nav__menu">
           <li className="nav__item">
-            <NavLink to={"/"}>
+            <NavLink to={PrivetRoutesNames.HOME}>
               <HomeOutlined />
               <div className="title">Главная</div>{" "}
             </NavLink>

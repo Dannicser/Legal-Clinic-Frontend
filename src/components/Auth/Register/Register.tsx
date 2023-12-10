@@ -1,24 +1,30 @@
-import "../Authorization/Auth.scss";
+import { useEffect } from "react";
+import { useAppSelector } from "../../../hooks/useAppSelector";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { thunkRegisterWithEmail, onResetErrors } from "../../../slices/authSlice";
+
+import { Helmet } from "react-helmet";
+
+import { PublicRoutesNames } from "../../../routers";
+
 import { Col, Row, Typography, Form, Input, Space, Button, Alert } from "antd";
 import { NavLink, Navigate } from "react-router-dom";
 
 import login from "../assets/icons/png/login.png";
 import password from "../assets/icons/png/password.png";
 import yandex from "../assets/icons/png/yandex.png";
-
 import person from "../assets/icons/png/person.png";
 
 import { Header } from "../../UI/Header/Header";
-import { PublicRoutesNames } from "../../../routers";
+
 import { FormUI } from "../../UI/FormUI/FormUI";
 import { onValidatePassword, onValidateName } from "../../../utils/validators/auth";
-import { useAppDispatch } from "../../../hooks/useAppDispatch";
-import { thunkRegisterWithEmail, onResetErrors } from "../../../slices/authSlice";
+
 import { IRegisterValues } from "../../../types/auth";
-import { useAppSelector } from "../../../hooks/useAppSelector";
-import { useEffect } from "react";
-import { UseLocalStorage } from "../../../hooks/useLocalStorage";
+
 import { client_id } from "../../../config/oauth";
+
+import "../Authorization/Auth.scss";
 
 export const Register = () => {
   const dispatch = useAppDispatch();
@@ -38,6 +44,11 @@ export const Register = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Регистрация - Юридическая клиника при ЕГУ.им И.А. Бунина</title>
+        <meta name="description" content="Создание аккаунта в приложении Юридической клиники при ЕГУ им И.А. Бунина" />
+        <meta name="keywords" content="юридическая клиника, создать аккаунт, регистация, учетная запись" />
+      </Helmet>
       <Header />
       <div className="auth__wrapper">
         <Row>

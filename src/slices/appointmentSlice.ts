@@ -1,11 +1,13 @@
+import { onShowAlert } from "./alertSlice";
+
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { UseAppointmentService } from "../services/UseAppointmentService";
 
-import dayjs from "dayjs";
 import "dayjs/locale/ru";
 
 import {
+  AppointmentStatus,
   IChangeAppointmentResponse,
   IChangeStatusAppointment,
   IEditAppointmentData,
@@ -15,7 +17,7 @@ import {
   IRemoveAppointmentResponse,
   Status,
 } from "../types/appointment";
-import { onShowAlert } from "./alertSlice";
+
 import { onIsValidDate } from "../utils/helpers";
 
 export interface IStateData {
@@ -144,7 +146,7 @@ const appointmentSlice = createSlice({
       })
       .addCase(thunkGetStatusAppointment.fulfilled, (state, action) => {
         state.data = action.payload.data;
-        if (action.payload.data.status !== "none") {
+        if (action.payload.data.status !== AppointmentStatus.NONE) {
           state.data.formatDate = `${onIsValidDate(action.payload.data.date)} в ${action.payload.data.time}`;
         }
         state.message = action.payload.message;
@@ -166,7 +168,7 @@ const appointmentSlice = createSlice({
           state.isReserved = true;
         } else {
           state.isReserved = false;
-          state.data.status = "accepted";
+          state.data.status = AppointmentStatus.ACCEPTED;
           state.data.formatDate = `${onIsValidDate(action.payload.data.doc.date)} в ${action.payload.data.doc.time}`;
         }
         state.message = action.payload.message;
@@ -179,7 +181,7 @@ const appointmentSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(thunkGetRegisterAppointment.rejected, (state) => {
-        state.data.status = "error";
+        state.data.status = AppointmentStatus.ERROR;
         state.message = "";
         state.isLoading = false;
         state.isError = true;
@@ -187,10 +189,10 @@ const appointmentSlice = createSlice({
       //remove
       .addCase(thunkRemoveAppointment.pending, (state) => {})
       .addCase(thunkRemoveAppointment.fulfilled, (state, action) => {
-        state.data.status = "none";
+        state.data.status = AppointmentStatus.NONE;
       })
       .addCase(thunkRemoveAppointment.rejected, (state, action) => {
-        state.data.status = "error";
+        state.data.status = AppointmentStatus.ERROR;
       })
       //edit
       .addCase(thunkEditAppointment.pending, (state) => {
@@ -202,10 +204,11 @@ const appointmentSlice = createSlice({
           state.isReserved = true;
         } else {
           state.isReserved = false;
+          state.data.time = action.payload.data.doc.time;
+          state.data.date = action.payload.data.doc.date;
+          state.data.formatDate = `${onIsValidDate(action.payload.data.doc.date)} в ${action.payload.data.doc.time}`;
         }
 
-        state.data.time = action.payload.data.doc.time;
-        state.data.date = action.payload.data.doc.date;
         state.isLoading = false;
       })
       .addCase(thunkEditAppointment.rejected, (state, action) => {

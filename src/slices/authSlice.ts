@@ -1,19 +1,16 @@
+import { onFetchUser, onPreAuthWithYandex } from "./userSlice";
+import { onShowAlert } from "./alertSlice";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UseAuthService } from "../services/UseAuthService";
+
 import {
   IAuthValues,
   IRegisterValues,
   IResponseAuthWithEmail,
-  IResponseAuthWithEmailError,
   IResponseAuthWithYandexGetData,
-  IResponseAuthWithYandexGetToken,
   IResponseLogoutAuth,
   IResponseRegisterWithEmail,
-  IUserResponseRegisterWithEmail,
 } from "../types/auth";
-import { onShowAlert } from "./alertSlice";
-import { UseLocalStorage } from "../hooks/useLocalStorage";
-import { onFetchUser, onPreAuthWithYandex } from "./userSlice";
 
 interface IState {
   isAuth: boolean;
@@ -67,8 +64,6 @@ export const thunkRegisterWithEmail = createAsyncThunk<IResponseRegisterWithEmai
     const { onGetRegisterWithEmail } = UseAuthService();
 
     const response = await onGetRegisterWithEmail(userdata);
-
-    console.log(response);
 
     if (response.status >= 400) {
       return rejectWithValue(response);

@@ -1,12 +1,20 @@
-import { Collapse, ConfigProvider, Divider, Typography } from "antd";
+import { Helmet } from "react-helmet";
+
 import { Header } from "../UI/Header/Header";
 import { Layout } from "../Layout/Layout";
 
+import { Collapse, ConfigProvider, Divider, Typography } from "antd";
+
 import "./FAQ.scss";
 
-export const FAQ = () => {
+export const FAQ: React.FC = () => {
   return (
     <>
+      <Helmet>
+        <title>Часто задаваемые вопросы - Юридическая клиника при ЕГУ им И.А. Бунина</title>
+        <meta name="description" content="Самые часто задаваемые вопросы находятся в этом разделе" />
+        <meta name="keywords" content="ошибка, не знаю, запись, посещение, клиника" />
+      </Helmet>
       <Header title="Частые вопросы" />
       <Layout internal={{ paddingTop: 50 }}>
         <ConfigProvider
@@ -63,8 +71,8 @@ export const FAQ = () => {
                     </a>
                     <Divider />
                     Связь также возможна по электронной почте
-                    <a href="mailto:vic80@rambler.ru">
-                      <Typography.Text strong> vic80@rambler.ru </Typography.Text>
+                    <a href="mailto:bsulklink@mail.ru">
+                      <Typography.Text strong> bsulklink@mail.ru </Typography.Text>
                     </a>
                     при обращении кликните на нее
                   </p>

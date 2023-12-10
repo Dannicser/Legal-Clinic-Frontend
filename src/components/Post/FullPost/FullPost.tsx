@@ -1,4 +1,10 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
+import { Helmet } from "react-helmet";
+
+import axios from "../../../config/axios";
+
 import { Header } from "../../UI/Header/Header";
 import { Divider, Typography, Button, Result, Skeleton, Row, Col, Space, Alert } from "antd";
 import { Layout } from "../../Layout/Layout";
@@ -6,11 +12,7 @@ import { Layout } from "../../Layout/Layout";
 import calendar from "./assets/icons/calendar.svg";
 import geo from "./assets/icons/geo.svg";
 
-import { useEffect, useState } from "react";
-
 import { IPost } from "../../../types/post";
-
-import axios from "../../../config/axios";
 
 import ReactMarkdown from "react-markdown";
 
@@ -58,6 +60,11 @@ export const FullPost: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{state.post?.title}</title>
+        <meta name="description" content={"Самые свежие новости из мира права"} />
+        <meta name="keywords" content={"новости, право, сенсации"} />
+      </Helmet>
       <Header title={"Новостная сводка"} />
       <Layout>
         {state.isError && <Result status="404" title="404" subTitle="Что-то пошло не так..." />}
@@ -77,8 +84,6 @@ const Event = ({ data }: IProps) => {
     );
   });
 
-  console.log(data);
-  console.log(data.text);
   return (
     <>
       <img src={data.img} alt="" />
@@ -108,7 +113,7 @@ const Event = ({ data }: IProps) => {
             </div>
           </div>
         </div>
-      </div>{" "}
+      </div>
       <Divider />
       {tags}
       <Divider />

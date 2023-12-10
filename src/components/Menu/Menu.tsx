@@ -1,7 +1,12 @@
-import "./Menu.scss";
+import { useEffect, useState } from "react";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { thunkGetUserInfo } from "../../slices/userSlice";
+import { thunkLogoutWithEmail } from "../../slices/authSlice";
+
 import { Header } from "../UI/Header/Header";
 
-import { Badge, Avatar, Spin, Alert, Typography, Result, Popconfirm, Tooltip, Button, Divider, Space, Modal, message } from "antd";
+import { Badge, Avatar, Spin, Alert, Typography, Tooltip, Button, Divider, Modal, FloatButton } from "antd";
 
 import {
   FrownOutlined,
@@ -12,22 +17,19 @@ import {
   CalendarOutlined,
   MessageOutlined,
   LogoutOutlined,
+  SmileOutlined,
 } from "@ant-design/icons";
-
-import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { thunkLogoutWithEmail } from "../../slices/authSlice";
 
 import { NavLink } from "react-router-dom";
 
 import { PrivetRoutesNames } from "../../routers";
 import { Layout } from "../Layout/Layout";
-import { useAppSelector } from "../../hooks/useAppSelector";
-import { useEffect, useState } from "react";
-import { thunkGetUserInfo } from "../../slices/userSlice";
 
 import { AppointmentStatus } from "../../types/appointment";
 
-export const Menu = () => {
+import "./Menu.scss";
+
+export const Menu: React.FC = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
   const isLoadingUser = useAppSelector((state) => state.user.isLoading);
@@ -75,7 +77,7 @@ export const Menu = () => {
         >
           <Typography.Text type="warning" strong>
             Вы действительно хотите выйти из профиля?
-          </Typography.Text>{" "}
+          </Typography.Text>
           {isErrorAuth && (
             <>
               <Divider />
@@ -139,6 +141,12 @@ export const Menu = () => {
               <li className="menu__item">
                 <HistoryOutlined />
                 <div className="title">История обращений</div>
+              </li>
+            </NavLink>
+            <NavLink to={PrivetRoutesNames.SUPPORT}>
+              <li className="menu__item">
+                <SmileOutlined />
+                <div className="title">Поддержка</div>
               </li>
             </NavLink>
             <NavLink to={PrivetRoutesNames.SETTINGS}>

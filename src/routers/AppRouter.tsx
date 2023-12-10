@@ -14,7 +14,11 @@ import { thunkGetStatusAppointment } from "../slices/appointmentSlice";
 import { thunkGetAllNotifications } from "../slices/notificationSlice";
 import { thunkGetUserInfo } from "../slices/userSlice";
 
+import { thunkGetAllPostsByType } from "../slices/postSlice";
+
 import { Connection } from "../components/Notification/Connection/Connection";
+
+import { Categories } from "../types/post";
 
 export const AppRouter: React.FC = () => {
   const isAuth = useAppSelector((state) => state.auth.isAuth);
@@ -44,6 +48,13 @@ export const AppRouter: React.FC = () => {
   useEffect(() => {
     if (isAuth) {
       dispatch(thunkGetAllNotifications());
+    }
+  }, [isAuth]);
+
+  useEffect(() => {
+    if (isAuth) {
+      dispatch(thunkGetAllPostsByType(Categories.CIVIL));
+      dispatch(thunkGetAllPostsByType(Categories.CRIMINAL));
     }
   }, [isAuth]);
 

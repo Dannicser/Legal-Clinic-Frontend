@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 
+import { Helmet } from "react-helmet";
+
+import { NavLink } from "react-router-dom";
+import { PrivetRoutesNames } from "../../../routers";
+
 import axios from "../../../config/axios";
 
 import { Layout } from "../../Layout/Layout";
 import { Header } from "../../UI/Header/Header";
 
-import { NavLink } from "react-router-dom";
-import { PrivetRoutesNames } from "../../../routers";
-
-import { Avatar, Button, Divider, Empty, List, Rate, Result, Row, Skeleton, Space, Tooltip } from "antd";
+import { Avatar, Button, Divider, Empty, List, Rate, Result, Row, Skeleton, Tooltip } from "antd";
 import { Typography } from "antd/es";
-
-import dayjs from "dayjs";
 
 import { onCutText, onIsValidDate } from "../../../utils/helpers";
 
@@ -33,7 +33,7 @@ interface IAppointmentHistoryData {
   reason: string;
 }
 
-export const AppointmentHistory = () => {
+export const AppointmentHistory: React.FC = () => {
   const [appointments, setAppointments] = useState<IAppointmentHistoryData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
@@ -81,6 +81,11 @@ export const AppointmentHistory = () => {
 
   return (
     <>
+      <Helmet>
+        <title>История обращений - Юридическая клиника при ЕГУ им И.А. Бунина</title>
+        <meta name="description" content="Здесь вы можете посмотреть историю обращений в нашу клинику" />
+        <meta name="keywords" content="история, обращение, запись, посещение, клиника" />
+      </Helmet>
       <Header title={"История обращений"} />
       <Layout>{loader || content}</Layout>
     </>

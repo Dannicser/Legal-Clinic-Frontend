@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 
+import { Helmet } from "react-helmet";
+
 import axios from "../../../config/axios";
 
 import { Header } from "../../UI/Header/Header";
@@ -19,7 +21,7 @@ interface IState {
   date: string;
 }
 
-export const AppointmentCalendar = () => {
+export const AppointmentCalendar: React.FC = () => {
   const [state, setstate] = useState<IState>({
     time: [],
     date: "",
@@ -42,7 +44,6 @@ export const AppointmentCalendar = () => {
   const onChechReservationTime = async (date: string) => {
     try {
       if (date !== state.date) {
-        console.log("request");
         setIsLoading(true);
         const { data } = await axios.post<ICheckReservationResponse>("/appointment/check-reservation", { date });
         setstate({ date, time: data.data });
@@ -85,6 +86,11 @@ export const AppointmentCalendar = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Календарь записей - Юридическая клиника при ЕГУ.им И.А. Бунина</title>
+        <meta name="description" content="Посмотрите свободное время для посещение юридической клиники." />
+        <meta name="keywords" content="помощь, календарь, запись, посещение, клиника" />
+      </Helmet>
       <Header title="Календарь записей" />
       <Layout>
         <Calendar

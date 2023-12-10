@@ -1,5 +1,6 @@
-import { Col, QRCode, Result, Row, Typography } from "antd";
 import { Layout } from "../Layout/Layout";
+import { Col, QRCode, Result, Row, Typography } from "antd";
+
 import { FRONTEND_URL } from "../../http/vars";
 
 export const NotSupport: React.FC = () => {
@@ -24,10 +25,8 @@ export const NotSupport: React.FC = () => {
         }
         extra={
           <Row justify={"center"}>
-            <Col span={8}>
-              <Typography.Text strong type="success">
-                Наведите камеру вашего телефона на QA код, чтобы открыть приложение на смартфоне!
-              </Typography.Text>
+            <Col span={7}>
+              <Typography.Text strong>Наведите камеру вашего телефона на QA код, чтобы открыть приложение на смартфоне!</Typography.Text>
             </Col>
           </Row>
         }

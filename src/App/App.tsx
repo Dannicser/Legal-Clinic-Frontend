@@ -1,10 +1,11 @@
-import "./App.scss";
 import { AppRouter } from "../routers/AppRouter";
 
 import { Alert } from "../components/Alert/Alert";
 import { NotSupport } from "../components/NotSupport/NotSupport";
 
 import dayjs from "dayjs";
+
+import "./App.scss";
 
 dayjs.locale("ru");
 

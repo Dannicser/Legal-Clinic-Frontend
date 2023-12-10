@@ -1,11 +1,15 @@
-import { Col, Divider, Row, Switch, Typography } from "antd";
-import { Layout } from "../Layout/Layout";
-import { Header } from "../UI/Header/Header";
-import { UseLocalStorage } from "../../hooks/useLocalStorage";
-
 import { useState, useEffect } from "react";
 
-export const Settings = () => {
+import { Helmet } from "react-helmet";
+
+import { Layout } from "../Layout/Layout";
+import { Header } from "../UI/Header/Header";
+
+import { UseLocalStorage } from "../../hooks/useLocalStorage";
+
+import { Col, Divider, Row, Switch, Typography } from "antd";
+
+export const Settings: React.FC = () => {
   const [isSound, setIsSound] = useState<boolean>(false);
 
   useEffect(() => {
@@ -26,6 +30,11 @@ export const Settings = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Настройки - Юридическая клиника при ЕГУ.им И.А. Бунина</title>
+        <meta name="description" content="Здесь вы можете посмотреть настройки приложения Юридической клиники и изменить их при необходимости" />
+        <meta name="keywords" content="настройки, звук, уведомления" />
+      </Helmet>
       <Header title="Настройки" />
       <Layout internal={{ paddingTop: 45, paddingLeft: 30, paddingRight: 30 }}>
         <Divider />

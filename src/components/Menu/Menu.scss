@@ -3,7 +3,7 @@
 .menu__wrapper {
   .user__info {
     text-align: start;
-    height: 80px;
+    min-height: 80px;
 
     .user_info_spin {
       padding-top: 15px;
@@ -45,4 +45,8 @@
       }
     }
   }
+}
+
+.support_icon {
+  margin-bottom: 35px;
 }

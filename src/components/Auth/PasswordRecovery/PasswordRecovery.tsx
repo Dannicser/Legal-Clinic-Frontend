@@ -1,14 +1,22 @@
 import { useEffect } from "react";
-import { Alert, Typography, Input, Button, Form } from "antd";
-import { Header } from "../../UI/Header/Header";
-import login from "../assets/icons/png/login.png";
-import { onValidateEmail } from "../../../utils/validators/auth";
+
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { onResetErrors } from "../../../slices/authSlice";
 
+import { Helmet } from "react-helmet";
+
+import { Typography, Input, Button, Form } from "antd";
+
+import { Header } from "../../UI/Header/Header";
+
+import login from "../assets/icons/png/login.png";
+
+import { onValidateEmail } from "../../../utils/validators/auth";
+
 import "./PasswordRecovery.scss";
-export const PasswordRecovery = () => {
+
+export const PasswordRecovery: React.FC = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state.auth);
 
@@ -18,6 +26,11 @@ export const PasswordRecovery = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Восстановление аккаунта - Юридическая клиника при ЕГУ.им И.А. Бунина</title>
+        <meta name="description" content="Восстановление аккаунта в приложении Юридической клиники при ЕГУ им И.А. Бунина" />
+        <meta name="keywords" content="юридическая клиника, забыл пароль, восстановить" />
+      </Helmet>
       <Header />
       <div className="recovery__wrapper">
         <div>

@@ -78,7 +78,7 @@ export const UseAuthService = () => {
   };
 
   const onCheckAuth = async () => {
-    const response = await defaultAxios.get<IResponseCheckAuth>(`${BACKEND_URL}/api/auth/refresh/email`, { withCredentials: true });
+    const response = await defaultAxios.get<IResponseCheckAuth>(`${BACKEND_URL}/auth/refresh/email`, { withCredentials: true });
 
     return response.data;
   };

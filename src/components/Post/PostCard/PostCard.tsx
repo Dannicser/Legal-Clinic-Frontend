@@ -1,10 +1,10 @@
+import { NavLink } from "react-router-dom";
+
 import { IPost } from "../../../types/post";
 
 import favorive from "./assets/icons/favorite.svg";
 
 import { EyeOutlined } from "@ant-design/icons";
-
-import { NavLink } from "react-router-dom";
 
 import dayjs from "dayjs";
 

@@ -1,5 +1,4 @@
 import { useAppSelector } from "../../../../hooks/useAppSelector";
-import { useEffect } from "react";
 
 import { Accepted } from "../VisitStatus/Accepted";
 import { Problem } from "../VisitStatus/Problem";
@@ -10,33 +9,18 @@ import { VisitForm } from "../VisitForm/VisitForm";
 
 import { AppointmentStatus } from "../../../../types/appointment";
 
-export const VisitMain = () => {
+export const VisitMain: React.FC = () => {
   const status = useAppSelector((state) => state.appointment.data.status);
   const message = useAppSelector((state) => state.appointment.message);
 
-  if (status === AppointmentStatus.NONE) {
-    return <VisitForm />;
-  }
+  const statusComponentMapper: Record<AppointmentStatus, React.ReactElement> = {
+    none: <VisitForm />,
+    accepted: <Accepted />,
+    rejected: <Rejected message={message} />,
+    confirmed: <Confirmed />,
+    error: <Problem />,
+    provided: <Provided />,
+  };
 
-  if (status === AppointmentStatus.ACCEPTED) {
-    return <Accepted />;
-  }
-
-  if (status === AppointmentStatus.REJECTED) {
-    return <Rejected message={message} />;
-  }
-
-  if (status === AppointmentStatus.CONFIRMED) {
-    return <Confirmed />;
-  }
-
-  if (status === AppointmentStatus.ERROR) {
-    return <Problem />;
-  }
-
-  if (status === AppointmentStatus.PROVIDED) {
-    return <Provided />;
-  }
-
-  return <Problem />;
+  return <>{statusComponentMapper[status]}</>;
 };

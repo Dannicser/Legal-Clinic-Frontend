@@ -1,8 +1,8 @@
-import { Row, Typography, Result, Skeleton, Divider } from "antd";
-
-import { IPost } from "../../../types/post";
+import { Row, Typography, Result, Skeleton } from "antd";
 
 import { PostCard } from "../PostCard/PostCard";
+
+import { IPost } from "../../../types/post";
 
 import "./PostsList.scss";
 

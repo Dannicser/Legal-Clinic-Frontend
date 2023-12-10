@@ -1,15 +1,18 @@
+import { useAppSelector } from "../../../hooks/useAppSelector";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { thunkUpdateUserInfo } from "../../../slices/userSlice";
+
+import { Navigate } from "react-router-dom";
+
+import { Helmet } from "react-helmet";
+
 import { Layout } from "../../Layout/Layout";
 import { Header } from "../../UI/Header/Header";
-
-import login from "../../Auth/assets/icons/png/login.png";
 
 import { Form, Input, Row, Col, Typography, Button, Tooltip, Popconfirm } from "antd";
 import { UserOutlined, BulbOutlined, LockOutlined } from "@ant-design/icons";
 
-import { useAppSelector } from "../../../hooks/useAppSelector";
-import { Navigate } from "react-router-dom";
-import { useAppDispatch } from "../../../hooks/useAppDispatch";
-import { thunkUpdateUserInfo } from "../../../slices/userSlice";
+import login from "../../Auth/assets/icons/png/login.png";
 
 export const EditProfile: React.FC = () => {
   const isLoading = useAppSelector((state) => state.user.isLoading);
@@ -41,6 +44,11 @@ export const EditProfile: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Изменить данные - Юридическая клиника при ЕГУ им И.А. Бунина</title>
+        <meta name="description" content="Редактирование профиля, измените ваши данные при необходимости" />
+        <meta name="keywords" content="профиль, изменить, фио, редактировать, уникальный id" />
+      </Helmet>
       <Header title="Редактирование" />
       <Layout>
         <Form form={form} initialValues={{ about: user.about, first_name: user.first_name, last_name: user.last_name }} name="basic">

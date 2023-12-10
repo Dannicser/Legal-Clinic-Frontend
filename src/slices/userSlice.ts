@@ -1,8 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-import { UseUserService } from "../services/UseUserService";
-import { IEditProfileState, IResponseGetUser, IResponseUpdateUser, IUserProfile } from "../types/user";
 import { onShowAlert } from "./alertSlice";
+import { UseUserService } from "../services/UseUserService";
+
+import { IEditProfileState, IResponseGetUser, IResponseUpdateUser, IUserProfile } from "../types/user";
 import { IPreAuthWithYandex, IUserResponseRegisterWithEmail } from "../types/auth";
 
 interface IState {

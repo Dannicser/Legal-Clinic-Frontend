@@ -1,6 +1,7 @@
+import { VisitForm } from "../VisitForm/VisitForm";
+
 import { Layout } from "../../../Layout/Layout";
 import { Header } from "../../../UI/Header/Header";
-import { VisitForm } from "../VisitForm/VisitForm";
 
 export const VisitEdit: React.FC = () => {
   return (

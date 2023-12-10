@@ -1,7 +1,14 @@
+import { useEffect } from "react";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { thunkAuthWithEmail, onResetErrors, thunkAuthWithYandex, thunkRegisterWithEmail, onCloseConfirmingModal } from "../../../slices/authSlice";
+import { useAppSelector } from "../../../hooks/useAppSelector";
+
+import { Helmet } from "react-helmet";
+
 import { NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { PublicRoutesNames } from "../../../routers";
-import { Col, Row, Typography, Form, Input, Space, Switch, Button, Alert, Modal, Tooltip, Popconfirm, Divider } from "antd";
 
+import { Col, Row, Typography, Form, Input, Space, Switch, Button, Alert, Modal, Tooltip, Popconfirm, Divider } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 import logo from "../assets/img/logo.png";
@@ -11,15 +18,13 @@ import yandex from "../assets/icons/png/yandex.png";
 
 import { IAuthValues, IPreAuthWithYandex } from "../../../types/auth";
 import { onValidateEmail } from "../../../utils/validators/auth";
-import { useAppSelector } from "../../../hooks/useAppSelector";
-import { thunkAuthWithEmail, onResetErrors, thunkAuthWithYandex, thunkRegisterWithEmail, onCloseConfirmingModal } from "../../../slices/authSlice";
-import { useAppDispatch } from "../../../hooks/useAppDispatch";
-import { useEffect } from "react";
-
 import { client_id } from "../../../config/oauth";
+
+import { UseLocalStorage } from "../../../hooks/useLocalStorage";
+
 import "./Auth.scss";
 
-export const Auth = () => {
+export const Auth: React.FC = () => {
   const isConfirming = useAppSelector((state) => state.auth.isConfirming);
   const isError = useAppSelector((state) => state.auth.isError);
   const isLoading = useAppSelector((state) => state.auth.isLoading);
@@ -47,112 +52,119 @@ export const Auth = () => {
     dispatch(onResetErrors());
   }, []);
 
-  if (!localStorage.getItem("intro")) {
+  if (!UseLocalStorage({ action: "get", key: "intro" })) {
     return <Navigate to={"/intro"} />;
   }
 
   return (
-    <div className="auth__wrapper">
-      {isConfirming && <ConfirmModelAuth />}
-      <Form initialValues={{ remember: true }} name="basic" onFinish={authWithEmail}>
-        <Row justify={"space-between"}>
-          <Col span={24}>
-            <img className="auth__logo" src={logo} alt="" />
-          </Col>
-          <Col span={24}>
-            <Typography.Title className="auth__title" level={1}>
-              Юридическая клиника
-            </Typography.Title>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <Typography.Title className="auth__sing_in" level={3}>
-              Вход
-            </Typography.Title>
-          </Col>
-          <Col span={24}>
-            <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name="email">
-              <Input
-                max={8}
-                autoComplete="on"
-                placeholder="abc@email.com"
-                className="auth__input"
-                prefix={<img className="inp_icon" src={login} />}
-                size="large"
-              />
-            </Form.Item>
-            <Form.Item
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message: "Заполните поле",
-                },
-              ]}
-              name="password"
-            >
-              <Input.Password
-                autoComplete="of"
-                placeholder={"Ваш пароль"}
-                className="auth__input"
-                prefix={<img className="inp_icon" src={password} />}
-                size="large"
-              />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Row align={"middle"} justify={"space-between"}>
-              <Row align={"middle"} justify={"start"}>
-                <Space size={"small"}>
-                  <Form.Item valuePropName="checked" name={"remember"}>
-                    <Switch />
-                  </Form.Item>
-                  <Form.Item name={"remember"}>
-                    <Typography.Text style={{ marginRight: 5 }} strong>
-                      Запомнить меня
-                    </Typography.Text>
-                  </Form.Item>
-                </Space>
+    <>
+      <Helmet>
+        <title>Авторизация - Юридическая клиника при ЕГУ.им И.А. Бунина</title>
+        <meta name="description" content="Авторизация в приложении Юридической клиники при ЕГУ им И.А. Бунина" />
+        <meta name="keywords" content="юридическая клиника, войти, авторизация" />
+      </Helmet>
+      <div className="auth__wrapper">
+        {isConfirming && <ConfirmModelAuth />}
+        <Form initialValues={{ remember: true }} name="basic" onFinish={authWithEmail}>
+          <Row justify={"space-between"}>
+            <Col span={24}>
+              <img className="auth__logo" src={logo} alt="" />
+            </Col>
+            <Col span={24}>
+              <Typography.Title className="auth__title" level={1}>
+                Юридическая клиника
+              </Typography.Title>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Typography.Title className="auth__sing_in" level={3}>
+                Вход
+              </Typography.Title>
+            </Col>
+            <Col span={24}>
+              <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name="email">
+                <Input
+                  max={8}
+                  autoComplete="on"
+                  placeholder="abc@email.com"
+                  className="auth__input"
+                  prefix={<img className="inp_icon" src={login} />}
+                  size="large"
+                />
+              </Form.Item>
+              <Form.Item
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: "Заполните поле",
+                  },
+                ]}
+                name="password"
+              >
+                <Input.Password
+                  autoComplete="of"
+                  placeholder={"Ваш пароль"}
+                  className="auth__input"
+                  prefix={<img className="inp_icon" src={password} />}
+                  size="large"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Row align={"middle"} justify={"space-between"}>
+                <Row align={"middle"} justify={"start"}>
+                  <Space size={"small"}>
+                    <Form.Item valuePropName="checked" name={"remember"}>
+                      <Switch />
+                    </Form.Item>
+                    <Form.Item name={"remember"}>
+                      <Typography.Text style={{ marginRight: 5 }} strong>
+                        Запомнить меня
+                      </Typography.Text>
+                    </Form.Item>
+                  </Space>
+                </Row>
+                <Row align={"top"}>
+                  <NavLink className="auth__forgot" to={PublicRoutesNames.RECOVERY}>
+                    <Typography.Text strong>Забыли пароль?</Typography.Text>
+                  </NavLink>
+                </Row>
               </Row>
-              <Row align={"top"}>
-                <NavLink className="auth__forgot" to={PublicRoutesNames.RECOVERY}>
-                  <Typography.Text strong>Забыли пароль?</Typography.Text>
-                </NavLink>
-              </Row>
-            </Row>
-          </Col>
-          <Col span={24}>
-            <Form.Item>
-              <Button loading={isLoading} htmlType="submit" size="large" type="primary" block>
-                Войти
-              </Button>
-              {isError && <Alert type="error" showIcon className="error__message" message={message} banner closable />}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <div className="auth__or">или</div>
-          </Col>
-          <Col span={24}>
-            <Space className="auth__google" size={14}>
-              <img src={yandex} alt="" />
-              <Typography.Text strong>
-                <a href={`https://oauth.yandex.ru/authorize?response_type=code&client_id=${client_id}`}>Войти с Yandex</a>
-              </Typography.Text>
-            </Space>
-          </Col>
-          <Col span={24}>
-            <div className="auth__sign_up__container">
-              <Typography.Text className="auth__sign_up">Еще нет аккаунта?</Typography.Text>
-              <Typography.Text strong>
-                <NavLink to={PublicRoutesNames.REGISTRATION}>Зарегистрируйтесь</NavLink>
-              </Typography.Text>
-            </div>
-          </Col>
-        </Row>
-      </Form>
-      <div className="auth__background"></div>
-    </div>
+            </Col>
+            <Col span={24}>
+              <Form.Item>
+                <Button loading={isLoading} htmlType="submit" size="large" type="primary" block>
+                  Войти
+                </Button>
+                {isError && <Alert type="error" showIcon className="error__message" message={message} banner closable />}
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <div className="auth__or">или</div>
+            </Col>
+            <Col span={24}>
+              <Space className="auth__google" size={14}>
+                <img src={yandex} alt="" />
+                <Typography.Text strong>
+                  <a href={`https://oauth.yandex.ru/authorize?response_type=code&client_id=${client_id}`}>Войти с Yandex</a>
+                </Typography.Text>
+              </Space>
+            </Col>
+            <Col span={24}>
+              <div className="auth__sign_up__container">
+                <Typography.Text className="auth__sign_up">Еще нет аккаунта?</Typography.Text>
+                <Typography.Text strong>
+                  <NavLink to={PublicRoutesNames.REGISTRATION}>Зарегистрируйтесь</NavLink>
+                </Typography.Text>
+              </div>
+            </Col>
+          </Row>
+        </Form>
+        <div className="auth__background"></div>
+      </div>
+    </>
   );
 };
 

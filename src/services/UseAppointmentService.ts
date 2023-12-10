@@ -31,7 +31,7 @@ export const UseAppointmentService = () => {
       })
       .catch((error: AxiosError<IRegisterApointmentResponse>) => {
         console.log(error);
-        return { message: "", status: 400 };
+        return { message: "", status: 500 };
       });
 
     return response;
@@ -54,6 +54,7 @@ export const UseAppointmentService = () => {
       .patch<IChangeAppointmentResponse>("/appointment/change", data)
       .then(({ data }) => data)
       .catch((error: AxiosError<IChangeAppointmentResponse>) => {
+        console.log(error);
         return { message: error.response?.data.message || "", status: error.response?.data.status || 500 };
       });
 

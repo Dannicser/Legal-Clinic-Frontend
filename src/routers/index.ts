@@ -5,19 +5,18 @@ import { Register } from "../components/Auth/Register/Register";
 import { Introduction } from "../components/Introduction/Introduction";
 import { HomePage } from "../pages/HomePage";
 import { Conversation } from "../components/Conversation/Conversation";
-
 import { EditProfile } from "../components/Profile/EditProfile/EditProfile";
 import { FullPost } from "../components/Post/FullPost/FullPost";
 import { AppointmentPage } from "../pages/AppointmentPage";
 import { MapPage } from "../pages/MapPage";
 import { ProfilePage } from "../pages/ProfilePage";
-import { AdminPage } from "../pages/AdminPage";
 import { VisitEdit } from "../components/Appointment/Visit/VisitEdit/VisitEdit";
 import { AppointmentHistory } from "../components/Appointment/AppointmentHistory/AppointmentHistory";
 import { AppointmentCalendar } from "../components/Appointment/AppointmentCalendar/AppointmentCalendar";
 import { FAQ } from "../components/FAQ/FAQ";
 import { NotificationList } from "../components/Notification/NotificationList/NotificationList";
 import { Settings } from "../components/Settings/Settings";
+import { Support } from "../components/Support/Support";
 
 export interface iRouter {
   path: string;
@@ -46,10 +45,7 @@ export enum PrivetRoutesNames {
   FAQ = "/faq",
   NOTIFICATIONS = "/notifications",
   SETTINGS = "/settings",
-}
-
-export enum AdminRoutesNames {
-  HOME = "/admin",
+  SUPPORT = "/support",
 }
 
 export const publicRoutes: iRouter[] = [
@@ -78,6 +74,6 @@ export const privetRoutes: iRouter[] = [
   { path: PrivetRoutesNames.NOTIFICATIONS, component: NotificationList },
 
   { path: PrivetRoutesNames.SETTINGS, component: Settings },
-];
 
-export const adminRoutes: iRouter[] = [{ path: AdminRoutesNames.HOME, component: AdminPage }];
+  { path: PrivetRoutesNames.SUPPORT, component: Support },
+];

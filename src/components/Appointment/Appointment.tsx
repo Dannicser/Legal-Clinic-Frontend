@@ -1,22 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { thunkGetStatusAppointment } from "../../slices/appointmentSlice";
 
 import { VisitForm } from "./Visit/VisitForm/VisitForm";
 import { VisitMain } from "./Visit/VisitMain/VisitMain";
 
-import { Result, Segmented } from "antd";
+import { Segmented } from "antd";
 import { Spinner } from "../UI/Spinner/Spinner";
 
 import { AppointmentProgress } from "./AppointmentProgress/AppointmentProgress";
 
 import { NotFound as Info } from "../UI/NotFound/NotFound";
-import nothing from "./assets/img/not_event.png";
+import calendar from "./assets/img/calendar.png";
 
 import { AppointmentStatus } from "../../types/appointment";
 
-export const Appointment = () => {
+export const Appointment: React.FC = () => {
   const [toggle, setToggle] = useState(false);
   const isLoading = useAppSelector((state) => state.appointment.isLoading);
   const status = useAppSelector((state) => state.appointment.data.status);
@@ -43,7 +41,7 @@ export const Appointment = () => {
     <VisitForm />
   ) : (
     <Info
-      img={nothing}
+      img={calendar}
       title="Запишитесь на очное посещение юридической клиники"
       descr="Специалисты окажут необходимую юридическую помощь и решат вашу проблему"
     />

@@ -14,7 +14,7 @@ export const Banner = () => {
             Юридическая консультация <br /> от специалистов
           </div>
           <div className="btn">
-            <NavLink to={PrivetRoutesNames.CONVERSATION}>
+            <NavLink to={PrivetRoutesNames.APPOINTMENT}>
               <Button size="small" type="primary" block>
                 ПОЛУЧИТЬ
               </Button>

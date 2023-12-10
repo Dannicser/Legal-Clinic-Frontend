@@ -1,9 +1,11 @@
-import { notification } from "antd";
-import { useAppSelector } from "../../hooks/useAppSelector";
 import { useEffect } from "react";
-import { NotificationType } from "../../types/alert";
+import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { onHideAlert } from "../../slices/alertSlice";
+
+import { notification } from "antd";
+
+import { NotificationType } from "../../types/alert";
 
 export const Alert: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();

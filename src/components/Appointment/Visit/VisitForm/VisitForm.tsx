@@ -16,7 +16,7 @@ import "./VisitForm.scss";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { DatePicker, Select, TimePicker, Input, Button, Space, Form, Typography, Row, Tooltip, Col, Alert, Popconfirm } from "antd";
 
-import { AppointmentStatus, ICheckReservationResponse, IEditAppointmentData, ITimeResponse, Status } from "../../../../types/appointment";
+import { AppointmentStatus, ICheckReservationResponse, IEditAppointmentData, ITimeResponse } from "../../../../types/appointment";
 const { TextArea } = Input;
 
 interface IVisitFormProps {
@@ -26,8 +26,6 @@ interface IVisitFormProps {
 interface IStateReservation extends ITimeResponse {}
 
 export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
-  console.log("render");
-
   const [reservation, setReservation] = useState<IStateReservation[]>([]);
   const [isLoadingReservation, setIsLoadingReservation] = useState<boolean>(false);
   const [isErrorReservation, setIsErrorReservation] = useState<boolean>(false);
@@ -121,7 +119,7 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
             <>
               Пожалуйста, проверьте правильность введенных вами данных.
               <br />
-              Нажимая {""}
+              Нажимая
               <Typography.Text type="warning" strong>
                 «да», вы подтверждаете обработку ваших персональных данных.
               </Typography.Text>
@@ -164,7 +162,7 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
               отказать вам в обращении.
             </Typography.Text>
             <br />
-            Нажимая {""}
+            Нажимая
             <Typography.Text type="warning" strong>
               «да», вы подтверждаете обработку ваших персональных данных.
             </Typography.Text>
@@ -184,8 +182,6 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
   if (edit && status !== AppointmentStatus.ACCEPTED) {
     return <Navigate to={PrivetRoutesNames.APPOINTMENT} />;
   }
-
-  console.log(reservation);
 
   return (
     <div className="visit__wrapper">
@@ -360,6 +356,7 @@ export const VisitForm: React.FC<IVisitFormProps> = ({ edit }) => {
             <Alert
               type="info"
               banner
+              style={{ textAlign: "start" }}
               message={"К сожалению, данное время недоступно для резерва, кликните сюда, чтобы посмотреть доступное время для посещения клиники"}
             />
           </NavLink>

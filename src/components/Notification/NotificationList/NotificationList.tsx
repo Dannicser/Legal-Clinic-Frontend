@@ -5,6 +5,7 @@ import { onReadNotifications, thunkReadNotifications } from "../../../slices/not
 
 import { Alert, Col, Divider, Empty, Row, Segmented, Typography } from "antd";
 import { FieldTimeOutlined } from "@ant-design/icons";
+
 import { Header } from "../../UI/Header/Header";
 import { Layout } from "../../Layout/Layout";
 

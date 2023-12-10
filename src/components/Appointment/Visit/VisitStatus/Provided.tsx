@@ -49,7 +49,7 @@ export const Provided: React.FC = () => {
 
       UseLocalStorage({ key: "statushelp", action: "remove" });
       UseLocalStorage({ key: "roadhelp", action: "remove" });
-      console.log("delete");
+
       setIsFinished(true);
       return;
     } catch (error) {

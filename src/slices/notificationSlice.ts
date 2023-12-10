@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UseNotificationService } from "../services/UseNotificationService";
+
 import { INotificationGetAllResponse, INotificationItem, INotificationReadResponse } from "../types/notification";
-import { UseLocalStorage } from "../hooks/useLocalStorage";
 
 interface IState {
   user: INotificationItem[];
@@ -24,9 +24,9 @@ const initialState: IState = {
 export const thunkGetAllNotifications = createAsyncThunk<INotificationGetAllResponse>(
   "thunkGetAllNotifications/get",
   async (_, { rejectWithValue, dispatch }) => {
-    const { onGetAllNotification } = UseNotificationService();
+    const { onGetAllNotifications } = UseNotificationService();
 
-    const response = await onGetAllNotification();
+    const response = await onGetAllNotifications();
 
     if (response.status > 400) {
       return rejectWithValue(response);

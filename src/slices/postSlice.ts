@@ -1,6 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IPost, typePostCategory } from "../types/post";
 import { UsePostService } from "../services/UsePostService";
+
+import { IPost, typePostCategory } from "../types/post";
 
 interface IActionGetAllPostsByType {
   data: IPost[];
@@ -54,7 +55,7 @@ const initialState: IState = {
   },
 };
 
-export const onGetAllPostsByType = createAsyncThunk("onGetAllPostsByType/get", async (type: typePostCategory) => {
+export const thunkGetAllPostsByType = createAsyncThunk("onGetAllPostsByType/get", async (type: typePostCategory) => {
   const { getAllPostsByType } = UsePostService();
 
   return getAllPostsByType(type);
@@ -66,14 +67,14 @@ const postSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(onGetAllPostsByType.pending, (state, action) => {
+      .addCase(thunkGetAllPostsByType.pending, (state, action) => {
         state[action.meta.arg as typePostCategory].loading = true;
       })
-      .addCase(onGetAllPostsByType.fulfilled, (state, action: PayloadAction<IActionGetAllPostsByType, string, { arg: string }>) => {
+      .addCase(thunkGetAllPostsByType.fulfilled, (state, action: PayloadAction<IActionGetAllPostsByType, string, { arg: string }>) => {
         state[action.meta.arg as typePostCategory].loading = false;
         state[action.meta.arg as typePostCategory].posts = action.payload.data;
       })
-      .addCase(onGetAllPostsByType.rejected, (state, action) => {
+      .addCase(thunkGetAllPostsByType.rejected, (state, action) => {
         state[action.meta.arg as typePostCategory].loading = false;
         state[action.meta.arg as typePostCategory].error = true;
       });

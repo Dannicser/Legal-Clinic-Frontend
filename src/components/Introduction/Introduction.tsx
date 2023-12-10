@@ -1,15 +1,19 @@
-import "./Introduction.scss";
-import { Carousel, Spin } from "antd";
-import { useState } from "react";
-import { Navigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
-import calendar from "./assets/img/calendar.png";
-import status from "./assets/img/status.png";
-import news from "./assets/img/news.png";
-import appointment from "./assets/img/appointment.png";
+import { Navigate } from "react-router-dom";
+
+import { Helmet } from "react-helmet";
 
 import { UseLocalStorage } from "../../hooks/useLocalStorage";
+
+import { Carousel } from "antd";
+
+import calendar from "./assets/img/compressed/calendar.png";
+import status from "./assets/img/compressed/status.png";
+import news from "./assets/img/compressed/news.png";
+import appointment from "./assets/img/compressed/appointment.png";
+
+import "./Introduction.scss";
 
 export const Introduction: React.FC = () => {
   const [position, setPosition] = useState(0);
@@ -28,51 +32,56 @@ export const Introduction: React.FC = () => {
   }
 
   return (
-    <div className="intro__wrapper">
-      <div className="intro__container">
-        <Carousel afterChange={onChange}>
-          <div>
-            <div className="aunt__intro">
-              <img src={calendar} alt="" />
-              <div className="info">
-                <div className="title">Календарь посещений</div>
-                <div className="descr">Просматривайте свободное и подходящее для вас время посещения Юридической Клиники.</div>
+    <>
+      <Helmet>
+        <title>Функционал - Юридическая клиника при ЕГУ.им И.А. Бунина</title>
+        <meta name="description" content="Функционал Юридической клиники при ЕГУ им И.А. Бунина" />
+        <meta name="keywords" content="помощь, календарь, запись, посещение, клиника" />
+      </Helmet>
+      <div className="intro__wrapper">
+        <div className="intro__container">
+          <Carousel afterChange={onChange}>
+            <div>
+              <div className="aunt__intro">
+                <img src={calendar} alt="" />
+                <div className="info">
+                  <div className="title">Календарь посещений</div>
+                  <div className="descr">Просматривайте свободное и подходящее для вас время посещения Юридической Клиники.</div>
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            <div className="aunt__intro">
-              <img src={appointment} alt="" />
-              <div className="info">
-                <div className="title">Запись на посещение</div>
-                <div className="descr">Заполните форму и специалисты рассмотрят ваше обращение в кратчайшие сроки.</div>
+            <div>
+              <div className="aunt__intro">
+                <img src={appointment} alt="" />
+                <div className="info">
+                  <div className="title">Запись на посещение</div>
+                  <div className="descr">Заполните форму и специалисты рассмотрят ваше обращение в кратчайшие сроки.</div>
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            <div className="aunt__intro">
-              <img src={status} alt="" />
-              <div className="info">
-                <div className="title">Отслеживайте статус обращения</div>
-                <div className="descr">В режиме реального времени вы можете отслеживать стадии рассмотрения вашего заявления.</div>
+            <div>
+              <div className="aunt__intro">
+                <img src={status} alt="" />
+                <div className="info">
+                  <div className="title">Отслеживайте статус обращения</div>
+                  <div className="descr">В режиме реального времени вы можете отслеживать стадии рассмотрения вашего заявления.</div>
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            <div className="aunt__intro">
-              <img src={news} alt="" />
-              <div className="info">
-                <div className="title">Новостные сводки</div>
-                <div className="descr">Читайте самые свежие новости из мира права.</div>
+            <div>
+              <div className="aunt__intro">
+                <img src={news} alt="" />
+                <div className="info">
+                  <div className="title">Новостные сводки</div>
+                  <div className="descr">Будьте в курсе обновления законодательства, читая самые свежие новости из мира права.</div>
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            <Spin style={{ marginTop: "40px" }} size="large" />
-          </div>
-        </Carousel>
-      </div>
-      <div className="background__intro"></div>
-    </div>
+            <div></div>
+          </Carousel>
+        </div>
+        <div className="background__intro"></div>
+      </div>{" "}
+    </>
   );
 };
