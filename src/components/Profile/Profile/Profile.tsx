@@ -1,6 +1,6 @@
 import { Layout } from "../../Layout/Layout";
 
-import { Avatar, Row, Col, Typography, Divider, Button, Input, Space, Skeleton, Card, Result } from "antd";
+import { Avatar, Row, Col, Typography, Divider, Button, Space, Skeleton, Card, Result } from "antd";
 
 import { useEffect } from "react";
 

@@ -17,6 +17,8 @@ import person from "../assets/icons/png/person.png";
 
 import { Header } from "../../UI/Header/Header";
 
+import { Layout } from "../../Layout/Layout";
+
 import { FormUI } from "../../UI/FormUI/FormUI";
 import { onValidatePassword, onValidateName } from "../../../utils/validators/auth";
 
@@ -24,7 +26,7 @@ import { IRegisterValues } from "../../../types/auth";
 
 import { client_id } from "../../../config/oauth";
 
-import "../Authorization/Auth.scss";
+import "./Register.scss";
 
 export const Register = () => {
   const dispatch = useAppDispatch();
@@ -49,14 +51,13 @@ export const Register = () => {
         <meta name="description" content="Создание аккаунта в приложении Юридической клиники при ЕГУ им И.А. Бунина" />
         <meta name="keywords" content="юридическая клиника, создать аккаунт, регистация, учетная запись" />
       </Helmet>
-      <Header />
-      <div className="auth__wrapper">
-        <Row>
-          <Col span={24}>
-            <Typography.Title className="auth__sing_in" level={3}>
-              Регистрация
-            </Typography.Title>
-          </Col>
+      <Header title="Регистрация" />
+
+      <div className="register_wrapper">
+        <Layout
+          external={{ paddingBottom: 0, paddingLeft: 0, paddingRight: 0, paddingTop: 65 }}
+          internal={{ paddingBottom: 0, paddingLeft: 20, paddingRight: 20, paddingTop: 0 }}
+        >
           <Col span={24}>
             <FormUI callback={onFinish}>
               <Form.Item
@@ -178,8 +179,7 @@ export const Register = () => {
               </Typography.Text>
             </div>
           </Col>
-        </Row>
-        <div className="auth__background"></div>
+        </Layout>
       </div>
     </>
   );

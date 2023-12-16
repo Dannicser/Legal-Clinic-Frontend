@@ -11,7 +11,7 @@ import { PublicRoutesNames } from "../../../routers";
 import { Col, Row, Typography, Form, Input, Space, Switch, Button, Alert, Modal, Tooltip, Popconfirm, Divider } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
-import logo from "../assets/img/logo.png";
+import logo from "../assets/img/logo_.png";
 import login from "../assets/icons/png/login.png";
 import password from "../assets/icons/png/password.png";
 import yandex from "../assets/icons/png/yandex.png";
@@ -71,7 +71,7 @@ export const Auth: React.FC = () => {
               <img className="auth__logo" src={logo} alt="" />
             </Col>
             <Col span={24}>
-              <Typography.Title className="auth__title" level={1}>
+              <Typography.Title className="auth__title" level={2}>
                 Юридическая клиника
               </Typography.Title>
             </Col>
@@ -83,7 +83,7 @@ export const Auth: React.FC = () => {
               </Typography.Title>
             </Col>
             <Col span={24}>
-              <Form.Item hasFeedback rules={[{ type: "email", message: "Некорректный email" }]} name="email">
+              <Form.Item hasFeedback rules={[{ type: "email", message: "Некорректный email", required: true }]} name="email">
                 <Input
                   max={8}
                   autoComplete="on"

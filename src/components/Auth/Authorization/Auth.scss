@@ -16,8 +16,9 @@
     width: 30px;
   }
   .auth__logo {
-    width: 60px;
-    height: 60px;
+    width: 25%;
+    min-width: 80px;
+    min-height: 80px;
   }
   .auth__title {
     margin-top: 10px;
@@ -72,10 +73,10 @@
   }
 }
 
-@media (max-height: 750px) {
+@media (max-height: 700px) {
   .auth__wrapper {
     justify-content: space-between;
-    padding-top: 50px;
+    padding-top: 20px;
   }
 }
 
