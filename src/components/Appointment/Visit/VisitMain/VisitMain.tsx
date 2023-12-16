@@ -22,5 +22,5 @@ export const VisitMain: React.FC = () => {
     provided: <Provided />,
   };
 
-  return <>{statusComponentMapper[status]}</>;
+  return <>{/* {statusComponentMapper[status]} */}</>;
 };
