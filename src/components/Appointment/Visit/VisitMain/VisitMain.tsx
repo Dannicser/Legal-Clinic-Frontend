@@ -7,13 +7,13 @@ import { Rejected } from "../VisitStatus/Rejected";
 import { Confirmed } from "../VisitStatus/Confirmed";
 import { VisitForm } from "../VisitForm/VisitForm";
 
-import { AppointmentStatus } from "../../../../types/appointment";
+import { Status } from "../../../../types/appointment";
 
 export const VisitMain: React.FC = () => {
   const status = useAppSelector((state) => state.appointment.data.status);
   const message = useAppSelector((state) => state.appointment.message);
 
-  const statusComponentMapper: Record<AppointmentStatus, React.ReactElement> = {
+  const statusComponentMapper: Record<Status, React.ReactElement> = {
     none: <VisitForm />,
     accepted: <Accepted />,
     rejected: <Rejected message={message} />,
