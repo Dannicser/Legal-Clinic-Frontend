@@ -19,6 +19,7 @@ import ReactMarkdown from "react-markdown";
 import dayjs from "dayjs";
 
 import "./FullPost.scss";
+import { Axios, AxiosError, AxiosResponse } from "axios";
 
 interface IProps {
   data: IPost;
@@ -51,7 +52,6 @@ export const FullPost: React.FC = () => {
 
       setState({ ...state, isLoading: false, post: data.data });
     } catch (error) {
-      console.log(error);
       setState({ ...state, isLoading: false, isError: true });
     }
   };
@@ -67,7 +67,7 @@ export const FullPost: React.FC = () => {
       </Helmet>
       <Header title={"Новостная сводка"} />
       <Layout>
-        {state.isError && <Result status="404" title="404" subTitle="Что-то пошло не так..." />}
+        {state.isError && <Result status={500} title="500" subTitle="Что-то пошло не так..." />}
         {state.isLoading && <Loader />}
         {!state.isLoading && !state.isError && eventContent}
       </Layout>

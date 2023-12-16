@@ -59,6 +59,8 @@ instanse.interceptors.response.use(
         })
       );
     }
+
+    throw Error;
   }
 );
 

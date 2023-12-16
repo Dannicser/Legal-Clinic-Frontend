@@ -17,7 +17,7 @@ import password from "../assets/icons/png/password.png";
 import yandex from "../assets/icons/png/yandex.png";
 
 import { IAuthValues, IPreAuthWithYandex } from "../../../types/auth";
-import { onValidateEmail } from "../../../utils/validators/auth";
+
 import { client_id } from "../../../config/oauth";
 
 import { UseLocalStorage } from "../../../hooks/useLocalStorage";
@@ -83,7 +83,7 @@ export const Auth: React.FC = () => {
               </Typography.Title>
             </Col>
             <Col span={24}>
-              <Form.Item hasFeedback rules={[{ validator: onValidateEmail }]} name="email">
+              <Form.Item hasFeedback rules={[{ type: "email", message: "Некорректный email" }]} name="email">
                 <Input
                   max={8}
                   autoComplete="on"
@@ -180,7 +180,7 @@ const ConfirmModelAuth: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const onRegister = (values: IPreAuthWithYandex) => {
-    dispatch(thunkRegisterWithEmail({ ...values, password: psuid }));
+    dispatch(thunkRegisterWithEmail({ ...values, password: psuid, is_yandex: true }));
   };
 
   const onCancelModal = () => {

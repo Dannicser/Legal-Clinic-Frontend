@@ -1,14 +1,15 @@
-import { Badge } from "antd";
-
-import burger from "./icons/burger.png";
-import ring from "./icons/notification.svg";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 import { NavLink } from "react-router-dom";
 
 import { PrivetRoutesNames } from "../../../routers";
 
+import { Badge } from "antd";
+
+import burger from "./icons/burger.png";
+import ring from "./icons/notification.svg";
+
 import "./HeaderMenu.scss";
-import { useAppSelector } from "../../../hooks/useAppSelector";
 
 export const HeaderMenu = () => {
   const unread = useAppSelector((state) => state.notification.unread);

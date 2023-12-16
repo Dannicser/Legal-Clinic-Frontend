@@ -59,8 +59,32 @@ export const Menu: React.FC = () => {
 
   const banner =
     status === AppointmentStatus.CONFIRMED ? (
-      <Alert message={`Запланировано посещение юридической клиники ${formatDate}`} banner showIcon type="info" />
+      <Alert message={`Запланировано посещение юридической клиники ${formatDate}.`} banner showIcon type="info" />
     ) : null;
+
+  const loader = (
+    <>
+      {isLoadingUser ? (
+        <div className="user_info_spin">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <>
+          <Avatar size="large">{user.first_name[0] || <FrownOutlined />}</Avatar>
+          <div className="name">
+            <Typography.Title level={4}>
+              {user.first_name} {user.last_name}{" "}
+              {user.is_admin && (
+                <Button shape={"round"} size="small" type="primary" danger>
+                  admin
+                </Button>
+              )}
+            </Typography.Title>
+          </div>
+        </>
+      )}
+    </>
+  );
 
   return (
     <>
@@ -86,27 +110,7 @@ export const Menu: React.FC = () => {
           )}
         </Modal>
         <div className="menu__wrapper">
-          <div className="user__info">
-            {isLoadingUser ? (
-              <div className="user_info_spin">
-                <Spin size="large" />
-              </div>
-            ) : (
-              <>
-                <Avatar size="large">{user.first_name[0] || <FrownOutlined />}</Avatar>
-                <div className="name">
-                  <Typography.Title level={4}>
-                    {user.first_name} {user.last_name}{" "}
-                    {user.is_admin && (
-                      <Button shape={"round"} size="small" type="primary" danger>
-                        admin
-                      </Button>
-                    )}
-                  </Typography.Title>
-                </div>
-              </>
-            )}
-          </div>{" "}
+          <div className="user__info">{loader}</div>
           {isErrorUser && <Alert message="Ошибка, попробуйте обновить страницу" type="error" showIcon />}
           <ul className="menu__list">
             {/* <NavLink to={PrivetRoutesNames.CONVERSATION}> */}

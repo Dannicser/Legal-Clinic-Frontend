@@ -17,6 +17,7 @@ import { FAQ } from "../components/FAQ/FAQ";
 import { NotificationList } from "../components/Notification/NotificationList/NotificationList";
 import { Settings } from "../components/Settings/Settings";
 import { Support } from "../components/Support/Support";
+import { ResetPassword } from "../components/Auth/ResetPassword/ResetPassword";
 
 export interface iRouter {
   path: string;
@@ -28,6 +29,7 @@ export enum PublicRoutesNames {
   AUTH = "/",
   REGISTRATION = "/registration",
   RECOVERY = "/recovery",
+  RESET = "/recovery/:id",
 }
 
 export enum PrivetRoutesNames {
@@ -53,6 +55,7 @@ export const publicRoutes: iRouter[] = [
   { path: PublicRoutesNames.AUTH, component: Auth },
   { path: PublicRoutesNames.REGISTRATION, component: Register },
   { path: PublicRoutesNames.RECOVERY, component: PasswordRecovery },
+  { path: PublicRoutesNames.RESET, component: ResetPassword },
 ];
 
 export const privetRoutes: iRouter[] = [

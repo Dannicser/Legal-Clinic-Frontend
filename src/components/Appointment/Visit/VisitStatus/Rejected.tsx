@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAppDispatch } from "../../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../../hooks/useAppSelector";
 import { thunkRemoveAppointment } from "../../../../slices/appointmentSlice";
@@ -16,6 +16,7 @@ export const Rejected: React.FC<IRejectedProps> = ({ message }) => {
   const problem = useAppSelector((state) => state.appointment.data.problem);
   const type = useAppSelector((state) => state.appointment.data.type);
   const date = useAppSelector((state) => state.appointment.data.date);
+  const phone = useAppSelector((state) => state.appointment.data.phone);
 
   const isError = useAppSelector((state) => state.appointment.isError);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,7 +26,7 @@ export const Rejected: React.FC<IRejectedProps> = ({ message }) => {
   const dispatch = useAppDispatch();
 
   const onAddAppointmentHistory = async () => {
-    await axios.post("./appointment/history", { review: "", reason: message, rate: 0, problem, type, date, rejected: true });
+    await axios.post("./appointment/history", { review: "", reason: message, rate: 0, problem, type, date, rejected: true, phone });
   };
 
   const onFinish = async () => {

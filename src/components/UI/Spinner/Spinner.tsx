@@ -1,4 +1,4 @@
-import { Col, Row, Spin } from "antd";
+import { Row, Spin } from "antd";
 
 export const Spinner: React.FC = () => {
   return (

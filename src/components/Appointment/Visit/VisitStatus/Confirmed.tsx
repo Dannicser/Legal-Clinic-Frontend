@@ -12,7 +12,7 @@ export const Confirmed: React.FC = () => {
       <Result
         status="success"
         title={`Заявление было успешно подтверждено`}
-        subTitle={`Сотрудники юридической клиники ожидают вас по адресу  г. Елец, ул. Советская, д. 72 (редакция газеты "Красное Знамя") ${formatDate}`}
+        subTitle={`Сотрудники юридической клиники ожидают вас по адресу  г. Елец, ул. Советская, д. 72 (редакция газеты "Красное Знамя") ${formatDate}. Не забудьте взять паспорт.`}
         extra={[
           <NavLink to={PrivetRoutesNames.APPOINTMENT_CALENDAR}>
             <Button key="1" type="primary">

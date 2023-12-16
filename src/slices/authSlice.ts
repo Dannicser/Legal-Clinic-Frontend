@@ -69,11 +69,22 @@ export const thunkRegisterWithEmail = createAsyncThunk<IResponseRegisterWithEmai
       return rejectWithValue(response);
     }
 
+    dispatch(
+      onShowAlert({
+        status: "show",
+        type: "info",
+        message: `Доброго времени суток. Спасибо, что выбрали нас!`,
+        description: "",
+        duration: 3,
+        placement: "topRight",
+      })
+    );
+
     return response as IResponseRegisterWithEmail;
   }
 );
 
-export const thunkLogoutWithEmail = createAsyncThunk<IResponseLogoutAuth>("thunkLogoutWithEmail/logout", async (_, { dispatch, rejectWithValue }) => {
+export const thunkLogoutWithEmail = createAsyncThunk<IResponseLogoutAuth>("thunkLogoutWithEmail/logout", async (_, { rejectWithValue }) => {
   const { onLogoutWithEmail } = UseAuthService();
 
   const response = await onLogoutWithEmail();
@@ -158,6 +169,7 @@ export const authSlice = createSlice({
       .addCase(thunkAuthWithEmail.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.isError = true;
+        console.log(action.payload.message);
         state.message = action.payload.message;
       })
       //REGISTER WITH EMAIL
@@ -186,7 +198,6 @@ export const authSlice = createSlice({
           state.psuid = action.payload.psuid;
         }
         state.isLoading = false;
-        console.log(action);
       })
       .addCase(thunkAuthWithYandex.rejected, (state, action: any) => {
         state.isLoading = false;

@@ -8,7 +8,7 @@ export const onCutText = (text: string = "", start: number = 0, end: number = te
 
 //function for safari support
 export const onIsValidDate = (date: string) => {
-  if (dayjs(date).locale("ru").format("D MMMM") !== "Invalid Date") {
+  if (dayjs(date).locale("ru").format("D MMMM") === "Invalid Date") {
     return onTransformDate(date);
   } else {
     return dayjs(date).locale("ru").format("D MMMM");

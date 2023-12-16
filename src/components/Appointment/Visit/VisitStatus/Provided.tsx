@@ -24,6 +24,7 @@ export const Provided: React.FC = () => {
   const problem = useAppSelector((state) => state.appointment.data.problem);
   const date = useAppSelector((state) => state.appointment.data.date);
   const type = useAppSelector((state) => state.appointment.data.type);
+  const phone = useAppSelector((state) => state.appointment.data.phone);
 
   const onRateService = () => {
     if (rate !== 5) {
@@ -44,7 +45,7 @@ export const Provided: React.FC = () => {
   const onFetchData = async () => {
     try {
       setIsLoading(true);
-      await axios.post("./appointment/history", { review, reason: "", rate, problem, type, date });
+      await axios.post("./appointment/history", { review, reason: "", rate, problem, type, date, phone });
       dispatch(thunkRemoveAppointment()); //weak place
 
       UseLocalStorage({ key: "statushelp", action: "remove" });
@@ -88,7 +89,7 @@ export const Provided: React.FC = () => {
               Оценить
             </Button>
             <Divider />
-            {isError && <Alert type="error" message={"Произошла непредвиденная ошибка добавлении записи в историю. Попробуйте позже."} />}
+            {isError && <Alert type="error" message={"Произошла непредвиденная ошибка при добавлении записи в историю. Попробуйте позже."} />}
           </>
         }
       />
@@ -137,7 +138,10 @@ const ModelReview: React.FC<IModelReviewProps> = ({ isModal, isError, isLoading,
         <Form.Item
           hasFeedback
           name={"review"}
-          rules={[{ required: true, message: "Пожалуйста, заполните поле (от 5 до 200 символов)", min: 5, max: 100 }]}
+          rules={[
+            { required: true, message: "Не менее 5 символов", min: 5 },
+            { message: "Не более 100 символов", max: 100 },
+          ]}
         >
           <Input.TextArea rows={2} onChange={onChangeReview} placeholder="Мне понравилось всё!" />
         </Form.Item>

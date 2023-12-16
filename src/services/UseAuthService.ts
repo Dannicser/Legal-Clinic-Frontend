@@ -60,7 +60,7 @@ export const UseAuthService = () => {
   const onLogoutWithEmail = async () => {
     const response = await axios
       .post<IResponseLogoutAuth>("/auth/logout/email")
-      .then((data) => {
+      .then(({ data }) => {
         UseLocalStorage({ key: "accessToken", action: "remove" });
         sessionStorage.removeItem("accessToken");
 
