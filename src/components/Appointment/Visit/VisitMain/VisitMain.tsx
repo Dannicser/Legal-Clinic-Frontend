@@ -13,7 +13,7 @@ export const VisitMain: React.FC = () => {
   const status = useAppSelector((state) => state.appointment.data.status);
   const message = useAppSelector((state) => state.appointment.message);
 
-  const statusComponentMapper: Record<Status, React.ReactElement> = {
+  const statusComponentMapper: Record<Status, React.ReactElement<any>> = {
     none: <VisitForm />,
     accepted: <Accepted />,
     rejected: <Rejected message={message} />,
@@ -22,5 +22,5 @@ export const VisitMain: React.FC = () => {
     provided: <Provided />,
   };
 
-  return <>{statusComponentMapper[status] as any}</>;
+  return <>{statusComponentMapper[status]}</>;
 };
