@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet";
 
 import { PublicRoutesNames } from "../../../routers";
 
-import { Col, Row, Typography, Form, Input, Space, Button, Alert } from "antd";
+import { Col, Typography, Form, Input, Space, Button, Alert } from "antd";
 import { NavLink, Navigate } from "react-router-dom";
 
 import login from "../assets/icons/png/login.png";
@@ -19,7 +19,6 @@ import { Header } from "../../UI/Header/Header";
 
 import { Layout } from "../../Layout/Layout";
 
-import { FormUI } from "../../UI/FormUI/FormUI";
 import { onValidatePassword, onValidateName } from "../../../utils/validators/auth";
 
 import { IRegisterValues } from "../../../types/auth";
@@ -59,11 +58,11 @@ export const Register = () => {
           internal={{ paddingBottom: 0, paddingLeft: 20, paddingRight: 20, paddingTop: 0 }}
         >
           <Col span={24}>
-            <FormUI callback={onFinish}>
+            <Form onFinish={onFinish}>
               <Form.Item
                 hasFeedback
                 rules={[
-                  { min: 2, message: "Имя должно быть длиннее 2 символов", required: true },
+                  { min: 2, message: "Имя должно быть длиннее 2 символов" },
                   { max: 20, message: "Имя не может быть длиннее 20 символов" },
                   { validator: onValidateName },
                   { transform: (value) => value.trim() },
@@ -81,7 +80,7 @@ export const Register = () => {
               <Form.Item
                 hasFeedback
                 rules={[
-                  { min: 2, message: "Отчество должно быть длиннее 2 символов", required: true },
+                  { min: 2, message: "Отчество должно быть длиннее 2 символов" },
                   { max: 20, message: "Отчество не может быть длиннее 20 символов" },
                   { validator: onValidateName },
                   { transform: (value) => value.trim() },
@@ -101,6 +100,9 @@ export const Register = () => {
                 rules={[
                   {
                     required: true,
+                    message: "Поле обязательно",
+                  },
+                  {
                     type: "email",
                     message: "Неверный формат email",
                   },
@@ -129,7 +131,7 @@ export const Register = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Пароли не совпадают",
+                    message: "Поле обязательно",
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
@@ -158,7 +160,7 @@ export const Register = () => {
                   {state.isError && <Alert type="error" showIcon className="mt-1 error__message" message={state.message} banner closable />}
                 </Form.Item>
               </Col>
-            </FormUI>
+            </Form>
           </Col>
           <Col span={24}>
             <div className="auth__or">или</div>

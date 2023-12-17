@@ -84,7 +84,14 @@ export const PasswordRecovery: React.FC = () => {
             Пожалуйста, введите ваш электронный адрес, чтобы мы смогли отправить вам письмо для сброса пароля
           </Typography.Text>
           <Form form={form} onFinish={onResetPassword}>
-            <Form.Item hasFeedback rules={[{ type: "email", message: "Некорректный формат email" }]} name={"email"}>
+            <Form.Item
+              hasFeedback
+              rules={[
+                { type: "email", message: "Некорректный формат email" },
+                { required: true, message: "Поле обязательно" },
+              ]}
+              name={"email"}
+            >
               <Input
                 autoComplete="on"
                 placeholder={"abc@email.com"}
