@@ -23,8 +23,8 @@ import { BACKEND_URL } from "../http/vars";
 
 export const UseAuthService = () => {
   const onGetAuthWithEmail = async (user: IAuthValues) => {
-    const response = await axios
-      .post<IResponseAuthWithEmail>("/auth/login/email", user)
+    const response = await defaultAxios
+      .post<IResponseAuthWithEmail>(`${BACKEND_URL}/auth/login/email`, user)
       .then(({ data }) => {
         user.remember
           ? UseLocalStorage({ key: "accessToken", data: data.tokens.accessToken, action: "set" })
@@ -43,8 +43,8 @@ export const UseAuthService = () => {
   };
 
   const onGetRegisterWithEmail = async (user: IRegisterValues) => {
-    const response = await axios
-      .post<IResponseRegisterWithEmail>("/auth/register/email", user)
+    const response = await defaultAxios
+      .post<IResponseRegisterWithEmail>(`${BACKEND_URL}/auth/register/email`, user)
       .then(({ data }) => {
         UseLocalStorage({ key: "accessToken", data: data.tokens.accessToken, action: "set" });
 
@@ -78,9 +78,17 @@ export const UseAuthService = () => {
   };
 
   const onCheckAuth = async () => {
-    const response = await defaultAxios.get<IResponseCheckAuth>(`${BACKEND_URL}/auth/refresh/email`, { withCredentials: true });
+    const response = await defaultAxios.get<IResponseCheckAuth>(`${BACKEND_URL}/auth/refresh/email`, { withCredentials: true }).then(({ data }) => {
+      UseLocalStorage({
+        key: "accessToken",
+        data: data.tokens.accessToken,
+        action: "set",
+      });
 
-    return response.data;
+      return data;
+    });
+
+    return response;
   };
 
   const onGetTokenWithYandex = async (code: string) => {

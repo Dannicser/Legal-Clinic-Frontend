@@ -1,6 +1,6 @@
 import { useAppSelector } from "../hooks/useAppSelector";
 import { UseLocalStorage } from "../hooks/useLocalStorage";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 
 import { Navigation } from "../components/Navigation/Navigation";
@@ -19,6 +19,7 @@ import { thunkGetAllPostsByType } from "../slices/postSlice";
 import { Connection } from "../components/Notification/Connection/Connection";
 
 import { Categories } from "../types/post";
+import { Cookie } from "../components/Cookie/Cookie";
 
 export const AppRouter: React.FC = () => {
   const isAuth = useAppSelector((state) => state.auth.isAuth);
@@ -67,6 +68,7 @@ export const AppRouter: React.FC = () => {
       {isAuth ? <AppPrivetRoutes /> : <AppPublicRoutes />}
       {isAuth && <Navigation />}
       {isAuth && user_id && <Connection />}
+      <Cookie />
     </>
   );
 };

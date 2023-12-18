@@ -1,4 +1,4 @@
-import { onFetchUser, onPreAuthWithYandex } from "./userSlice";
+import { onPreAuthWithYandex } from "./userSlice";
 import { onShowAlert } from "./alertSlice";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UseAuthService } from "../services/UseAuthService";
@@ -96,16 +96,12 @@ export const thunkLogoutWithEmail = createAsyncThunk<IResponseLogoutAuth>("thunk
   return response as IResponseLogoutAuth;
 });
 
-export const thunkCheckAuth = createAsyncThunk("onCheckAuth/get", async (_, { dispatch }) => {
+export const thunkCheckAuth = createAsyncThunk("onCheckAuth/get", async () => {
   const { onCheckAuth } = UseAuthService();
 
-  const response = onCheckAuth();
+  const response = await onCheckAuth();
 
-  return response.then((data) => {
-    dispatch(onFetchUser(data.user));
-
-    return data;
-  });
+  return response;
 });
 
 export const thunkAuthWithYandex = createAsyncThunk<IResponseAuthWithYandexGetData, string>(
@@ -152,6 +148,11 @@ export const authSlice = createSlice({
     onCloseConfirmingModal: (state) => {
       state.isConfirming = false;
     },
+    onLogout: (state) => {
+      state.isAuth = false;
+      state.isError = true;
+      state.message = "Токен доступа истек";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -170,6 +171,7 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         console.log(action.payload.message);
+        // console.log(action.payload.message);
         state.message = action.payload.message;
       })
       //REGISTER WITH EMAIL
@@ -235,5 +237,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { onResetErrors, onCloseConfirmingModal } = authSlice.actions;
+export const { onResetErrors, onCloseConfirmingModal, onLogout } = authSlice.actions;
 export default authSlice.reducer;

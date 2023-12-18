@@ -49,7 +49,7 @@ export const Auth: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(onResetErrors());
+    // dispatch(onResetErrors());
   }, []);
 
   if (!UseLocalStorage({ action: "get", key: "intro" })) {

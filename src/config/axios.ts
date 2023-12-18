@@ -1,5 +1,6 @@
 import { store } from "../store";
 import { onShowAlert } from "../slices/alertSlice";
+import { onLogout } from "../slices/authSlice";
 
 import axios from "axios";
 
@@ -40,6 +41,10 @@ instanse.interceptors.response.use(
         return instanse.request(originalRequest);
       } catch (error) {
         UseLocalStorage({ key: "accessToken", action: "remove" });
+
+        const { dispatch } = store;
+
+        dispatch(onLogout());
 
         console.log("Ошибка обновления токена");
       }

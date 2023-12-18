@@ -1,0 +1,30 @@
+.cookie_wrapper {
+  position: absolute;
+  background-color: white;
+  bottom: 0;
+  padding: 20px 18px 20px 18px;
+  box-shadow: 0 1px 15px rgba(0, 0, 0, 0.14);
+  border-radius: 15px 15px 0px 0px;
+  width: 100%;
+
+  .cookie_icon {
+    display: inline-block;
+    width: 20px;
+  }
+
+  .coolie_title {
+    font-size: 15px;
+    text-align: left;
+    letter-spacing: -1px;
+
+    //ant
+    strong {
+      font-weight: 900;
+    }
+  }
+
+  .cookie_descr {
+    font-size: 12px;
+    text-align: left;
+  }
+}

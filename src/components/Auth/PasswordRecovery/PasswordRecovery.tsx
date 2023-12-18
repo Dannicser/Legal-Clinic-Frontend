@@ -5,7 +5,7 @@ import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { onResetErrors } from "../../../slices/authSlice";
 import { NavLink } from "react-router-dom";
 
-import axios from "../../../config/axios";
+import defaultAxios, { Axios, AxiosError } from "axios";
 
 import { Helmet } from "react-helmet";
 
@@ -18,13 +18,24 @@ import login from "../assets/icons/png/login.png";
 import { PublicRoutesNames } from "../../../routers";
 
 import "./PasswordRecovery.scss";
+import { BACKEND_URL } from "../../../http/vars";
+
 interface IValues {
   email: string;
+}
+
+interface IRecoveryResponse {
+  message: string;
+  error: null;
+  status: number;
+  data: null;
 }
 
 export const PasswordRecovery: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   const [isRedirect, setIsRedirect] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
@@ -38,10 +49,15 @@ export const PasswordRecovery: React.FC = () => {
   const onResetPassword = async (values: IValues) => {
     try {
       setIsLoading(true);
-      const response = await axios.post("/auth/reset-password", { email: values.email });
+
+      const response = await defaultAxios.post<IRecoveryResponse>(`${BACKEND_URL}/auth/reset-password`, { email: values.email });
 
       setIsRedirect(true);
-    } catch (error: unknown) {
+    } catch (error) {
+      if (defaultAxios.isAxiosError(error)) {
+        setErrorMessage(error.response?.data.message);
+      }
+
       setIsError(true);
     } finally {
       setIsLoading(false);
@@ -107,14 +123,7 @@ export const PasswordRecovery: React.FC = () => {
             </Form.Item>
           </Form>
           {isError && (
-            <Alert
-              type="error"
-              showIcon
-              className="mt-1 error__message"
-              message={"Произошла ошибка, возможно пользователя с таким email нет."}
-              banner
-              closable
-            />
+            <Alert type="error" showIcon className="mt-1 error__message" message={errorMessage || "Непредвиденная ошибка"} banner closable />
           )}
         </div>
       </div>

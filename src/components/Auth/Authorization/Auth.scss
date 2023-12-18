@@ -59,18 +59,18 @@
   .auth__forgot {
     margin-bottom: 22.4px;
   }
-  .auth__background {
-    position: absolute;
-    bottom: 1px;
-    left: 200px;
-    height: 10%;
-    width: 100%;
-    z-index: -12;
-    opacity: 1.2;
-    filter: blur(90px);
-    transform: matrix(-1, 0, 0, 1, 0, 0);
-    background: conic-gradient(from 180deg at 50% 50%, #b9dafb 0deg, #ecacad 95.99deg, #9895ee 206.25deg, #90a2f8 292.5deg, #c55492 360deg);
-  }
+  // .auth__background {
+  //   position: absolute;
+  //   bottom: 1px;
+  //   left: 200px;
+  //   height: 10%;
+  //   width: 100%;
+  //   z-index: -12;
+  //   opacity: 1.2;
+  //   filter: blur(90px);
+  //   transform: matrix(-1, 0, 0, 1, 0, 0);
+  //   background: conic-gradient(from 180deg at 50% 50%, #b9dafb 0deg, #ecacad 95.99deg, #9895ee 206.25deg, #90a2f8 292.5deg, #c55492 360deg);
+  // }
 }
 
 @media (max-height: 700px) {

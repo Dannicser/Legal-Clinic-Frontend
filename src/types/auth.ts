@@ -47,7 +47,12 @@ export interface IResponseAuthWithEmailError {
   status: number;
 }
 
-export interface IResponseCheckAuth extends IResponseRegisterWithEmail {}
+export interface IResponseCheckAuth {
+  tokens: ITokensResponseRegisterWithEmail;
+  user: IUserResponseRegisterWithEmail;
+  status: number;
+  message: string;
+}
 
 export interface IResponseLogoutAuth {
   message: string;
