@@ -1,4 +1,3 @@
-import axios from "../config/axios";
 import defaultAxios, { AxiosError } from "axios";
 
 import { UseLocalStorage } from "../hooks/useLocalStorage";
@@ -24,7 +23,7 @@ import { BACKEND_URL } from "../http/vars";
 export const UseAuthService = () => {
   const onGetAuthWithEmail = async (user: IAuthValues) => {
     const response = await defaultAxios
-      .post<IResponseAuthWithEmail>(`${BACKEND_URL}/auth/login/email`, user)
+      .post<IResponseAuthWithEmail>(`${BACKEND_URL}/auth/login/email`, user, { withCredentials: true })
       .then(({ data }) => {
         user.remember
           ? UseLocalStorage({ key: "accessToken", data: data.tokens.accessToken, action: "set" })
@@ -44,7 +43,7 @@ export const UseAuthService = () => {
 
   const onGetRegisterWithEmail = async (user: IRegisterValues) => {
     const response = await defaultAxios
-      .post<IResponseRegisterWithEmail>(`${BACKEND_URL}/auth/register/email`, user)
+      .post<IResponseRegisterWithEmail>(`${BACKEND_URL}/auth/register/email`, user, { withCredentials: true })
       .then(({ data }) => {
         UseLocalStorage({ key: "accessToken", data: data.tokens.accessToken, action: "set" });
 
@@ -58,8 +57,8 @@ export const UseAuthService = () => {
   };
 
   const onLogoutWithEmail = async () => {
-    const response = await axios
-      .post<IResponseLogoutAuth>("/auth/logout/email")
+    const response = await defaultAxios
+      .post<IResponseLogoutAuth>(`${BACKEND_URL}/auth/logout/email`)
       .then(({ data }) => {
         UseLocalStorage({ key: "accessToken", action: "remove" });
         sessionStorage.removeItem("accessToken");
@@ -149,8 +148,8 @@ export const UseAuthService = () => {
   };
 
   const onGetUserRegisterStatus = async (data: IGetUserRegisterStatusParams) => {
-    const response = await axios
-      .post<IGetUserRegisterStatus>("/auth/register/status", data)
+    const response = await defaultAxios
+      .post<IGetUserRegisterStatus>(`${BACKEND_URL}/auth/register/status`, data)
       .then(({ data }) => {
         return data;
       })
