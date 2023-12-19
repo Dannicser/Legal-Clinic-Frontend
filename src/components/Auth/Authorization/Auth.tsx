@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
-import { thunkAuthWithEmail, onResetErrors, thunkAuthWithYandex, thunkRegisterWithEmail, onCloseConfirmingModal } from "../../../slices/authSlice";
+import { thunkAuthWithEmail, thunkAuthWithYandex, thunkRegisterWithEmail, onCloseConfirmingModal } from "../../../slices/authSlice";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 
 import { Helmet } from "react-helmet";
@@ -46,10 +46,6 @@ export const Auth: React.FC = () => {
 
       return navigate("/");
     }
-  }, []);
-
-  useEffect(() => {
-    // dispatch(onResetErrors());
   }, []);
 
   if (!UseLocalStorage({ action: "get", key: "intro" })) {
@@ -127,8 +123,10 @@ export const Auth: React.FC = () => {
                   </Space>
                 </Row>
                 <Row align={"top"}>
-                  <NavLink className="auth__forgot" to={PublicRoutesNames.RECOVERY}>
-                    <Typography.Text strong>Забыли пароль?</Typography.Text>
+                  <NavLink to={PublicRoutesNames.RECOVERY}>
+                    <Typography.Text className="auth__forgot" strong>
+                      Забыли пароль?
+                    </Typography.Text>
                   </NavLink>
                 </Row>
               </Row>

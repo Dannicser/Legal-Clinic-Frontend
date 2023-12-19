@@ -57,7 +57,11 @@
     }
   }
   .auth__forgot {
-    margin-bottom: 22.4px;
+    //ant
+    strong {
+      display: inline-block;
+      margin-bottom: 23.9px;
+    }
   }
   // .auth__background {
   //   position: absolute;
@@ -80,14 +84,6 @@
   }
 }
 
-@media (max-width: 650px) {
-  .auth__wrapper {
-    .auth__forgot {
-      font-size: 13px;
-    }
-  }
-}
-
 @media (max-width: 365px) {
   .auth__wrapper {
     .auth__google {
@@ -100,7 +96,7 @@
       }
     }
     .auth__title {
-      font-size: 32px;
+      font-size: 28px;
     }
 
     .auth__sing_in {

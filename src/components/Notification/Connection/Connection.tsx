@@ -17,7 +17,7 @@ export const Connection: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage({ maxCount: 1 });
 
   useEffect(() => {
-    const eventSource = new EventSource(`${BACKEND_URL}/notification/connect/notification/?user_id=${user_id}`, {
+    const eventSource = new EventSource(`${BACKEND_URL}/notification/connect/?user_id=${user_id}`, {
       withCredentials: true,
     });
 
