@@ -43,6 +43,18 @@ export const Introduction: React.FC = () => {
           <Carousel afterChange={onChange}>
             <div>
               <div className="aunt__intro">
+                <img src={appointment} alt="" />
+                <div className="info">
+                  <div className="title">Запись на посещение</div>
+                  <div className="descr">
+                    Расскажите нам о ваших правовых проблемах и мы решим их. Составим жалобы, заявления, обращения, иски, представим вас в
+                    государственных органах.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="aunt__intro">
                 <img src={calendar} alt="" />
                 <div className="info">
                   <div className="title">Календарь посещений</div>
@@ -52,19 +64,10 @@ export const Introduction: React.FC = () => {
             </div>
             <div>
               <div className="aunt__intro">
-                <img src={appointment} alt="" />
-                <div className="info">
-                  <div className="title">Запись на посещение</div>
-                  <div className="descr">Заполните форму и специалисты рассмотрят ваше обращение в кратчайшие сроки.</div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="aunt__intro">
                 <img src={status} alt="" />
                 <div className="info">
                   <div className="title">Отслеживайте статус обращения</div>
-                  <div className="descr">В режиме реального времени вы можете отслеживать стадии рассмотрения вашего заявления.</div>
+                  <div className="descr">В режиме реального времени отслеживайте стадии рассмотрения вашего заявления.</div>
                 </div>
               </div>
             </div>
@@ -73,7 +76,7 @@ export const Introduction: React.FC = () => {
                 <img src={news} alt="" />
                 <div className="info">
                   <div className="title">Новостные сводки</div>
-                  <div className="descr">Будьте в курсе обновления законодательства, читая самые свежие новости из мира права.</div>
+                  <div className="descr">Будьте в курсе обновления законодательства, читая новости из мира права.</div>
                 </div>
               </div>
             </div>

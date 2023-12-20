@@ -160,7 +160,6 @@ export const Auth: React.FC = () => {
             </Col>
           </Row>
         </Form>
-        <div className="auth__background"></div>
       </div>
     </>
   );
