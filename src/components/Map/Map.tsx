@@ -107,7 +107,7 @@ const ModalInfo: React.FC<IModalInfoProps> = ({ isOpenModal, isSetOpenModal, dat
               <a
                 style={{ color: "white" }}
                 target="_blank"
-                href="https://www.google.ru/maps/dir//52.6207002,38.4998861/@52.6207002,38.4998861,19z?entry=ttu"
+                href="https://www.google.ru/maps/dir//52.6209,38.49927/@52.6206856,38.4993676,18z?entry=ttu"
               >
                 Да
               </a>

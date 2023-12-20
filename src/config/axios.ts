@@ -28,8 +28,6 @@ instanse.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    console.log(error);
-
     if (error.response.status === 401 && error.config && !error.config._isRetry) {
       try {
         originalRequest._isRetry = true; //чтобы не зациклить, если опять прилетел 401
