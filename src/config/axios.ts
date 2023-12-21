@@ -16,7 +16,7 @@ const instanse = axios.create({
 });
 
 instanse.interceptors.request.use((config) => {
-  config.headers.Authorization = `Bearer ${window.localStorage.getItem("accessToken")}` || `Bearer ${window.sessionStorage.getItem("accessToken")}`;
+  config.headers.Authorization = `Bearer ${window.localStorage.getItem("accessToken") || window.sessionStorage.getItem("accessToken") || ""}`;
 
   return config;
 });
